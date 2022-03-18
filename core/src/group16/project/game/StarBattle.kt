@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.kotcrab.vis.ui.VisUI
 import com.badlogic.gdx.utils.ObjectMap
+import group16.project.game.views.CreateLobbyScreen
 import group16.project.game.views.MainMenuScreen
 import group16.project.game.views.GameScreen
 import group16.project.game.views.View
@@ -48,5 +49,6 @@ class StarBattle : Game() {
     fun loadScreens() {
         screens.put(MainMenuScreen::class.java, MainMenuScreen(this))
         screens.put(GameScreen::class.java, GameScreen(this))
+        screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this))
     }
 }
