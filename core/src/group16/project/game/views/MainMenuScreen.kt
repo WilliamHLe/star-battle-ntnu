@@ -29,6 +29,13 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
                 gameController.changeScreen(GameScreen::class.java)
             }
         })
+        // Add a "JoinLobby" button
+        val btnJoin = VisTextButton("Join lobby game")
+        btnJoin.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                gameController.changeScreen(JoinLobbyScreen::class.java)
+            }
+        })
 
         // Create the layout
         table.columnDefaults(0).pad(10f)
@@ -37,6 +44,8 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         table.add(txtDescription).size(stage.width / 2, 100.0f)
         table.row()
         table.add(btnStart).size(stage.width / 2, 45.0f)
+        table.row()
+        table.add(btnJoin).size(stage.width/2, 45.0f)
 
         stage.addActor(table)
         Gdx.app.log("VIEW", "Main Menu loaded")
