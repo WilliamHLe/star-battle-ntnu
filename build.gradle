@@ -30,6 +30,7 @@ allprojects {
         ashleyVersion = '1.7.4'
         aiVersion = '1.8.2'
         gdxControllersVersion = '2.2.1'
+        gdxFireappVersion = '3.3.0'
     }
 
     repositories {
@@ -60,6 +61,7 @@ project(":desktop") {
         // Declare the dependency for the Realtime Database library
         // When using the BoM, you don't specify versions in Firebase library dependencies
         implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+        implementation "pl.mk5.gdx-fireapp:gdx-fireapp-core:$gdxFireappVersion"
     }
 }
 
@@ -92,6 +94,7 @@ project(":android") {
         // Declare the dependency for the Realtime Database library
         // When using the BoM, you don't specify versions in Firebase library dependencies
         implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+        implementation "pl.mk5.gdx-fireapp:gdx-fireapp-android:$gdxFireappVersion"
     }
 }
 
@@ -114,6 +117,7 @@ project(":ios") {
         // Declare the dependency for the Realtime Database library
         // When using the BoM, you don't specify versions in Firebase library dependencies
         implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+        implementation "pl.mk5.gdx-fireapp:gdx-fireapp-ios:$gdxFireappVersion"
 
     }
 }

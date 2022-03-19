@@ -96,6 +96,7 @@ task run(type: Exec) {
 }
 
 dependencies {
+    implementation "pl.mk5.gdx-fireapp:gdx-fireapp-android:$gdxFireappVersion"
     implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
 }
 
