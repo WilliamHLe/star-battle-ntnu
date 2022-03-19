@@ -19,6 +19,7 @@ buildscript {
 
 allprojects {
     apply plugin: "eclipse"
+    apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
     version = '1.0'
     ext {
@@ -44,6 +45,7 @@ allprojects {
 
 project(":desktop") {
     apply plugin: "kotlin"
+    apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 
     dependencies {
@@ -52,12 +54,19 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        //test
+        // Import the Firebase BoM
+        implementation platform('com.google.firebase:firebase-bom:29.2.1')
+        // Declare the dependency for the Realtime Database library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
     }
 }
 
 project(":android") {
     apply plugin: "android"
     apply plugin: "kotlin-android"
+    apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 
     configurations { natives }
@@ -76,6 +85,13 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+        //test
+        // Import the Firebase BoM
+        implementation platform('com.google.firebase:firebase-bom:29.2.1')
+        // Declare the dependency for the Realtime Database library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
     }
 }
 
@@ -92,11 +108,19 @@ project(":ios") {
         api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
         api "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        //test
+        // Import the Firebase BoM
+        implementation platform('com.google.firebase:firebase-bom:29.2.1')
+        // Declare the dependency for the Realtime Database library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+
     }
 }
 
 project(":core") {
     apply plugin: "kotlin"
+    apply plugin: 'com.google.gms.google-services'  // Google Services plugin
 
 
     dependencies {
@@ -105,5 +129,10 @@ project(":core") {
         api "com.badlogicgames.ashley:ashley:$ashleyVersion"
         api "com.kotcrab.vis:vis-ui:1.3.0"
         api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        // Import the Firebase BoM
+        implementation platform('com.google.firebase:firebase-bom:29.2.1')
+        // Declare the dependency for the Realtime Database library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
     }
 }

@@ -9,6 +9,6 @@ class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val config = AndroidApplicationConfiguration()
-        initialize(StarBattle(), config)
+        initialize(StarBattle(AndroidFirebaseConnection()), config)
     }
 }
