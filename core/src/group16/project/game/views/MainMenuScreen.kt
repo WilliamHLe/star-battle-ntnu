@@ -40,11 +40,12 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         })
 
         // Add a "Create Lobby" button
+        //TODO: this button and function were just used to verify that app can put value to our database. Feel free to change it when
+        // the real join lobby function is implemented.
         val btnCreateLobby = VisTextButton("Create lobby")
         btnCreateLobby.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                //gameController.changeScreen(CreateLobbyScreen::class.java)
-                dbconnection.someFunction()
+                dbconnection.setValueInDb("message", "Value changed from app")
 
             }
         })
