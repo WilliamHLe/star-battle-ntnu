@@ -7,6 +7,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
+import group16.project.game.models.CoreFirebaseConnection
 
 class MainMenuScreen(val gameController: StarBattle) : View() {
     override fun draw(delta: Float) {}
@@ -16,6 +17,7 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
 
     override fun init() {
         var table = VisTable()
+        var dbconnection = gameController.getDBConnection()
 
         // Create the description field
         val txtDescription = VisTextField("Model-View-Controller pattern :) - MAIN MENU")
@@ -37,6 +39,16 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
             }
         })
 
+        // Add a "Create Lobby" button
+        val btnCreateLobby = VisTextButton("Create lobby")
+        btnCreateLobby.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                //gameController.changeScreen(CreateLobbyScreen::class.java)
+                dbconnection.someFunction()
+
+            }
+        })
+
         // Create the layout
         table.columnDefaults(0).pad(10f)
         table.columnDefaults(1).pad(10f)
@@ -46,6 +58,8 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         table.add(btnStart).size(stage.width / 2, 45.0f)
         table.row()
         table.add(btnJoin).size(stage.width/2, 45.0f)
+        table.row()
+        table.add(btnCreateLobby).size(stage.width / 2, 45.0f)
 
         stage.addActor(table)
         Gdx.app.log("VIEW", "Main Menu loaded")
