@@ -6,4 +6,8 @@ class CoreFirebaseConnection: FirebaseInterface {
         //TODO("Not yet implemented")
         println("Core conenction class")
     }
+
+    /*override fun checkoIfExistInDb(target: String, value: String) {
+        //TODO("Not yet implemented")
+    }*/
 }

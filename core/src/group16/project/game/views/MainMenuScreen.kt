@@ -45,7 +45,27 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         val btnCreateLobby = VisTextButton("Create lobby")
         btnCreateLobby.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                dbconnection.setValueInDb("message", "Value changed from app")
+                dbconnection.setValueInDb("message", "Valueged from app")
+
+                //dbconnection.setValueInDb("user", "helene")
+
+                //dbconnection.setValueInDb("user/uId_1/Name",  "Helene")
+                /*dbconnection.setValueInDb("user/uId_2/Name", "Helene 2")
+                dbconnection.setValueInDb("lobby/lobbyId_1/Name", "Lobby 1")
+                dbconnection.setValueInDb("lobby/lobbyId_1/Player_1", "uId_1")
+                dbconnection.setValueInDb("lobby/lobbyId_1/Player_2", "uId_2")
+                dbconnection.setValueInDb("lobby/lobbyId_1/state", "1")
+                dbconnection.setValueInDb("user/uId_1/lobbies/lobbyId_1", "True")
+                dbconnection.setValueInDb("user/uId_2/lobbies/lobbyId_1", "True")
+
+                dbconnection.setValueInDb("lobby/lobbyId_2/Name", "lobby 2")
+                dbconnection.setValueInDb("lobby/lobbyId_2/Player_1", "uId_1")
+                dbconnection.setValueInDb("lobby/lobbyId_2/state", "0")
+                dbconnection.setValueInDb("user/uId_1/lobbies/lobbyId_2", "True")
+                //dbconnection.checkoIfExistInDb("lobby", "lobbyId_1")*/
+
+                //Gdx.app.log(hei.toString(), "Hellow orld")
+
 
             }
         })

@@ -12,5 +12,7 @@ interface FirebaseInterface {
      */
     fun setValueInDb(target: String, value:String)
 
+    //fun checkoIfExistInDb(target: String, value: String)
+
     //TODO: more functions should be addes based on what we need for our project.
 }
