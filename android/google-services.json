@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "940478878610",
+    "firebase_url": "https://tdt4240-battlestar-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "tdt4240-battlestar",
+    "storage_bucket": "tdt4240-battlestar.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:940478878610:android:ec2312e66b05f53c2de74b",
+        "android_client_info": {
+          "package_name": "group16.project.game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "940478878610-ajt604v5vei6gfi2elbt6r4jmu51qo1e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEjmUdnYplAv3MLdy-dx5Fv0Cx411nK2I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "940478878610-ajt604v5vei6gfi2elbt6r4jmu51qo1e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
