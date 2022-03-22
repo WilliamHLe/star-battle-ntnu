@@ -14,6 +14,8 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
 
     override fun init() {
         var table = VisTable()
+        var dbconnection = gameController.getDBConnection()
+
 
         // Create title
         val txtTitle = VisLabel("Create game lobby")
@@ -27,7 +29,9 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
         val btnCreate = VisTextButton("Create")
         btnCreate.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                gameController.changeScreen(MainMenuScreen::class.java)
+                nameField.onscreenKeyboard.show(false)
+                dbconnection.createLobby(nameField.toString())
+                gameController.changeScreen(GameScreen::class.java)
             }
         })
         // Return to menu button

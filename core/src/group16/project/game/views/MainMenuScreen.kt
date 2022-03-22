@@ -8,7 +8,7 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
-import group16.project.game.models.CoreFirebaseConnection
+//import group16.project.game.models.CoreFirebaseConnection
 
 class MainMenuScreen(val gameController: StarBattle) : View() {
     override fun draw(delta: Float) {}
@@ -40,30 +40,19 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
             }
         })
 
+
+
         // Add a "Create Lobby" button
         //TODO: this button and function were just used to verify that app can put value to our database. Feel free to change it when
         // the real join lobby function is implemented.
         val btnCreateLobby = VisTextButton("Create lobby")
         btnCreateLobby.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                dbconnection.setValueInDb("message", "Valueged from app")
+                gameController.changeScreen(CreateLobbyScreen::class.java)
 
                 //dbconnection.setValueInDb("user", "helene")
 
-                //dbconnection.setValueInDb("user/uId_1/Name",  "Helene")
-                /*dbconnection.setValueInDb("user/uId_2/Name", "Helene 2")
-                dbconnection.setValueInDb("lobby/lobbyId_1/Name", "Lobby 1")
-                dbconnection.setValueInDb("lobby/lobbyId_1/Player_1", "uId_1")
-                dbconnection.setValueInDb("lobby/lobbyId_1/Player_2", "uId_2")
-                dbconnection.setValueInDb("lobby/lobbyId_1/state", "1")
-                dbconnection.setValueInDb("user/uId_1/lobbies/lobbyId_1", "True")
-                dbconnection.setValueInDb("user/uId_2/lobbies/lobbyId_1", "True")
 
-                dbconnection.setValueInDb("lobby/lobbyId_2/Name", "lobby 2")
-                dbconnection.setValueInDb("lobby/lobbyId_2/Player_1", "uId_1")
-                dbconnection.setValueInDb("lobby/lobbyId_2/state", "0")
-                dbconnection.setValueInDb("user/uId_1/lobbies/lobbyId_2", "True")
-                //dbconnection.checkoIfExistInDb("lobby", "lobbyId_1")*/
 
                 //Gdx.app.log(hei.toString(), "Hellow orld")
 
