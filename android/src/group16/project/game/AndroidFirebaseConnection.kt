@@ -26,10 +26,8 @@ class AndroidFirebaseConnection : FirebaseInterface {
     }
 
     override fun createLobby(lobbyName: String): String {
-        var i: Boolean = true
-        var randomLobbyCode: String = ""
         var myRef: DatabaseReference = database.getReference("lobbies")
-        //while (i) {
+        var randomLobbyCode: String = ""
         //https://stackoverflow.com/questions/46943860/idiomatic-way-to-generate-a-random-alphanumeric-string-in-kotlin
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
         randomLobbyCode = (1..6)
@@ -49,6 +47,25 @@ class AndroidFirebaseConnection : FirebaseInterface {
             Gdx.app.log("Firebase", "Error getting data", it)
         }
         return "lobby"
+    }
+
+    override fun joinLobby(lobbyCode: String){
+        var myRef: DatabaseReference = database.getReference("lobbies")
+
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            var lobby = it.value
+            if (lobby != null && lobby is Map<*, *>) {
+                Gdx.app.log("Firebase", "Error getting data exsts ${it}")
+                if (!lobby.containsKey("player_2")) {
+                    Gdx.app.log("Firebase", "getting data ${lobby["host"]}")
+                    myRef.child(lobbyCode).child("player_2").setValue("player_2")
+                    database.getReference("users")
+                            .child("player_2").child(lobbyCode).setValue(true)
+                }
+            }
+        }.addOnFailureListener {
+            Gdx.app.log("Firebase", "Error getting data error", it)
+        }
     }
 
 

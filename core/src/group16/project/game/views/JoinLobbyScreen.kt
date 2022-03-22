@@ -1,8 +1,12 @@
 package group16.project.game.views;
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
@@ -13,10 +17,16 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
 
     override fun init() {
         var table = VisTable()
+        var dbconnection = gameController.getDBConnection()
+
 
         // Create title
         val txtTitle = VisLabel("Join game lobby")
         txtTitle.setAlignment(1)
+
+        //Error label
+        val errorMessageLabel: Label = Label("", LabelStyle(BitmapFont(), Color.RED))
+        errorMessageLabel.setAlignment(1)
 
         // Text input
         val nameField = VisTextField()
@@ -26,7 +36,27 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         val btnJoin = VisTextButton("Join")
         btnJoin.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                gameController.changeScreen(MainMenuScreen::class.java)
+                nameField.onscreenKeyboard.show(false)
+                errorMessageLabel.setText("")
+                if (nameField.toString() == "") {
+                    errorMessageLabel.setText("Need a lobby code")
+                }else if(nameField.toString().length != 6) {
+                    errorMessageLabel.setText("Lobby code is 6 charaters and/or numbers long")
+                }else {
+                    dbconnection.joinLobby(nameField.toString())
+                    gameController.changeScreen(GameScreen::class.java)
+                    //Wanted errors if the lobby did not exist or it it was full, butdo not know
+                    //how to wait for async func befor returning.
+                    /*if (error == 0) {
+                    gameController.changeScreen(GameScreen::class.java)
+                    } else if (error == -1) {
+                        errorMessageLabel.setText("Lobby do not exits")
+                    } else {
+                        errorMessageLabel.setText("Lobby is full"+ error)
+                    }
+                    stage.addActor(table)*/
+                }
+
             }
         })
         // Return to menu button
@@ -48,6 +78,8 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         table.add(btnJoin).size(stage.width / 3, 45.0f)
         table.row()
         table.add(btnReturn).size(stage.width / 3, 45.0f)
+        table.row()
+        table.add(errorMessageLabel).size(stage.width / 2, 45.0f)
 
         stage.addActor(table)
         Gdx.app.log("VIEW", "Join lobby loaded")

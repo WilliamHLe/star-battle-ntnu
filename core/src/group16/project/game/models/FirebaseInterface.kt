@@ -12,8 +12,9 @@ interface FirebaseInterface {
      */
     fun setValueInDb(target: String, value:String)
 
-    fun createLobby(LobbyName: String): String
+    fun createLobby(lobbyName: String): String
 
+    fun joinLobby(lobbyCode: String)
 
     //TODO: more functions should be addes based on what we need for our project.
 }
