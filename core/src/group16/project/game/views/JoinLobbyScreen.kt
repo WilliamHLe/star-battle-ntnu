@@ -15,6 +15,10 @@ import group16.project.game.StarBattle
 
 class JoinLobbyScreen(val gameController: StarBattle) : View() {
 
+    //Error label
+    var errorMessageLabel: Label =Label("", LabelStyle(BitmapFont(), Color.RED))
+
+
     override fun init() {
         var table = VisTable()
         var dbconnection = gameController.getDBConnection()
@@ -24,9 +28,8 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         val txtTitle = VisLabel("Join game lobby")
         txtTitle.setAlignment(1)
 
-        //Error label
-        val errorMessageLabel: Label = Label("", LabelStyle(BitmapFont(), Color.RED))
-        errorMessageLabel.setAlignment(1)
+        this.errorMessageLabel.setText("")
+        this.errorMessageLabel.setAlignment(1)
 
         // Text input
         val nameField = VisTextField()
@@ -43,20 +46,8 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
                 }else if(nameField.toString().length != 6) {
                     errorMessageLabel.setText("Lobby code is 6 charaters and/or numbers long")
                 }else {
-                    dbconnection.joinLobby(nameField.toString())
-                    gameController.changeScreen(GameScreen::class.java)
-                    //Wanted errors if the lobby did not exist or it it was full, butdo not know
-                    //how to wait for async func befor returning.
-                    /*if (error == 0) {
-                    gameController.changeScreen(GameScreen::class.java)
-                    } else if (error == -1) {
-                        errorMessageLabel.setText("Lobby do not exits")
-                    } else {
-                        errorMessageLabel.setText("Lobby is full"+ error)
-                    }
-                    stage.addActor(table)*/
+                    dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
                 }
-
             }
         })
         // Return to menu button
@@ -85,11 +76,22 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         Gdx.app.log("VIEW", "Join lobby loaded")
     }
 
+    fun errorMessage(message: String) {
+        errorMessageLabel.setText(message)
+        if (message == " ") {
+
+        }
+    }
+
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
     }
 
-    override fun draw(delta: Float) {}
+    override fun draw(delta: Float) {
+        if (errorMessageLabel.textEquals("Success")) {
+            gameController.changeScreen(GameScreen::class.java)
+        }
+    }
 
     override fun pause() {
         super.pause()

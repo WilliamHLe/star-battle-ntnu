@@ -6,6 +6,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 import group16.project.game.models.FirebaseInterface
+import group16.project.game.views.JoinLobbyScreen
 
 
 class AndroidFirebaseConnection : FirebaseInterface {
@@ -25,7 +26,7 @@ class AndroidFirebaseConnection : FirebaseInterface {
         }
     }
 
-    override fun createLobby(lobbyName: String): String {
+    override fun createLobby(lobbyName: String){
         var myRef: DatabaseReference = database.getReference("lobbies")
         var randomLobbyCode: String = ""
         //https://stackoverflow.com/questions/46943860/idiomatic-way-to-generate-a-random-alphanumeric-string-in-kotlin
@@ -39,6 +40,7 @@ class AndroidFirebaseConnection : FirebaseInterface {
                 myRef.child(randomLobbyCode).child("name").setValue(lobbyName)
                 myRef.child(randomLobbyCode).child("host").setValue("Player_1")
                 database.getReference("users").child("player_1").child(randomLobbyCode).setValue(true)
+                Gdx.app.log("Firebase", "Success on creating lobby")
             }
             else {
                 createLobby(lobbyName)
@@ -46,25 +48,29 @@ class AndroidFirebaseConnection : FirebaseInterface {
         }.addOnFailureListener {
             Gdx.app.log("Firebase", "Error getting data", it)
         }
-        return "lobby"
     }
 
-    override fun joinLobby(lobbyCode: String){
+    override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen){
         var myRef: DatabaseReference = database.getReference("lobbies")
 
         myRef.child(lobbyCode).get().addOnSuccessListener {
             var lobby = it.value
             if (lobby != null && lobby is Map<*, *>) {
-                Gdx.app.log("Firebase", "Error getting data exsts ${it}")
                 if (!lobby.containsKey("player_2")) {
-                    Gdx.app.log("Firebase", "getting data ${lobby["host"]}")
                     myRef.child(lobbyCode).child("player_2").setValue("player_2")
                     database.getReference("users")
                             .child("player_2").child(lobbyCode).setValue(true)
+                    Gdx.app.log("Firebase", "Success joining lobby")
+                    screen.errorMessage("Success")
+                } else {
+                    screen.errorMessage("Lobby is full")
                 }
+            } else {
+                screen.errorMessage("Lobby do not exist")
             }
         }.addOnFailureListener {
-            Gdx.app.log("Firebase", "Error getting data error", it)
+            screen.errorMessage("Something went wrong, not connected to server")
+            Gdx.app.log("Firebase", "Error getting data", it)
         }
     }
 
