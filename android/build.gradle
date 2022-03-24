@@ -1,6 +1,12 @@
+apply plugin: 'com.google.gms.google-services'
 android {
     buildToolsVersion "29.0.3"
     compileSdkVersion 30
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -18,7 +24,7 @@ android {
     }
     defaultConfig {
         applicationId "group16.project.game"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -87,6 +93,11 @@ task run(type: Exec) {
 
     def adb = path + "/platform-tools/adb"
     commandLine "$adb", 'shell', 'am', 'start', '-n', 'group16.project.game/group16.project.game.AndroidLauncher'
+}
+
+dependencies {
+    implementation "pl.mk5.gdx-fireapp:gdx-fireapp-android:$gdxFireappVersion"
+    implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
 }
 
 eclipse.project.name = appName + "-android"

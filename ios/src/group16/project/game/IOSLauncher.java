@@ -6,12 +6,13 @@ import org.robovm.apple.uikit.UIApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
 import group16.project.game.StarBattle;
+import group16.project.game.models.CoreFirebaseConnection;
 
 public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new StarBattle(), config);
+        return new IOSApplication(new StarBattle(new CoreFirebaseConnection()), config);
     }
 
     public static void main(String[] argv) {
