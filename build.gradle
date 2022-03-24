@@ -61,6 +61,9 @@ project(":desktop") {
         // Declare the dependency for the Realtime Database library
         // When using the BoM, you don't specify versions in Firebase library dependencies
         implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+        // Declare the dependency for the Firebase Authentication library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-auth-ktx:21.0.2'
         implementation "pl.mk5.gdx-fireapp:gdx-fireapp-core:$gdxFireappVersion"
     }
 }
@@ -94,6 +97,9 @@ project(":android") {
         // Declare the dependency for the Realtime Database library
         // When using the BoM, you don't specify versions in Firebase library dependencies
         implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+        // Declare the dependency for the Firebase Authentication library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-auth-ktx:21.0.2'
         implementation "pl.mk5.gdx-fireapp:gdx-fireapp-android:$gdxFireappVersion"
     }
 }
@@ -117,6 +123,9 @@ project(":ios") {
         // Declare the dependency for the Realtime Database library
         // When using the BoM, you don't specify versions in Firebase library dependencies
         implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+        // Declare the dependency for the Firebase Authentication library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-auth-ktx:21.0.2'
         implementation "pl.mk5.gdx-fireapp:gdx-fireapp-ios:$gdxFireappVersion"
 
     }
@@ -138,5 +147,8 @@ project(":core") {
         // Declare the dependency for the Realtime Database library
         // When using the BoM, you don't specify versions in Firebase library dependencies
         implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
+        // Declare the dependency for the Firebase Authentication library
+        // When using the BoM, you don't specify versions in Firebase library dependencies
+        implementation 'com.google.firebase:firebase-auth-ktx:21.0.2'
     }
 }

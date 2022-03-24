@@ -4,6 +4,10 @@ import group16.project.game.views.JoinLobbyScreen
 
 class CoreFirebaseConnection: FirebaseInterface {
 
+    override fun signInAnonymously() {
+        println("core")
+    }
+
     override fun setValueInDb(target: String, value: String) {
         //TODO("Not yet implemented")
         println("Core conenction class")

@@ -7,6 +7,8 @@ import group16.project.game.views.JoinLobbyScreen
  */
 interface FirebaseInterface {
 
+    fun signInAnonymously()
+
     /**
      * Method used to set given value to given database
      * @param target the reference we want to set value to in the database

@@ -20,6 +20,8 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         var table = VisTable()
         var dbconnection = gameController.getDBConnection()
 
+        dbconnection.signInAnonymously()
+
         // Create the description field
         val txtDescription = VisTextField("Model-View-Controller pattern :) - MAIN MENU")
         txtDescription.isDisabled = true

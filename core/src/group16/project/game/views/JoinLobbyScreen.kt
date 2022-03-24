@@ -47,6 +47,7 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
                     errorMessageLabel.setText("Lobby code is 6 charaters and/or numbers long")
                 }else {
                     dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
+                    errorMessageLabel.setText("Waiting...")
                 }
             }
         })
