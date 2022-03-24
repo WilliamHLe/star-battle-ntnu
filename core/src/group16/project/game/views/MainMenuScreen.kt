@@ -38,8 +38,8 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         val btnCreateLobby = VisTextButton("Create lobby")
         btnCreateLobby.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                dbconnection.setValueInDb("message", "Value changed from app")
-
+                dbconnection.setValueInDb("message", "Value changed from")
+                gameController.changeScreen(CreateLobbyScreen::class.java)
             }
         })
 
