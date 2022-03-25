@@ -1,4 +1,4 @@
-package group16.project.game.views;
+package group16.project.game.views
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -28,6 +28,7 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         val txtTitle = VisLabel("Join game lobby")
         txtTitle.setAlignment(1)
 
+        //Set error message to blank
         this.errorMessageLabel.setText("")
         this.errorMessageLabel.setAlignment(1)
 
@@ -39,13 +40,19 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         val btnJoin = VisTextButton("Join")
         btnJoin.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                //Remove keyboard
                 nameField.onscreenKeyboard.show(false)
+                //set error message to blank
                 errorMessageLabel.setText("")
+                //If lobby code is blank display error message
                 if (nameField.toString() == "") {
                     errorMessageLabel.setText("Need a lobby code")
+                //If lobby code is not 6 character
                 }else if(nameField.toString().length != 6) {
-                    errorMessageLabel.setText("Lobby code is 6 charaters and/or numbers long")
+                    errorMessageLabel.setText("Lobby code is 6 character and/or numbers long")
+                //Else join lobby and display waiting
                 }else {
+                    //If could not join lobby error message will be updated in errorMessage function
                     dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
                     errorMessageLabel.setText("Waiting...")
                 }
@@ -55,6 +62,7 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         val btnReturn = VisTextButton("Return to main menu")
         btnReturn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                //Remove keyboard
                 nameField.onscreenKeyboard.show(false)
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
@@ -78,11 +86,11 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         Gdx.app.log("VIEW", "Join lobby loaded")
     }
 
+    /**
+     * Update error message
+     */
     fun errorMessage(message: String) {
         errorMessageLabel.setText(message)
-        if (message == " ") {
-
-        }
     }
 
     override fun resize(width: Int, height: Int) {
@@ -90,6 +98,7 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
     }
 
     override fun draw(delta: Float) {
+        //Only change screen to change screen to game screen if error message is "Success"
         if (errorMessageLabel.textEquals("Success")) {
             gameController.changeScreen(GameScreen::class.java)
         }

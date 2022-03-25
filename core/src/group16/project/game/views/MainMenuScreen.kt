@@ -3,7 +3,6 @@ package group16.project.game.views
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener.ChangeEvent
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
@@ -20,6 +19,7 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         var table = VisTable()
         var dbconnection = gameController.getDBConnection()
 
+        //Log in user
         dbconnection.signInAnonymously()
 
         // Create the description field
@@ -45,20 +45,10 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
 
 
         // Add a "Create Lobby" button
-        //TODO: this button and function were just used to verify that app can put value to our database. Feel free to change it when
-        // the real join lobby function is implemented.
         val btnCreateLobby = VisTextButton("Create lobby")
         btnCreateLobby.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 gameController.changeScreen(CreateLobbyScreen::class.java)
-
-                //dbconnection.setValueInDb("user", "helene")
-
-
-
-                //Gdx.app.log(hei.toString(), "Hellow orld")
-
-
             }
         })
 

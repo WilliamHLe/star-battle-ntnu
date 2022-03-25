@@ -7,7 +7,6 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 
 import group16.project.game.models.FirebaseInterface
@@ -19,6 +18,9 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     private val database = Firebase.database("https://tdt4240-battlestar-default-rtdb.europe-west1.firebasedatabase.app/")
     private var auth: FirebaseAuth = Firebase.auth
 
+    /**
+     * Sign in the user anonymously, is it is a new user add user to db
+     */
     override fun signInAnonymously() {
         // [START signin_anonymously]
         var myRef: DatabaseReference = database.getReference("users")
@@ -29,20 +31,21 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                     val currentUser = auth.currentUser
                     // If new user make user in db
                     if (currentUser != null) {
+                        //If user do not exist add user to db with userName
                         myRef.child(currentUser.uid).get().addOnSuccessListener {
                             if (it.value == null) {
-                                val userName = "user-" + currentUser.uid.toString()
+                                val userName = "user-" + currentUser.uid
                                 myRef.child(currentUser.uid).child("userName").setValue(userName)
                                 Gdx.app.log("Firebase", "Success on crating user")
                             } else {
                                 Gdx.app.log("Firebase", "Success user already exist")
                             }
-                        }.addOnFailureListener {
+                        }.addOnFailureListener { //Failure, not connected to db
                             Gdx.app.log("Firebase", "Error getting data", it)
                         }
                     }
                 } else {
-                    // If sign in fails, display a message to the user.
+                    //Failure, could not sign in user
                     println("signInAnonymously:failure" + task.exception)
                 }
             }
@@ -62,9 +65,13 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         }
     }
 
+    /**
+     * Create new lobby with lobby name.
+     */
     override fun createLobby(lobbyName: String){
         var myRef: DatabaseReference = database.getReference("lobbies")
-        var randomLobbyCode: String = ""
+        //Creates a random lobby code with letters and numbers (6 char code)
+        var randomLobbyCode: String
         //https://stackoverflow.com/questions/46943860/idiomatic-way-to-generate-a-random-alphanumeric-string-in-kotlin
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
         randomLobbyCode = (1..6)
@@ -73,39 +80,60 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         val user = auth.currentUser
 
         myRef.child(randomLobbyCode).get().addOnSuccessListener {
-            if (it.value == null && user != null && user.uid != null) {
+            //If lobby with the randomly created lobby code do not exists create lobby
+            //and user logged in
+            if (it.value == null && user != null) {
+                //Set name of lobby and host with the user id
                 myRef.child(randomLobbyCode).child("name").setValue(lobbyName)
                 myRef.child(randomLobbyCode).child("host").setValue(user.uid)
+                // Adds newly created lobby to user in db
                 database.getReference("users").child(user.uid).child(randomLobbyCode).setValue(true)
                 Gdx.app.log("Firebase", "Success on creating lobby")
             }
+            //If lobby exists or user not logged in try again
             else {
                 createLobby(lobbyName)
             }
         }.addOnFailureListener {
+            //Failure, could not connect to db
             Gdx.app.log("Firebase", "Error getting data", it)
         }
     }
 
+    /**
+     * Join lobby with lobby code
+     * Screen is for sending error message to the user
+     */
     override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen){
         var myRef: DatabaseReference = database.getReference("lobbies")
         val user = auth.currentUser
         myRef.child(lobbyCode).get().addOnSuccessListener {
             var lobby = it.value
-            if (lobby != null && lobby is Map<*, *> && user != null) {
+            //If user no logged in try again
+            if (user == null) {
+                joinLobby(lobbyCode, screen)
+            }
+            else if (lobby != null && lobby is Map<*, *> ) {
+                //If lobby exist and do not contain already a user add user to lobby
                 if (!lobby.containsKey("player_2")) {
                     myRef.child(lobbyCode).child("player_2").setValue(user.uid)
+                    //Add lobby to user
                     database.getReference("users")
                             .child(user.uid).child(lobbyCode).setValue(true)
                     Gdx.app.log("Firebase", "Success joining lobby")
+                    //Sendig success message to user, also enabled to change screen
                     screen.errorMessage("Success")
                 } else {
+                    //Sending error messge to user
                     screen.errorMessage("Lobby is full")
                 }
             } else {
+                //Sending error message to user
                 screen.errorMessage("Lobby do not exist")
             }
         }.addOnFailureListener {
+            //Not connected to db
+            //Sending error message to user
             screen.errorMessage("Something went wrong, not connected to server")
             Gdx.app.log("Firebase", "Error getting data", it)
         }

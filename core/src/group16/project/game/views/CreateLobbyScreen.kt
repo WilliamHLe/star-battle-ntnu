@@ -25,7 +25,7 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
         txtTitle.setAlignment(1)
 
         //Error label
-        val errorMessageLabel: Label = Label("", Label.LabelStyle(BitmapFont(), Color.RED))
+        val errorMessageLabel = Label("", Label.LabelStyle(BitmapFont(), Color.RED))
         errorMessageLabel.setAlignment(1)
 
         // Text input
@@ -36,10 +36,13 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
         val btnCreate = VisTextButton("Create")
         btnCreate.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                //Hide keyboard
                 nameField.onscreenKeyboard.show(false)
                 if (nameField.toString() == "") {
+                    //Update error message
                     errorMessageLabel.setText("Need a lobby name")
                 }else {
+                    //Create lobby and change to game screen.
                     dbconnection.createLobby(nameField.toString())
                     gameController.changeScreen(GameScreen::class.java)
                 }
@@ -49,6 +52,8 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
         val btnReturn = VisTextButton("Return to main menu")
         btnReturn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                //Hide keyboard and set error message to blank
+                errorMessageLabel.setText("")
                 nameField.onscreenKeyboard.show(false)
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
