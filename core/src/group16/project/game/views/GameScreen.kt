@@ -11,6 +11,12 @@ import group16.project.game.StarBattle
 import com.badlogic.gdx.math.Rectangle
 import group16.project.game.models.Game
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
+import com.kotcrab.vis.ui.widget.ButtonBar
+import java.util.ArrayList
 
 class GameScreen(val gameController: StarBattle) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
@@ -61,8 +67,30 @@ class GameScreen(val gameController: StarBattle) : View() {
         table.add(txtDescription).size(stage.width / 2, 100.0f)
         table.row()
         table.add(btnStart).size(stage.width / 2, 45.0f)
-
         stage.addActor(table)
+
+        for (i in 0..1) {
+            val vbox = VisTable()
+            vbox.width = 100f
+            vbox.height = stage.height
+            vbox.setPosition(i * (stage.width - 100f), 0f)
+            val btn1 = VisTextButton("POS1")
+            val btn2 = VisTextButton("POS2")
+            val btn3 = VisTextButton("POS3")
+            val btn4 = VisTextButton("POS4")
+            val btns = arrayOf(btn1, btn2, btn3, btn4)
+            for ((i, btn) in btns.withIndex()) {
+                btn.addListener(object : ChangeListener() {
+                    override fun changed(event: ChangeEvent, actor: Actor) {
+                        println(btn.text)
+                        game.move(i)
+                    }
+                })
+                vbox.add(btn).size(100f, 100f)
+                vbox.row()
+            }
+            stage.addActor(vbox)
+        }
         Gdx.app.log("VIEW", "Game loaded")
 
         // Init game model and camera

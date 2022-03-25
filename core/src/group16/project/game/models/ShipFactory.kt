@@ -17,12 +17,12 @@ class ShipFactory() {
                 y = posy
             })
             entity.add(engine.createComponent(BodyComponent::class.java).apply {
-                rectangle.setWidth(100f)
+                rectangle.setWidth(150f)
                 rectangle.setHeight(100f)
                 rectangle.setPosition(posx, posy)
             })
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                texture = Texture("badlogic.jpg")
+                texture = Texture("ufo.png")
             })
         }
     }

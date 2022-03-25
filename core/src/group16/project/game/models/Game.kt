@@ -1,5 +1,6 @@
 package group16.project.game.models
 
+import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
@@ -8,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
 import group16.project.game.Configuration
 import group16.project.game.ecs.Engine
+import group16.project.game.ecs.component.BodyComponent
+import group16.project.game.ecs.component.PositionComponent
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
     private val batch = SpriteBatch()
@@ -18,20 +21,30 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
                 screenRect = screenRect
         )
     }
+    // Ship
+    // Todo: split ship and hearts out to own model later on?
+    private val ship1: Entity = ShipFactory.createShip(engine, 10f, 0f)
+    private val ship2: Entity = ShipFactory.createShip(engine, WIDTH - 160f, 0f)
     fun init() {
         // Background
         engine.addEntity(GameFactory.createBG(engine))
-        // Ship
-        // Todo: split ship out to own model
-        val ship1: Entity = ShipFactory.createShip(engine, 10f, 0f)
-        val ship2: Entity = ShipFactory.createShip(engine, WIDTH - 110f, 0f)
         engine.addEntity(ship1)
         engine.addEntity(ship2)
         // Hearts
-        engine.addEntity(GameFactory.createHearts(engine, true))
-        engine.addEntity(GameFactory.createHearts(engine, false))
+        engine.addEntity(GameFactory.createHearts(engine, 10f, HEIGHT - 60f))
+        engine.addEntity(GameFactory.createHearts(engine, 70f, HEIGHT - 60f))
+        engine.addEntity(GameFactory.createHearts(engine, 130f, HEIGHT - 60f))
+
+        engine.addEntity(GameFactory.createHearts(engine, WIDTH - 50f - 10f, HEIGHT - 60f))
+        engine.addEntity(GameFactory.createHearts(engine, WIDTH - 50f - 70f, HEIGHT - 60f))
+        engine.addEntity(GameFactory.createHearts(engine, WIDTH - 50f - 130f, HEIGHT - 60f))
 
         Gdx.app.log("MODEL", "Engine loaded")
+    }
+    fun move(pos: Int) {
+        val bodyComponentMapper = ComponentMapper.getFor(BodyComponent::class.java)
+        val positionComponentMapper = ComponentMapper.getFor(PositionComponent::class.java)
+        // bodyComponentMapper[ship1].rectangle
     }
     fun render(delta: Float) {
         Gdx.gl.glClearColor(0.5f, 0f, 0.2f, 1f)
