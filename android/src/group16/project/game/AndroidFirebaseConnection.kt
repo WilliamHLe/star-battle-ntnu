@@ -1,5 +1,6 @@
 package group16.project.game
 
+import android.app.Activity
 import com.badlogic.gdx.Gdx
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
@@ -13,22 +14,36 @@ import group16.project.game.models.FirebaseInterface
 import group16.project.game.views.JoinLobbyScreen
 
 
-class AndroidFirebaseConnection : FirebaseInterface {
+class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     //the link should may be stored in a separate file, be put here through a reference.
     private val database = Firebase.database("https://tdt4240-battlestar-default-rtdb.europe-west1.firebasedatabase.app/")
     private var auth: FirebaseAuth = Firebase.auth
 
     override fun signInAnonymously() {
         // [START signin_anonymously]
+        var myRef: DatabaseReference = database.getReference("users")
         auth.signInAnonymously()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
                     println("signInAnonymously:success")
+                    val currentUser = auth.currentUser
+                    // If new user make user in db
+                    if (currentUser != null) {
+                        myRef.child(currentUser.uid).get().addOnSuccessListener {
+                            if (it.value == null) {
+                                val userName = "user-" + currentUser.uid.toString()
+                                myRef.child(currentUser.uid).child("userName").setValue(userName)
+                                Gdx.app.log("Firebase", "Success on crating user")
+                            } else {
+                                Gdx.app.log("Firebase", "Success user already exist")
+                            }
+                        }.addOnFailureListener {
+                            Gdx.app.log("Firebase", "Error getting data", it)
+                        }
+                    }
                 } else {
                     // If sign in fails, display a message to the user.
                     println("signInAnonymously:failure" + task.exception)
-                    error("Somethign went wrong, try again later")
                 }
             }
         // [END signin_anonymously]
@@ -56,11 +71,12 @@ class AndroidFirebaseConnection : FirebaseInterface {
                 .map { allowedChars.random() }
                 .joinToString("")
         val user = auth.currentUser
+
         myRef.child(randomLobbyCode).get().addOnSuccessListener {
-            if (it.value == null && user != null) {
+            if (it.value == null && user != null && user.uid != null) {
                 myRef.child(randomLobbyCode).child("name").setValue(lobbyName)
-                myRef.child(randomLobbyCode).child("host").setValue(user)
-                database.getReference("users").child("player_1").child(randomLobbyCode).setValue(true)
+                myRef.child(randomLobbyCode).child("host").setValue(user.uid)
+                database.getReference("users").child(user.uid).child(randomLobbyCode).setValue(true)
                 Gdx.app.log("Firebase", "Success on creating lobby")
             }
             else {
@@ -78,9 +94,9 @@ class AndroidFirebaseConnection : FirebaseInterface {
             var lobby = it.value
             if (lobby != null && lobby is Map<*, *> && user != null) {
                 if (!lobby.containsKey("player_2")) {
-                    myRef.child(lobbyCode).child("player_2").setValue("player_2")
+                    myRef.child(lobbyCode).child("player_2").setValue(user.uid)
                     database.getReference("users")
-                            .child("player_2").child(lobbyCode).setValue(true)
+                            .child(user.uid).child(lobbyCode).setValue(true)
                     Gdx.app.log("Firebase", "Success joining lobby")
                     screen.errorMessage("Success")
                 } else {

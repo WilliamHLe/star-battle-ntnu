@@ -55,6 +55,7 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         val btnReturn = VisTextButton("Return to main menu")
         btnReturn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                nameField.onscreenKeyboard.show(false)
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
         })
