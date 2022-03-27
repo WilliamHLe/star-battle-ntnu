@@ -13,7 +13,13 @@ import group16.project.game.ecs.component.BodyComponent
 import group16.project.game.ecs.component.PositionComponent
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
+    companion object {
+        private val WIDTH = Configuration.gameWidth
+        private val HEIGHT = Configuration.gameHeight
+    }
+
     private val batch = SpriteBatch()
+
     private val engine by lazy {
         Engine(
                 batch = batch,
@@ -21,19 +27,27 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
                 screenRect = screenRect
         )
     }
+
     // Ship
     // Todo: split ship and hearts out to own model later on?
     private val ship1: Entity = ShipFactory.createShip(engine, 10f, 0f)
     private val ship2: Entity = ShipFactory.createShip(engine, WIDTH - 160f, 0f)
     fun init() {
+        GameFactory.setEngine(engine)
         // Background
-        engine.addEntity(GameFactory.createBG(engine))
+        GameFactory.createBG()
         engine.addEntity(ship1)
         engine.addEntity(ship2)
         // Hearts
-        engine.addEntity(GameFactory.createHearts(engine, 10f, HEIGHT - 60f))
-        engine.addEntity(GameFactory.createHearts(engine, 70f, HEIGHT - 60f))
-        engine.addEntity(GameFactory.createHearts(engine, 130f, HEIGHT - 60f))
+        // add left heartdisplaycomponent
+        // set left heartdisplaycomponent to listen to left healthcomponent
+        // do the same for right
+        GameFactory.createHeartDisplay(0f, HEIGHT-60f)
+
+
+        engine.addEntity(GameFactory.createHearts(10f, HEIGHT - 60f))
+        engine.addEntity(GameFactory.createHearts( 70f, HEIGHT - 60f))
+        engine.addEntity(GameFactory.createHearts( 130f, HEIGHT - 60f))
 
         engine.addEntity(GameFactory.createHearts(engine, WIDTH - 50f - 10f, HEIGHT - 60f))
         engine.addEntity(GameFactory.createHearts(engine, WIDTH - 50f - 70f, HEIGHT - 60f))
@@ -59,10 +73,4 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         engine.removeAllEntities()
         engine.clearPools()
     }
-
-    companion object {
-        private val WIDTH = Configuration.gameWidth
-        private val HEIGHT = Configuration.gameHeight
-    }
-
 }
