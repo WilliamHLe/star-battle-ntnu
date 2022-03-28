@@ -8,5 +8,5 @@ object Configuration {
     var gameWidth = 960.0f
     var gameHeight = 640.0f
     var gameTitle = "Star Battle"
-    var debug = false
+    var debug = true
 }
