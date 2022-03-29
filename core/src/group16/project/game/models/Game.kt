@@ -1,18 +1,14 @@
 package group16.project.game.models
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.World
 import group16.project.game.Configuration
 import group16.project.game.ecs.Engine
-import group16.project.game.ecs.component.BodyComponent
-import group16.project.game.ecs.component.PositionComponent
+import group16.project.game.ecs.utils.EntityFactory
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
     private val batch = SpriteBatch()

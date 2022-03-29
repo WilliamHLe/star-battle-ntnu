@@ -7,4 +7,5 @@ object ComponentMapper {
     val position = ComponentMapper.getFor(PositionComponent::class.java)
     val velocity = ComponentMapper.getFor(VelocityComponent::class.java)
     val ufo = ComponentMapper.getFor(UfoComponent::class.java)
+    val target = ComponentMapper.getFor(TargetComponent::class.java)
 }

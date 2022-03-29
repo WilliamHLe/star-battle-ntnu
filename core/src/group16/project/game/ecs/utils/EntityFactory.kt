@@ -1,13 +1,10 @@
-package group16.project.game.models
+package group16.project.game.ecs.utils
 
 
 import com.badlogic.gdx.graphics.Texture
 import group16.project.game.Configuration
 import group16.project.game.ecs.Engine
-import group16.project.game.ecs.component.BodyComponent
-import group16.project.game.ecs.component.PositionComponent
-import group16.project.game.ecs.component.TextureComponent
-import group16.project.game.ecs.component.UfoComponent
+import group16.project.game.ecs.component.*
 
 class EntityFactory {
 
@@ -59,7 +56,6 @@ class EntityFactory {
             })
             entity.add(engine.createComponent(UfoComponent::class.java).apply {
                 player = isPlayer
-                isTarget = false
             })
         }
 
@@ -77,9 +73,8 @@ class EntityFactory {
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
                 texture = Texture("target.png")
             })
-            entity.add(engine.createComponent(UfoComponent::class.java).apply {
+            entity.add(engine.createComponent(TargetComponent::class.java).apply {
                 player = isPlayer
-                isTarget = true
             })
         }
 
