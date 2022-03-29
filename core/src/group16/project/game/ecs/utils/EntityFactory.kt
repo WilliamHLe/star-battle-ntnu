@@ -78,5 +78,48 @@ class EntityFactory {
             })
         }
 
+        fun createTrajectory(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean,  shootPosX: Float, shootPosY: Float ) = engine.createEntity().also { entity ->
+            entity.add(engine.createComponent(PositionComponent::class.java).apply {
+                z = 1f
+                x = posx
+                y = posy
+            })
+            entity.add(engine.createComponent(BodyComponent::class.java).apply {
+                rectangle.setWidth(10f)
+                rectangle.setHeight(10f)
+                rectangle.setPosition(posx, posy)
+            })
+            entity.add(engine.createComponent(TextureComponent::class.java).apply {
+                texture = Texture("trajectory.png")
+            })
+            entity.add(engine.createComponent(TrajectoryComponent::class.java).apply {
+                fromPlayer = isPlayer
+                shootingPosX = shootPosX
+                shootingPosY = shootPosY
+            })
+        }
+
+        fun createOpponentTrajectory(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean,  shootPosX: Float, shootPosY: Float ) = engine.createEntity().also { entity ->
+            entity.add(engine.createComponent(PositionComponent::class.java).apply {
+                z = 1f
+                x = posx
+                y = posy
+            })
+            entity.add(engine.createComponent(BodyComponent::class.java).apply {
+                rectangle.setWidth(10f)
+                rectangle.setHeight(10f)
+                rectangle.setPosition(posx, posy)
+            })
+            entity.add(engine.createComponent(TextureComponent::class.java).apply {
+                //TODO: should be flipped
+                texture = Texture("trajectory.png")
+            })
+            entity.add(engine.createComponent(OpponentTrajectoryComponent::class.java).apply {
+                fromPlayer = isPlayer
+                shootingPosX = shootPosX
+                shootingPosY = shootPosY
+            })
+        }
+
     }
 }
