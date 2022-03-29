@@ -1,17 +1,14 @@
 package group16.project.game.models
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
 import group16.project.game.Configuration
 import group16.project.game.ecs.Engine
-import group16.project.game.ecs.component.BodyComponent
-import group16.project.game.ecs.component.PositionComponent
-import group16.project.game.ecs.component.TextureComponent
-import group16.project.game.ecs.component.VelocityComponent
+import group16.project.game.ecs.utils.EntityFactory
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
     private val batch = SpriteBatch()
@@ -22,9 +19,27 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
                 screenRect = screenRect
         )
     }
+
     fun init() {
-        engine.addEntity(createHero())
-        engine.addEntity(createBG())
+        // Ship
+        val ship1: Entity = EntityFactory.createUfo(engine, 10f, 0f, true)
+        val ship2: Entity = EntityFactory.createUfo(engine, Configuration.gameWidth - 160f, 0f, false)
+        engine.addEntity(ship1)
+        engine.addEntity(ship2)
+        // Target
+        engine.addEntity(EntityFactory.createTarget(engine, Configuration.gameWidth - 130f, 0f, true))
+        engine.addEntity(EntityFactory.createTarget(engine, 30f, 0f, false))
+        // Background
+        engine.addEntity(EntityFactory.createBG(engine, 0f, 0f))
+        // Hearts
+        engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, 70f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, 130f, Configuration.gameHeight - 60f))
+
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 10f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 70f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f))
+
         Gdx.app.log("MODEL", "Engine loaded")
     }
     fun render(delta: Float) {
@@ -39,40 +54,5 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     fun hide() {
         engine.removeAllEntities()
         engine.clearPools()
-    }
-
-    // Should probably move these create methods to a Factory class
-    private fun createBG() = engine.createEntity().also { entity ->
-        entity.add(engine.createComponent(PositionComponent::class.java).apply {
-            z = 0f
-        })
-        entity.add(engine.createComponent(BodyComponent::class.java).apply {
-            rectangle.setWidth(WIDTH)
-            rectangle.setHeight(HEIGHT)
-        })
-        entity.add(engine.createComponent(TextureComponent::class.java).apply {
-            texture = Texture("bg.png")
-        })
-    }
-
-    private fun createHero() = engine.createEntity().also { entity ->
-        entity.add(engine.createComponent(PositionComponent::class.java).apply {
-            z = 1f
-        })
-        entity.add(engine.createComponent(BodyComponent::class.java).apply {
-            rectangle.setWidth(100f)
-            rectangle.setHeight(100f)
-        })
-        entity.add(engine.createComponent(TextureComponent::class.java).apply {
-            texture = Texture("badlogic.jpg")
-        })
-        entity.add(engine.createComponent(VelocityComponent::class.java).apply {
-            x = -80f
-            y = -100f
-        })
-    }
-    companion object {
-        private val WIDTH = Configuration.gameWidth
-        private val HEIGHT = Configuration.gameHeight
     }
 }

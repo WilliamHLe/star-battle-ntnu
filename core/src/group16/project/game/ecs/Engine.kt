@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
 import group16.project.game.ecs.system.MovementSystem
+import group16.project.game.ecs.system.PositioningSystem
 import group16.project.game.ecs.system.RenderingSystem
 
 class Engine(
@@ -17,6 +18,7 @@ class Engine(
 
     init {
         addSystem(MovementSystem(screenRect))
+        addSystem(PositioningSystem())
         addSystem(renderingSystem)
     }
 
