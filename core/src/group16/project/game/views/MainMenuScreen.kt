@@ -12,7 +12,6 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
     override fun draw(delta: Float) {}
     override fun pause() {}
     override fun resume() {}
-    override fun hide() {}
 
     override fun init() {
         var table = VisTable()

@@ -36,6 +36,8 @@ abstract class View : Screen {
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height, true)
+        Configuration.gameWidth = width.toFloat()
+        Configuration.gameHeight = height.toFloat()
     }
 
     abstract fun draw(delta: Float)
@@ -49,7 +51,7 @@ abstract class View : Screen {
     }
 
     override fun hide() {
-        TODO("This method is called when another screen replaces this one.")
+        stage.clear()
     }
 
     override fun dispose() {

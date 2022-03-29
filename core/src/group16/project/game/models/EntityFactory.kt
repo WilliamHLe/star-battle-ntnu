@@ -7,20 +7,21 @@ import group16.project.game.ecs.Engine
 import group16.project.game.ecs.component.BodyComponent
 import group16.project.game.ecs.component.PositionComponent
 import group16.project.game.ecs.component.TextureComponent
+import group16.project.game.ecs.component.UfoComponent
 
-class GameFactory() {
+class EntityFactory {
 
     companion object {
-        private val WIDTH = Configuration.gameWidth
-        private val HEIGHT = Configuration.gameHeight
-
-        fun createBG(engine: Engine) = engine.createEntity().also { entity ->
+        fun createBG(engine: Engine, posx: Float, posy: Float) = engine.createEntity().also { entity ->
             entity.add(engine.createComponent(PositionComponent::class.java).apply {
                 z = 0f
+                x = posx
+                y = posy
             })
             entity.add(engine.createComponent(BodyComponent::class.java).apply {
-                rectangle.setWidth(WIDTH)
-                rectangle.setHeight(HEIGHT)
+                rectangle.setWidth(Configuration.gameWidth)
+                rectangle.setHeight(Configuration.gameHeight)
+                rectangle.setPosition(posx, posy)
             })
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
                 texture = Texture("bg.png")
@@ -41,5 +42,46 @@ class GameFactory() {
                 texture = Texture("heart.png")
             })
         }
+
+        fun createUfo(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) = engine.createEntity().also { entity ->
+            entity.add(engine.createComponent(PositionComponent::class.java).apply {
+                z = 1f
+                x = posx
+                y = posy
+            })
+            entity.add(engine.createComponent(BodyComponent::class.java).apply {
+                rectangle.setWidth(150f)
+                rectangle.setHeight(100f)
+                rectangle.setPosition(posx, posy)
+            })
+            entity.add(engine.createComponent(TextureComponent::class.java).apply {
+                texture = Texture("ufo.png")
+            })
+            entity.add(engine.createComponent(UfoComponent::class.java).apply {
+                player = isPlayer
+                isTarget = false
+            })
+        }
+
+        fun createTarget(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) = engine.createEntity().also { entity ->
+            entity.add(engine.createComponent(PositionComponent::class.java).apply {
+                z = 1f
+                x = posx
+                y = posy
+            })
+            entity.add(engine.createComponent(BodyComponent::class.java).apply {
+                rectangle.setWidth(100f)
+                rectangle.setHeight(100f)
+                rectangle.setPosition(posx, posy)
+            })
+            entity.add(engine.createComponent(TextureComponent::class.java).apply {
+                texture = Texture("target.png")
+            })
+            entity.add(engine.createComponent(UfoComponent::class.java).apply {
+                player = isPlayer
+                isTarget = true
+            })
+        }
+
     }
 }

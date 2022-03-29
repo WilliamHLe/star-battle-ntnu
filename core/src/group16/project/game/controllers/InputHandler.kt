@@ -1,6 +1,10 @@
 package group16.project.game.controllers
 
 
-object InputHandlers() {
-    var playerPosition = 0
+object InputHandler {
+    var playerPosition = 0f
+    var enemyPosition = 0f
+
+    var playerTrajectoryPosition = 0f
+    var enemyTrajectoryPosition = 0f
 }
