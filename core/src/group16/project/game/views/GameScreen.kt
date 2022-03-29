@@ -56,6 +56,8 @@ class GameScreen(val gameController: StarBattle) : View() {
         // Init game model and camera
         camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
         game.init()
+        println(Configuration.gameWidth)
+        println(Configuration.gameHeight)
     }
     fun drawLayout() {
         var table = VisTable()

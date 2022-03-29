@@ -6,6 +6,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import group16.project.game.Configuration
 import group16.project.game.controllers.InputHandler
 import group16.project.game.ecs.component.*
+import group16.project.game.ecs.utils.ComponentMapper
 
 class PositioningSystem () : IteratingSystem(
         Family.all(
