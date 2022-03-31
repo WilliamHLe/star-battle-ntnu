@@ -5,11 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.kotcrab.vis.ui.VisUI
 import com.badlogic.gdx.utils.ObjectMap
 import group16.project.game.models.FirebaseInterface
-import group16.project.game.views.CreateLobbyScreen
-import group16.project.game.views.MainMenuScreen
-import group16.project.game.views.GameScreen
-import group16.project.game.views.JoinLobbyScreen
-import group16.project.game.views.View
+import group16.project.game.views.*
 
 class StarBattle(val fbic: FirebaseInterface) : Game() {
     private val screens: ObjectMap<Class<out View?>, View> = ObjectMap<Class<out View?>, View>()
@@ -25,6 +21,11 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
 
         // Load screens and change screen to start screen
         loadScreens()
+        val highScoreScreen = screens[HighScoreScreen::class.java]
+        if( highScoreScreen is HighScoreScreen) {
+            fbic.getScore(highScoreScreen)
+        }
+        fbic.signInAnonymously()
         changeScreen(MainMenuScreen::class.java)
         Gdx.app.log("CONTROLLER", "StarBattleController loaded")
     }
@@ -57,5 +58,6 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
         screens.put(GameScreen::class.java, GameScreen(this))
         screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this))
         screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this))
+        screens.put(HighScoreScreen::class.java, HighScoreScreen(this))
     }
 }

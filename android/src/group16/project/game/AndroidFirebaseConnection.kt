@@ -5,12 +5,14 @@ import com.badlogic.gdx.Gdx
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.database.ChildEventListener
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.views.JoinLobbyScreen
+import group16.project.game.views.HighScoreScreen
 
 
 class AndroidFirebaseConnection : FirebaseInterface, Activity() {
@@ -137,6 +139,59 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             screen.errorMessage("Something went wrong, not connected to server")
             Gdx.app.log("Firebase", "Error getting data", it)
         }
+    }
+
+    override fun getScore(screen: HighScoreScreen) {
+        val myTopScore = database.getReference("score")
+            .orderByValue().limitToFirst(10)
+        Gdx.app.log("Firebase", "On child change ${myTopScore}")
+
+
+        myTopScore.addChildEventListener(object : ChildEventListener {
+            // TODO: implement the ChildEventListener methods as documented above
+            // [START_EXCLUDE]
+            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
+                Gdx.app.log("Firebase", "On child dded  ${dataSnapshot} ${s}")
+                val userName = dataSnapshot.getKey().toString()
+                val score = Integer.parseInt(dataSnapshot.getValue().toString())
+
+                if (userName != null && userName is String && score != null && score is Int) {
+                    screen.childMoved(userName, score)
+                }
+            }
+
+            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
+                Gdx.app.log("Firebase", "on child change ${dataSnapshot} ${s}")
+                val userName = dataSnapshot.getKey().toString()
+                val score = Integer.parseInt(dataSnapshot.getValue().toString())
+
+                if (userName != null && userName is String && score != null && score is Int) {
+                    screen.childMoved(userName, score)
+                }
+            }
+            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                Gdx.app.log("Firebase", "On child removed ${dataSnapshot}" )
+                if (dataSnapshot.getKey() is String) {
+                }
+                val userName = dataSnapshot.getKey().toString()
+
+                if (userName != null && userName is String) {
+                    screen.userRemoved(userName)
+                }
+            }
+            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
+                Gdx.app.log("Firebase", "On child moved ${dataSnapshot} ${s}")
+                val userName = dataSnapshot.getKey().toString()
+                val score = Integer.parseInt(dataSnapshot.getValue().toString())
+
+                if (userName != null && userName is String && score != null && score is Int) {
+                    screen.childMoved(userName, score)
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+            // [END_EXCLUDE]
+        })
+
     }
 
 

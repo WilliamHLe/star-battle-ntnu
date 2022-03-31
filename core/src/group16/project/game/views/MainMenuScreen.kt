@@ -20,7 +20,8 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         var dbconnection = gameController.getDBConnection()
 
         //Log in user
-        dbconnection.signInAnonymously()
+        //if ()
+        //dbconnection.signInAnonymously()
 
         // Create the description field
         val txtDescription = VisTextField("Model-View-Controller pattern :) - MAIN MENU")
@@ -52,6 +53,14 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
             }
         })
 
+        // add a "HighScore" button
+        val btnHighScore = VisTextButton("High score")
+        btnHighScore.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                gameController.changeScreen(HighScoreScreen::class.java)
+            }
+        })
+
         // Create the layout
         table.columnDefaults(0).pad(10f)
         table.columnDefaults(1).pad(10f)
@@ -63,6 +72,8 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         table.add(btnJoin).size(stage.width/2, 45.0f)
         table.row()
         table.add(btnCreateLobby).size(stage.width / 2, 45.0f)
+        table.row()
+        table.add(btnHighScore).size(stage.width / 8, 45.0f)
 
         stage.addActor(table)
         Gdx.app.log("VIEW", "Main Menu loaded")
