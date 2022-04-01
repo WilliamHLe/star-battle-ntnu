@@ -70,7 +70,9 @@ class GameScreen(val gameController: StarBattle) : View() {
         val btnFire = VisTextButton("Fire!")
         btnFire.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                println(InputHandler.fireShots)
                 InputHandler.fireShots = true
+
                 println("Fire shots")
             //gameController.changeScreen(MainMenuScreen::class.java)
             }
@@ -116,5 +118,6 @@ class GameScreen(val gameController: StarBattle) : View() {
             stage.addActor(vbox)
         }
         Gdx.app.log("VIEW", "Game loaded")
+
     }
 }

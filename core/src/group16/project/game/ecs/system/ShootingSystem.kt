@@ -32,7 +32,8 @@ class ShootingSystem ():  IteratingSystem(
     ) {
         val padding = (Configuration.gameHeight - 4*100) / 2
         val buttonHeight = 100
-        if (trajectoryComponent.fromPlayer) {
+
+        if (trajectoryComponent.isPlayer) {
             bodyComponent.rectangle.y = InputHandler.playerTrajectoryPosition * buttonHeight + padding
             positionComponent.y = InputHandler.playerTrajectoryPosition * buttonHeight + padding
         } else {

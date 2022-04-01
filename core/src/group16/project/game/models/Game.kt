@@ -41,7 +41,9 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f))
 
 
-        engine.addEntity(EntityFactory.createTrajectory(engine, 10f, 0f, true, Configuration.gameWidth - 160f, 0f))
+
+        engine.addEntity(EntityFactory.createTrajectory(engine, Configuration.gameWidth - 160f, 0f, true, 10f, 0f))
+        engine.addEntity(EntityFactory.createTrajectory(engine, 10f, 0f, false, Configuration.gameWidth - 160f, 0f))
 
         Gdx.app.log("MODEL", "Engine loaded")
     }
