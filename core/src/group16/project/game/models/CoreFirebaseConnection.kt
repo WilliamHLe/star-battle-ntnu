@@ -23,7 +23,7 @@ class CoreFirebaseConnection: FirebaseInterface {
 
     }
 
-    override fun getScore(screen: HighScoreScreen) {
+    override fun getHighScoreListner(screen: HighScoreScreen) {
 
     }
 }

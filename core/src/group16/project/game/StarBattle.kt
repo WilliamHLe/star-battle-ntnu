@@ -21,10 +21,14 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
 
         // Load screens and change screen to start screen
         loadScreens()
+
+        //check if the view in screens are a highScoreScreen
         val highScoreScreen = screens[HighScoreScreen::class.java]
         if( highScoreScreen is HighScoreScreen) {
-            fbic.getScore(highScoreScreen)
+            //Get highscoreList lisener
+            fbic.getHighScoreListner(highScoreScreen)
         }
+        // Log in here.
         fbic.signInAnonymously()
         changeScreen(MainMenuScreen::class.java)
         Gdx.app.log("CONTROLLER", "StarBattleController loaded")

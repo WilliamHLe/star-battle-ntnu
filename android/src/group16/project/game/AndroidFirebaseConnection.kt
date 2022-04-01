@@ -141,14 +141,15 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         }
     }
 
-    override fun getScore(screen: HighScoreScreen) {
+    /**
+     * Create listener for highScore, update highScoreScreen when top 10 change og score change
+     */
+    override fun getHighScoreListner(screen: HighScoreScreen) {
         val myTopScore = database.getReference("score")
             .orderByValue().limitToFirst(10)
         Gdx.app.log("Firebase", "On child change ${myTopScore}")
 
-
         myTopScore.addChildEventListener(object : ChildEventListener {
-            // TODO: implement the ChildEventListener methods as documented above
             // [START_EXCLUDE]
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
                 Gdx.app.log("Firebase", "On child dded  ${dataSnapshot} ${s}")
@@ -180,13 +181,14 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 }
             }
             override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
-                Gdx.app.log("Firebase", "On child moved ${dataSnapshot} ${s}")
+            //Do not think we need to update when child move since it also changes
+            /*Gdx.app.log("Firebase", "On child moved ${dataSnapshot} ${s}")
                 val userName = dataSnapshot.getKey().toString()
                 val score = Integer.parseInt(dataSnapshot.getValue().toString())
 
                 if (userName != null && userName is String && score != null && score is Int) {
                     screen.childMoved(userName, score)
-                }
+                }*/
             }
             override fun onCancelled(databaseError: DatabaseError) {}
             // [END_EXCLUDE]

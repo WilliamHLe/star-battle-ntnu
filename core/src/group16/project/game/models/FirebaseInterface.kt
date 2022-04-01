@@ -21,7 +21,7 @@ interface FirebaseInterface {
 
     fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen)
 
-    fun getScore(screen: HighScoreScreen)
+    fun getHighScoreListner(screen: HighScoreScreen)
 
     //TODO: more functions should be addes based on what we need for our project.
 }

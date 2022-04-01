@@ -36,18 +36,28 @@ class HighScoreScreen(val gameController: StarBattle): View(){
     override fun draw(delta: Float) {
     }
 
+    /**
+     * Update score for child that moved og changed
+     */
     fun childMoved(userName: String, score: Int) {
         players[userName] = score
         updateTable()
     }
 
+    /**
+     * Remove child that is no longer top 10
+     */
     fun userRemoved(userName: String) {
         players.remove(userName)
         updateTable()
     }
 
+    /**
+     * Update table vith new highscore list
+     */
     fun updateTable() {
         val result = players.toList().sortedBy { (_, value) -> value}.toMap()
+        //Clear stage to remove table
         stage.clear()
 
         var table = VisTable()
