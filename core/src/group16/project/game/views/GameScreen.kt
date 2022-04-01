@@ -14,9 +14,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import com.kotcrab.vis.ui.widget.ButtonBar
 import java.util.ArrayList
+import com.badlogic.gdx.physics.box2d.World
+import group16.project.game.controllers.InputHandler
+
 
 class GameScreen(val gameController: StarBattle) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
@@ -31,6 +35,9 @@ class GameScreen(val gameController: StarBattle) : View() {
         super.resize(width, height)
         screenRect.width = stage.viewport.worldWidth
         screenRect.height = stage.viewport.worldHeight
+        // Redraw on resize
+        stage.clear()
+        drawLayout()
     }
 
     override fun dispose() {
@@ -42,19 +49,21 @@ class GameScreen(val gameController: StarBattle) : View() {
     override fun resume() {}
     override fun hide() {
         game.hide()
+        stage.clear()
     }
-
     override fun init() {
+        drawLayout()
+        // Init game model and camera
+        camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
+        game.init()
+        println(Configuration.gameWidth)
+        println(Configuration.gameHeight)
+    }
+    fun drawLayout() {
         var table = VisTable()
 
-        // Create the description field
-        val txtDescription = VisTextField("Model-View-Controller pattern :) - GAME")
-        txtDescription.isDisabled = true
-        txtDescription.setAlignment(1) // center text
-
-        // Add a "StartGame" button
-        val btnStart = VisTextButton("Return to main menu")
-        btnStart.addListener(object : ChangeListener() {
+        val btnBack = VisTextButton("Return to main menu")
+        btnBack.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
@@ -62,39 +71,43 @@ class GameScreen(val gameController: StarBattle) : View() {
 
         // Create the layout
         table.columnDefaults(0).pad(10f)
-        table.columnDefaults(1).pad(10f)
         table.setFillParent(true)
-        table.add(txtDescription).size(stage.width / 2, 100.0f)
-        table.row()
-        table.add(btnStart).size(stage.width / 2, 45.0f)
+        table.add(btnBack).size(stage.width / 2, 45.0f)
         stage.addActor(table)
 
         for (i in 0..1) {
             val vbox = VisTable()
-            vbox.width = 100f
+            vbox.width = 150f
             vbox.height = stage.height
-            vbox.setPosition(i * (stage.width - 100f), 0f)
-            val btn1 = VisTextButton("POS1")
-            val btn2 = VisTextButton("POS2")
-            val btn3 = VisTextButton("POS3")
-            val btn4 = VisTextButton("POS4")
+            vbox.setPosition(i * (stage.width - 150f), 0f)
+            val btn1 = VisTextButton("3")
+            val btn2 = VisTextButton("2")
+            val btn3 = VisTextButton("1")
+            val btn4 = VisTextButton("0")
             val btns = arrayOf(btn1, btn2, btn3, btn4)
-            for ((i, btn) in btns.withIndex()) {
-                btn.addListener(object : ChangeListener() {
-                    override fun changed(event: ChangeEvent, actor: Actor) {
-                        println(btn.text)
-                        game.move(i)
-                    }
-                })
-                vbox.add(btn).size(100f, 100f)
+            for (btn in btns) {
+                btn.setColor(0f,0f,0f,0.2f)
+                if (i == 0)
+                    btn.addListener(object : ChangeListener() {
+                        override fun changed(event: ChangeEvent, actor: Actor) {
+                            InputHandler.playerPosition = Integer.parseInt(btn.text.toString()).toFloat()
+                            print("PS ")
+                            println(InputHandler.playerPosition)
+                        }
+                    })
+                else
+                    btn.addListener(object : ChangeListener() {
+                        override fun changed(event: ChangeEvent, actor: Actor) {
+                            InputHandler.playerTrajectoryPosition = Integer.parseInt(btn.text.toString()).toFloat()
+                            print("PTS ")
+                            println(InputHandler.playerTrajectoryPosition)
+                        }
+                    })
+                vbox.add(btn).size(150f, 100f)
                 vbox.row()
             }
             stage.addActor(vbox)
         }
         Gdx.app.log("VIEW", "Game loaded")
-
-        // Init game model and camera
-        camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
-        game.init()
     }
 }

@@ -4,13 +4,20 @@ import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.kotcrab.vis.ui.VisUI
 import com.badlogic.gdx.utils.ObjectMap
+import group16.project.game.models.FirebaseInterface
+import group16.project.game.views.CreateLobbyScreen
 import group16.project.game.views.MainMenuScreen
 import group16.project.game.views.GameScreen
+import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.View
 
-class StarBattle : Game() {
+class StarBattle(val fbic: FirebaseInterface) : Game() {
     private val screens: ObjectMap<Class<out View?>, View> = ObjectMap<Class<out View?>, View>()
     private var view: View? = null
+
+    fun getDBConnection() : FirebaseInterface {
+        return fbic
+    }
 
     override fun create() {
         // Load the UI first
@@ -48,5 +55,7 @@ class StarBattle : Game() {
     fun loadScreens() {
         screens.put(MainMenuScreen::class.java, MainMenuScreen(this))
         screens.put(GameScreen::class.java, GameScreen(this))
+        screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this))
+        screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this))
     }
 }

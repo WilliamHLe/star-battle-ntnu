@@ -1,6 +1,5 @@
 package group16.project.game.models
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
@@ -9,17 +8,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
 import group16.project.game.Configuration
 import group16.project.game.ecs.Engine
-import group16.project.game.ecs.component.BodyComponent
-import group16.project.game.ecs.component.PositionComponent
+import group16.project.game.ecs.utils.EntityFactory
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
-    companion object {
-        private val WIDTH = Configuration.gameWidth
-        private val HEIGHT = Configuration.gameHeight
-    }
-
     private val batch = SpriteBatch()
-
     private val engine by lazy {
         Engine(
                 batch = batch,
@@ -28,37 +20,27 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         )
     }
 
-    // Ship
-    // Todo: split ship and hearts out to own model later on?
-    private val ship1: Entity = ShipFactory.createShip(engine, 10f, 0f)
-    private val ship2: Entity = ShipFactory.createShip(engine, WIDTH - 160f, 0f)
     fun init() {
-        GameFactory.setEngine(engine)
-        // Background
-        GameFactory.createBG()
+        // Ship
+        val ship1: Entity = EntityFactory.createUfo(engine, 10f, 0f, true)
+        val ship2: Entity = EntityFactory.createUfo(engine, Configuration.gameWidth - 160f, 0f, false)
         engine.addEntity(ship1)
         engine.addEntity(ship2)
+        // Target
+        engine.addEntity(EntityFactory.createTarget(engine, Configuration.gameWidth - 130f, 0f, true))
+        engine.addEntity(EntityFactory.createTarget(engine, 30f, 0f, false))
+        // Background
+        engine.addEntity(EntityFactory.createBG(engine, 0f, 0f))
         // Hearts
-        // add left heartdisplaycomponent
-        // set left heartdisplaycomponent to listen to left healthcomponent
-        // do the same for right
-        GameFactory.createHeartDisplay(0f, HEIGHT-60f)
+        engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, 70f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, 130f, Configuration.gameHeight - 60f))
 
-
-        engine.addEntity(GameFactory.createHearts(10f, HEIGHT - 60f))
-        engine.addEntity(GameFactory.createHearts( 70f, HEIGHT - 60f))
-        engine.addEntity(GameFactory.createHearts( 130f, HEIGHT - 60f))
-
-        engine.addEntity(GameFactory.createHearts(engine, WIDTH - 50f - 10f, HEIGHT - 60f))
-        engine.addEntity(GameFactory.createHearts(engine, WIDTH - 50f - 70f, HEIGHT - 60f))
-        engine.addEntity(GameFactory.createHearts(engine, WIDTH - 50f - 130f, HEIGHT - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 10f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 70f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f))
 
         Gdx.app.log("MODEL", "Engine loaded")
-    }
-    fun move(pos: Int) {
-        val bodyComponentMapper = ComponentMapper.getFor(BodyComponent::class.java)
-        val positionComponentMapper = ComponentMapper.getFor(PositionComponent::class.java)
-        // bodyComponentMapper[ship1].rectangle
     }
     fun render(delta: Float) {
         Gdx.gl.glClearColor(0.5f, 0f, 0.2f, 1f)
