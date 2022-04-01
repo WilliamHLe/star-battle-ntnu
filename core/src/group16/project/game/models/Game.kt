@@ -22,23 +22,23 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
 
     fun init() {
         // Ship
-        val ship1: Entity = EntityFactory.createUfo(engine, 10f, 0f, true)
-        val ship2: Entity = EntityFactory.createUfo(engine, Configuration.gameWidth - 160f, 0f, false)
+        val ship1: Entity = EntityFactory.createUfo(engine, -10f, 0f, true)
+        val ship2: Entity = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, false)
         engine.addEntity(ship1)
         engine.addEntity(ship2)
         // Target
-        engine.addEntity(EntityFactory.createTarget(engine, Configuration.gameWidth - 130f, 0f, true))
-        engine.addEntity(EntityFactory.createTarget(engine, 30f, 0f, false))
+        engine.addEntity(EntityFactory.createTarget(engine, Configuration.gameWidth - 160f, 0f, true))
+        engine.addEntity(EntityFactory.createTarget(engine, 10f, 0f, false))
         // Background
         engine.addEntity(EntityFactory.createBG(engine, 0f, 0f))
         // Hearts
-        engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f))
-        engine.addEntity(EntityFactory.createHearts(engine, 70f, Configuration.gameHeight - 60f))
-        engine.addEntity(EntityFactory.createHearts(engine, 130f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 70f))
+        engine.addEntity(EntityFactory.createHearts(engine, 70f, Configuration.gameHeight - 70f))
+        engine.addEntity(EntityFactory.createHearts(engine, 130f, Configuration.gameHeight - 70f))
 
-        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 10f, Configuration.gameHeight - 60f))
-        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 70f, Configuration.gameHeight - 60f))
-        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 70f - 10f, Configuration.gameHeight - 70f))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 70f - 70f, Configuration.gameHeight - 70f))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 70f - 130f, Configuration.gameHeight - 70f))
 
 
 
