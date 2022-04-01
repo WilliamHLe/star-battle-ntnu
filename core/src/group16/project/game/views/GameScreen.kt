@@ -67,10 +67,19 @@ class GameScreen(val gameController: StarBattle) : View() {
             }
         })
 
+        val btnFire = VisTextButton("Fire!")
+        btnFire.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                InputHandler.fireShots = true
+                println("Fire shots")
+            //gameController.changeScreen(MainMenuScreen::class.java)
+            }
+        })
         // Create the layout
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)
         table.add(btnBack).size(stage.width / 2, 45.0f)
+        table.add(btnFire).size(stage.width/2, 45.0f)
         stage.addActor(table)
 
         for (i in 0..1) {

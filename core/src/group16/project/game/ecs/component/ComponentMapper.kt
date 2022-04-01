@@ -9,5 +9,4 @@ object ComponentMapper {
     val ufo = ComponentMapper.getFor(UfoComponent::class.java)
     val target = ComponentMapper.getFor(TargetComponent::class.java)
     val trajectory = ComponentMapper.getFor(TrajectoryComponent::class.java)
-    val opponentTrajectory = ComponentMapper.getFor(OpponentTrajectoryComponent::class.java)
 }

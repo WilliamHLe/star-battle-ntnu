@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle
 import group16.project.game.ecs.system.MovementSystem
 import group16.project.game.ecs.system.PositioningSystem
 import group16.project.game.ecs.system.RenderingSystem
+import group16.project.game.ecs.system.ShootingSystem
 
 class Engine(
         batch: Batch,
@@ -19,6 +20,7 @@ class Engine(
     init {
         addSystem(MovementSystem(screenRect))
         addSystem(PositioningSystem())
+        addSystem(ShootingSystem())
         addSystem(renderingSystem)
     }
 
