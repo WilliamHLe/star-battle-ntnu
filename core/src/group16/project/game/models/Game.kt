@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
 import group16.project.game.Configuration
 import group16.project.game.ecs.Engine
+import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.EntityFactory
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
@@ -32,14 +33,8 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         // Background
         engine.addEntity(EntityFactory.createBG(engine, 0f, 0f))
         // Hearts
-        engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f))
-        engine.addEntity(EntityFactory.createHearts(engine, 70f, Configuration.gameHeight - 60f))
-        engine.addEntity(EntityFactory.createHearts(engine, 130f, Configuration.gameHeight - 60f))
-
-        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 10f, Configuration.gameHeight - 60f))
-        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 70f, Configuration.gameHeight - 60f))
-        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f))
-
+        engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
         Gdx.app.log("MODEL", "Engine loaded")
     }
     fun render(delta: Float) {
