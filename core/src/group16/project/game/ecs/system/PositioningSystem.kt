@@ -49,7 +49,7 @@ class PositioningSystem () : IteratingSystem(
             bodyComponent: BodyComponent,
             targetComponent: TargetComponent
     ) {
-        val padding = (Configuration.gameHeight - 4*100) / 2
+        val padding = (Configuration.gameHeight - 4*115) / 2
         val buttonHeight = 100
         if (targetComponent.player) {
             bodyComponent.rectangle.y = InputHandler.playerTrajectoryPosition * buttonHeight + padding

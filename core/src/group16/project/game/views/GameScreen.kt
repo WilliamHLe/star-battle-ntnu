@@ -20,6 +20,13 @@ import com.kotcrab.vis.ui.widget.ButtonBar
 import java.util.ArrayList
 import com.badlogic.gdx.physics.box2d.World
 import group16.project.game.controllers.InputHandler
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.ui.Image
+
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+
+
+
 
 
 class GameScreen(val gameController: StarBattle) : View() {
@@ -69,6 +76,22 @@ class GameScreen(val gameController: StarBattle) : View() {
             }
         })
 
+        // Draw topbox
+        val tbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("topbox.png")))))
+        tbox.setSize(360f, 60f)
+        tbox.setPosition((stage.width/2) - 180f, stage.height - 60f)
+        stage.addActor(tbox)
+
+        // Draw bottombox
+        val bbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bottombox.png")))))
+        bbox.setSize(670f, 90f)
+        bbox.setPosition((stage.width/2) - 670/2f, -15f)
+        stage.addActor(bbox)
+        val tubox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("turnbox.png")))))
+        tubox.setSize(260f, 70f)
+        tubox.setPosition((stage.width/2) - 130f, 50f)
+        stage.addActor(tubox)
+
         // Create the layout
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)
@@ -76,16 +99,34 @@ class GameScreen(val gameController: StarBattle) : View() {
         stage.addActor(table)
 
         for (i in 0..1) {
+            // Draw table
             val vbox = VisTable()
             vbox.width = 150f
             vbox.height = stage.height
             vbox.setPosition(i * (stage.width - 150f), 0f)
+
+            // Draw selection markers
+            val padding = (Configuration.gameHeight - 4*100) / 2
+            val longbar1 = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("longbar.png")))))
+            longbar1.setSize(40f, 100f*4 + 40f + 20f)
+            longbar1.setPosition((stage.width - 150f)*i - 10f, padding - 20f - 10f)
+            stage.addActor(longbar1)
+            val longbar2 = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("longbar.png")))))
+            longbar2.setSize(40f, 100f*4 + 40f + 20f)
+            longbar2.setPosition((stage.width - 155f)*i + 125f, padding - 20f - 10f)
+            stage.addActor(longbar2)
+            val bbar = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bar.png")))))
+            bbar.setSize(200f, 40f)
+            bbar.setPosition((stage.width - 150f)*i - 20f, padding - 20f)
+            stage.addActor(bbar)
+
+            // Draw buttons
             val btn1 = VisTextButton("3")
             val btn2 = VisTextButton("2")
             val btn3 = VisTextButton("1")
             val btn4 = VisTextButton("0")
             val btns = arrayOf(btn1, btn2, btn3, btn4)
-            for (btn in btns) {
+            for ((j, btn) in btns.withIndex()) {
                 btn.setColor(0f,0f,0f,0.2f)
                 if (i == 0)
                     btn.addListener(object : ChangeListener() {
@@ -105,6 +146,11 @@ class GameScreen(val gameController: StarBattle) : View() {
                     })
                 vbox.add(btn).size(150f, 100f)
                 vbox.row()
+                // BAR
+                val bar = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bar.png")))))
+                bar.setSize(200f, 40f)
+                bar.setPosition((stage.width - 160f)*i - 20f, padding - 20f + 100f*(j+1))
+                stage.addActor(bar)
             }
             stage.addActor(vbox)
         }

@@ -19,7 +19,6 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
         var table = VisTable()
         var dbconnection = gameController.getDBConnection()
 
-
         // Create title
         val txtTitle = VisLabel("Create game lobby")
         txtTitle.setAlignment(1)

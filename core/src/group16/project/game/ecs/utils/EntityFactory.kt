@@ -21,7 +21,7 @@ class EntityFactory {
                 rectangle.setPosition(posx, posy)
             })
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                texture = Texture("bg.png")
+                texture = Texture("background_dark.png")
             })
         }
         fun createHearts(engine: Engine, posx: Float, posy: Float) = engine.createEntity().also { entity ->
@@ -31,12 +31,12 @@ class EntityFactory {
                 y = posy
             })
             entity.add(engine.createComponent(BodyComponent::class.java).apply {
-                rectangle.setWidth(50f)
-                rectangle.setHeight(50f)
+                rectangle.setWidth(70f)
+                rectangle.setHeight(60f)
                 rectangle.setPosition(posx, posy)
             })
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                texture = Texture("heart.png")
+                texture = Texture("heart_full.png")
             })
         }
 
@@ -47,12 +47,12 @@ class EntityFactory {
                 y = posy
             })
             entity.add(engine.createComponent(BodyComponent::class.java).apply {
-                rectangle.setWidth(150f)
-                rectangle.setHeight(100f)
+                rectangle.setWidth(190f)
+                rectangle.setHeight(110f)
                 rectangle.setPosition(posx, posy)
             })
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                texture = Texture("ufo.png")
+                texture = Texture("ufo3.png")
             })
             entity.add(engine.createComponent(UfoComponent::class.java).apply {
                 player = isPlayer
@@ -66,8 +66,8 @@ class EntityFactory {
                 y = posy
             })
             entity.add(engine.createComponent(BodyComponent::class.java).apply {
-                rectangle.setWidth(100f)
-                rectangle.setHeight(100f)
+                rectangle.setWidth(160f)
+                rectangle.setHeight(160f)
                 rectangle.setPosition(posx, posy)
             })
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
