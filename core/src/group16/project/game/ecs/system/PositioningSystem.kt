@@ -6,6 +6,8 @@ import com.badlogic.ashley.systems.IteratingSystem
 import group16.project.game.Configuration
 import group16.project.game.controllers.InputHandler
 import group16.project.game.ecs.component.*
+import group16.project.game.ecs.lerp
+import group16.project.game.ecs.utils.ComponentMapper
 
 class PositioningSystem () : IteratingSystem(
         Family.all(
@@ -35,13 +37,13 @@ class PositioningSystem () : IteratingSystem(
     ) {
         val padding = (Configuration.gameHeight - 4*100) / 2
         val buttonHeight = 100
-        if (ufoComponent.player) {
-            bodyComponent.rectangle.y = InputHandler.playerPosition * buttonHeight + padding
-            positionComponent.y = InputHandler.playerPosition * buttonHeight + padding
-        } else {
-            bodyComponent.rectangle.y = InputHandler.enemyPosition * buttonHeight + padding
-            positionComponent.y = InputHandler.enemyPosition * buttonHeight + padding
-        }
+
+        var target = InputHandler.enemyPosition* buttonHeight + padding
+        if (ufoComponent.player)
+            target = InputHandler.playerPosition* buttonHeight + padding
+
+        bodyComponent.rectangle.y = lerp(positionComponent.y, target, 0.1f)
+        positionComponent.y = lerp(positionComponent.y, target, 0.1f)
     }
     private fun position(
             positionComponent: PositionComponent,
@@ -50,12 +52,11 @@ class PositioningSystem () : IteratingSystem(
     ) {
         val padding = (Configuration.gameHeight - 4*115) / 2
         val buttonHeight = 100
-        if (targetComponent.player) {
-            bodyComponent.rectangle.y = InputHandler.playerTrajectoryPosition * buttonHeight + padding
-            positionComponent.y = InputHandler.playerTrajectoryPosition * buttonHeight + padding
-        } else {
-            bodyComponent.rectangle.y = InputHandler.enemyTrajectoryPosition * buttonHeight + padding
-            positionComponent.y = InputHandler.enemyTrajectoryPosition * buttonHeight + padding
-        }
+
+        var target = InputHandler.enemyTrajectoryPosition * buttonHeight + padding
+        if (targetComponent.player)
+            target = InputHandler.playerTrajectoryPosition * buttonHeight + padding
+        bodyComponent.rectangle.y = target
+        positionComponent.y = target
     }
 }

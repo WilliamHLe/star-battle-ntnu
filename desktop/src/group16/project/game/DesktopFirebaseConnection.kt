@@ -17,7 +17,7 @@ import pl.mk5.gdx.fireapp.auth.GdxFirebaseUser
  */
 class DesktopFirebaseConnection : FirebaseInterface {
     override fun signInAnonymously() {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     override fun setValueInDb(target: String, value: String) {
@@ -26,10 +26,10 @@ class DesktopFirebaseConnection : FirebaseInterface {
     }
 
     override fun createLobby(lobbyName: String) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 }
