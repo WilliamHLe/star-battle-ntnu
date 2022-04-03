@@ -8,20 +8,28 @@ import pl.mk5.gdx.fireapp.GdxFIRDatabase
 import pl.mk5.gdx.fireapp.GdxFIRLogger
 import pl.mk5.gdx.fireapp.auth.GdxFirebaseUser
 
+//import
+/**
+ * TODO
+ * We need to find out if we need the desktop version.
+ * -If so we need to create at way to interact with the firebase project.
+ * -If not, we need to do some changes in core, remove this class, etc
+ */
 class DesktopFirebaseConnection : FirebaseInterface {
     override fun signInAnonymously() {
-        println("Desktop anonymous")
+        //TODO("Not yet implemented")
     }
 
     override fun setValueInDb(target: String, value: String) {
+        //TODO("Not yet implemented")
         println("Desktop connection class")
     }
 
     override fun createLobby(lobbyName: String) {
-        println("Desktop create lobby")
+        //TODO("Not yet implemented")
     }
 
     override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen) {
-        println("Desktop connection class")
+        //TODO("Not yet implemented")
     }
 }

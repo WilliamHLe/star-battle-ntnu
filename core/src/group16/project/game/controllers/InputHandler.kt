@@ -7,4 +7,6 @@ object InputHandler {
 
     var playerTrajectoryPosition = 0f
     var enemyTrajectoryPosition = 0f
+
+    var fireShots = false;
 }

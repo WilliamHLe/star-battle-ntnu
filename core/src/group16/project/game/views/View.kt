@@ -43,11 +43,11 @@ abstract class View : Screen {
     abstract fun draw(delta: Float)
 
     override fun pause() {
-        //TODO("Invoked when your application is paused.")
+        TODO("Invoked when your application is paused.")
     }
 
     override fun resume() {
-        //TODO("Invoked when your application is resumed after pause.")
+        TODO("Invoked when your application is resumed after pause.")
     }
 
     override fun hide() {

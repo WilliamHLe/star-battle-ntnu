@@ -1,11 +1,16 @@
 package group16.project.game.ecs
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import group16.project.game.ecs.component.PositionComponent
+import group16.project.game.ecs.utils.ComponentMapper
+
+
+fun lerp(start: Float, end: Float, n: Float): Float {
+    return (1 - n) * start + n * end
+}
 
 fun compareEntityByPosition(e1: Entity, e2: Entity): Int {
-    val mapper = ComponentMapper.getFor(PositionComponent::class.java)
+    val mapper = ComponentMapper.position
     val z1 = mapper[e1]?.z?:0f
     val z2 = mapper[e2]?.z?:0f
     return z1.compareTo(z2)

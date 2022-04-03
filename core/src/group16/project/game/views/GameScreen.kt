@@ -63,8 +63,6 @@ class GameScreen(val gameController: StarBattle) : View() {
         // Init game model and camera
         camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
         game.init()
-        println(Configuration.gameWidth)
-        println(Configuration.gameHeight)
     }
     fun drawLayout() {
         var table = VisTable()
@@ -92,10 +90,18 @@ class GameScreen(val gameController: StarBattle) : View() {
         tubox.setPosition((stage.width/2) - 130f, 50f)
         stage.addActor(tubox)
 
+        val btnFire = VisTextButton("Fire!")
+        btnFire.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                game.fireShots()
+            }
+        })
         // Create the layout
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)
         table.add(btnBack).size(stage.width / 2, 45.0f)
+        table.row()
+        table.add(btnFire).size(stage.width/2, 45.0f)
         stage.addActor(table)
 
         for (i in 0..1) {
@@ -155,5 +161,6 @@ class GameScreen(val gameController: StarBattle) : View() {
             stage.addActor(vbox)
         }
         Gdx.app.log("VIEW", "Game loaded")
+
     }
 }
