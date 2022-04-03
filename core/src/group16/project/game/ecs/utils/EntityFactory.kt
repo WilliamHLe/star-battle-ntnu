@@ -26,7 +26,7 @@ class EntityFactory {
                 })
             }
 
-        fun createHearts(engine: Engine, posx: Float, posy: Float) =
+        fun createHearts(engine: Engine, posx: Float, posy: Float, listensTo: HealthComponent) =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
@@ -41,7 +41,11 @@ class EntityFactory {
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
                     texture = Texture("heart_full.png")
                 })
+                entity.add(engine.createComponent(HeartDisplayComponent::class.java).apply {
+                    listenTo(listensTo)
+                })
             }
+
 
         fun createUfo(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
             engine.createEntity().also { entity ->
@@ -60,6 +64,9 @@ class EntityFactory {
                 })
                 entity.add(engine.createComponent(UfoComponent::class.java).apply {
                     player = isPlayer
+                })
+                entity.add(engine.createComponent(HealthComponent::class.java).apply {
+                    hp = 3
                 })
             }
 
