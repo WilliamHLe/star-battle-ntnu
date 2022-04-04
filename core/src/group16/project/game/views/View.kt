@@ -13,7 +13,7 @@ abstract class View : Screen {
         // Set debug status
         stage.isDebugAll = Configuration.debug
 
-        // Map the controller
+        // Map the controller to VisUI events
         val input = InputMultiplexer()
         input.addProcessor(stage)
         Gdx.input.inputProcessor = input
@@ -36,20 +36,22 @@ abstract class View : Screen {
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height, true)
+        Configuration.gameWidth = width.toFloat()
+        Configuration.gameHeight = height.toFloat()
     }
 
     abstract fun draw(delta: Float)
 
     override fun pause() {
-        //TODO("Invoked when your application is paused.")
+        TODO("Invoked when your application is paused.")
     }
 
     override fun resume() {
-        //TODO("Invoked when your application is resumed after pause.")
+        TODO("Invoked when your application is resumed after pause.")
     }
 
     override fun hide() {
-        //TODO("This method is called when another screen replaces this one.")
+        stage.clear()
     }
 
     override fun dispose() {

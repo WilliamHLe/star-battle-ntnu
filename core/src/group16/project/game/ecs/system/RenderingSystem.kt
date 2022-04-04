@@ -1,15 +1,17 @@
 package group16.project.game.ecs.system
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.SortedIteratingSystem
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
+import com.badlogic.gdx.graphics.g2d.Sprite
 import group16.project.game.ecs.compareEntityByPosition
 import group16.project.game.ecs.component.BodyComponent
 import group16.project.game.ecs.component.TextureComponent
+import group16.project.game.ecs.component.TransformComponent
 import group16.project.game.ecs.notNull
+import group16.project.game.ecs.utils.ComponentMapper
 
 class RenderingSystem(
         private val batch: Batch,
@@ -18,9 +20,6 @@ class RenderingSystem(
         Family.all(BodyComponent::class.java, TextureComponent::class.java).get(),
         Comparator(::compareEntityByPosition)
 ) {
-    private val bodyComponentMapper = ComponentMapper.getFor(BodyComponent::class.java)
-    private val textureComponentMapper = ComponentMapper.getFor(TextureComponent::class.java)
-
     override fun update(deltaTime: Float) {
         // Tell the camera to update its matrices
         camera.update()
@@ -36,18 +35,31 @@ class RenderingSystem(
     }
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
-        notNull(bodyComponentMapper[entity], textureComponentMapper[entity], ::render)
+        if (ComponentMapper.transform[entity] != null)
+            notNull(ComponentMapper.body[entity], ComponentMapper.texture[entity], ComponentMapper.transform[entity], ::render)
+        else
+            notNull(ComponentMapper.body[entity], ComponentMapper.texture[entity], ::render)
     }
 
     fun dispose() {
         batch.dispose()
         entities.forEach {
-            textureComponentMapper[it]?.texture?.dispose()
+            ComponentMapper.texture[it]?.texture?.dispose()
         }
     }
 
     private fun render(bodyComponent: BodyComponent, textureComponent: TextureComponent) {
         val rectShape = bodyComponent.rectangle
         batch.draw(textureComponent.texture, rectShape.x, rectShape.y, rectShape.width, rectShape.height)
+    }
+    private fun render(bodyComponent: BodyComponent, textureComponent: TextureComponent, transformComponent: TransformComponent) {
+        val rectShape = bodyComponent.rectangle
+        val sprite = Sprite(textureComponent.texture);
+
+        sprite.setPosition(rectShape.x, rectShape.y)
+        sprite.setOrigin(rectShape.width/2, rectShape.height/2)
+        sprite.setSize(rectShape.width, rectShape.height)
+        sprite.rotation = transformComponent.rotation
+        sprite.draw(batch)
     }
 }

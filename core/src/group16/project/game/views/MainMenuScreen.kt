@@ -1,8 +1,12 @@
 package group16.project.game.views
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
@@ -13,18 +17,36 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
     override fun draw(delta: Float) {}
     override fun pause() {}
     override fun resume() {}
-    override fun hide() {}
+
+
+    override fun resize(width: Int, height: Int) {
+        super.resize(width, height)
+        // Redraw on resize
+        stage.clear()
+        drawLayout()
+    }
 
     override fun init() {
-        var table = VisTable()
         var dbconnection = gameController.getDBConnection()
 
         //Log in user
         //if ()
         //dbconnection.signInAnonymously()
+        // Log in user
+        dbconnection.signInAnonymously()
+        // Draw layout
+        drawLayout()
+    }
+    fun drawLayout() {
+        var table = VisTable()
+
+        val bg = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("background.png")))))
+        bg.setSize(stage.width, stage.height)
+        bg.setPosition(0f, 0f)
+        stage.addActor(bg)
 
         // Create the description field
-        val txtDescription = VisTextField("Model-View-Controller pattern :) - MAIN MENU")
+        val txtDescription = VisTextField("Star Battle NTNU")
         txtDescription.isDisabled = true
         txtDescription.setAlignment(1) // center text
 
@@ -42,8 +64,6 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
                 gameController.changeScreen(JoinLobbyScreen::class.java)
             }
         })
-
-
 
         // Add a "Create Lobby" button
         val btnCreateLobby = VisTextButton("Create lobby")
