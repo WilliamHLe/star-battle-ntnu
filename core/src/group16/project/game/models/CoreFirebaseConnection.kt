@@ -1,6 +1,7 @@
 package group16.project.game.models
 
 import group16.project.game.views.JoinLobbyScreen
+import group16.project.game.views.HighScoreScreen
 
 class CoreFirebaseConnection: FirebaseInterface {
 
@@ -19,6 +20,10 @@ class CoreFirebaseConnection: FirebaseInterface {
 
     override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen) {
         //TODO("Not yet implemented")
+
+    }
+
+    override fun getHighScoreListner(screen: HighScoreScreen) {
 
     }
 }
