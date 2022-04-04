@@ -1,6 +1,7 @@
 package group16.project.game.models
 
 import group16.project.game.views.JoinLobbyScreen
+import group16.project.game.views.HighScoreScreen
 
 /**
  * Interface used for the platform based classes that are used to interact with our firebase project
@@ -19,6 +20,8 @@ interface FirebaseInterface {
     fun createLobby(lobbyName: String)
 
     fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen)
+
+    fun getHighScoreListner(screen: HighScoreScreen)
 
     //TODO: more functions should be addes based on what we need for our project.
 }
