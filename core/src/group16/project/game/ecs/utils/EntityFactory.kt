@@ -38,9 +38,6 @@ class EntityFactory {
                     rectangle.setHeight(60f)
                     rectangle.setPosition(posx, posy)
                 })
-                entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                    texture = Texture("heart_full.png")
-                })
                 entity.add(engine.createComponent(HeartDisplayComponent::class.java).apply {
                     listenTo(listensTo)
                 })
@@ -108,9 +105,12 @@ class EntityFactory {
                 rectangle.setHeight(50f)
                 rectangle.setPosition(startPosX, startPosY)
             })
+
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
                 texture = Texture("trajectory.png")
             })
+
+
             entity.add(engine.createComponent(TrajectoryComponent::class.java).apply {
                 this.isPlayer = isPlayer
                 this.shootingPosX = shootPosX

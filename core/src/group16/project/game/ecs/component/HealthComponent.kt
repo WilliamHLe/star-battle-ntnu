@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Component
 class HealthComponent : Component {
     private var listeners = ArrayList<HealthListener>()
 
-    var hp = 3
+    var hp = 2
 
 
     public fun addListener(listener : HealthListener) {

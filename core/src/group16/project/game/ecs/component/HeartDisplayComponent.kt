@@ -10,8 +10,9 @@ class HeartDisplayComponent : Component, HealthListener {
     private lateinit var health: HealthComponent
     private val positionComponentMapper = ComponentMapper.getFor(PositionComponent::class.java)
     private var displays: ArrayList<Entity> = ArrayList()
-    val texture: Texture = Texture("heart.png")
+    val texture: Texture = Texture("heart_full.png")
     var hearts = -1
+    val textureEmpty: Texture = Texture("heart.png")
 
     public fun updateHearts(){
         hearts = health.get()
