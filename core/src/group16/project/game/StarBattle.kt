@@ -5,11 +5,14 @@ import com.badlogic.gdx.Gdx
 import com.kotcrab.vis.ui.VisUI
 import com.badlogic.gdx.utils.ObjectMap
 import group16.project.game.models.FirebaseInterface
+import group16.project.game.models.GameStateManager
 import group16.project.game.views.*
 
 class StarBattle(val fbic: FirebaseInterface) : Game() {
     private val screens: ObjectMap<Class<out View?>, View> = ObjectMap<Class<out View?>, View>()
     private var view: View? = null
+
+     var currentGame = "null"
 
     fun getDBConnection() : FirebaseInterface {
         return fbic

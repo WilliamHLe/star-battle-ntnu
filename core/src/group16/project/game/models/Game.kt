@@ -13,6 +13,7 @@ import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.EntityFactory
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
+    //lateinit private var gameState: GameState;
     private val batch = SpriteBatch()
     private val engine by lazy {
         Engine(
@@ -51,8 +52,10 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
         engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
         Gdx.app.log("MODEL", "Engine loaded")
+        //gameState = GameState.PLAYERS_CHOOSING
     }
     fun fireShots() {
+        //gameState = GameState.SHOTS_FIRING
         val padding = (Configuration.gameHeight - 4*100) / 2
         val buttonHeight = 100
         var startPosY = InputHandler.playerPosition * buttonHeight + padding

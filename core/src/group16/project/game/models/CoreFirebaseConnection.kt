@@ -14,12 +14,14 @@ class CoreFirebaseConnection: FirebaseInterface {
         println("Core conenction class")
     }
 
-    override fun createLobby(lobbyName: String) {
+    override fun createLobby(lobbyName: String) : String{
         //TODO("Not yet implemented")
+        return ""
     }
 
-    override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen) {
+    override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen) : String{
         //TODO("Not yet implemented")
+        return ""
 
     }
 
@@ -31,14 +33,19 @@ class CoreFirebaseConnection: FirebaseInterface {
         //TODO("Not yet implemented")
     }
 
-    override fun setPlayersChoice(
-        lobbyCode: String,
-        player: String,
-        position: Int,
-        targetPostion: Int
-    ) {
-        //TODO("Not yet implemented")
+    override fun setPlayersChoice(lobbyCode: String, position: Int, targetPosition: Int) {
+        TODO("Not yet implemented")
     }
+
+    override fun playerIsReadyToFire(lobbyCode: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun bothPLayersAreReady(lobbyCode: String): Boolean {
+        TODO("Not yet implemented")
+    }
+
+
 
 
 }

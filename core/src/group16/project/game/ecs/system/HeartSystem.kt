@@ -44,10 +44,13 @@ class HeartSystem (
 
     private fun render(positionComponent: PositionComponent, bodyComponent: BodyComponent, heartDisplayComponent: HeartDisplayComponent) {
         val rectShape = bodyComponent.rectangle
+        /*
         println("Derp")
         println(positionComponent.y)
         println(Configuration.gameHeight-60f)
         println("end derp")
+
+         */
         heartDisplayComponent.hearts = 2
         for (i in 1..3) {
             if(heartDisplayComponent.hearts < i) batch.draw(heartDisplayComponent.textureEmpty, positionComponent.x + (i-1)*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)

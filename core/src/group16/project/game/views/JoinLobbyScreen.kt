@@ -53,7 +53,10 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
                 //Else join lobby and display waiting
                 }else {
                     //If could not join lobby error message will be updated in errorMessage function
-                    dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
+                    var temp = dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
+                    println("temp: "+ temp)
+                    if (temp!= "error") gameController.currentGame = temp
+                    println("HEEER:  " + gameController.currentGame)
                     errorMessageLabel.setText("Waiting...")
                 }
             }

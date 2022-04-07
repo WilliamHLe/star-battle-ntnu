@@ -71,7 +71,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     /**
      * Create new lobby with lobby name.
      */
-    override fun createLobby(lobbyName: String){
+    override fun createLobby(lobbyName: String): String {
         var myRef: DatabaseReference = database.getReference("lobbies")
         //Creates a random lobby code with letters and numbers (6 char code)
         var randomLobbyCode: String
@@ -101,13 +101,15 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             //Failure, could not connect to db
             Gdx.app.log("Firebase", "Error getting data", it)
         }
+        return randomLobbyCode
     }
 
     /**
      * Join lobby with lobby code
      * Screen is for sending error message to the user
      */
-    override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen){
+    override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen): String{
+        var returnString = lobbyCode
         var myRef: DatabaseReference = database.getReference("lobbies")
         val user = auth.currentUser
         myRef.child(lobbyCode).get().addOnSuccessListener {
@@ -139,7 +141,9 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             //Sending error message to user
             screen.errorMessage("Something went wrong, not connected to server")
             Gdx.app.log("Firebase", "Error getting data", it)
+            returnString = "error"
         }
+        return returnString
     }
 
     /**
@@ -198,12 +202,12 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     }
 
     override fun updateCurrentGameState(lobbyCode: String, state: GameState) {
-        //TODO("Not yet implemented")
         var myRef: DatabaseReference = database.getReference("lobbies")
 
 
-        var updatingUser = auth.currentUser
-        var host = myRef.child(lobbyCode).child("host").get()
+        //var updatingUser = auth.currentUser
+        //var host = myRef.child(lobbyCode).child("host").get()
+        //TODO: should may verify before changing
 
 
 
@@ -215,8 +219,33 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     }
 
-    override fun setPlayersChoice(lobbyCode: String, player: String, position: Int, targetPostion: Int) {
-        //TODO("Not yet implemented")
+    override fun setPlayersChoice(lobbyCode: String, position: Int, targetPostion: Int) {
+        var myRef: DatabaseReference = database.getReference("lobbies")
+        var playerType="null"
+        var playerID = auth.currentUser?.uid
+
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+                println("1")
+            if(it.value != null)
+            {
+                println("2")
+                if(it.child("host").value== playerID) playerType = "host";
+                if(it.child("player_2").value== playerID) playerType = "player_2";
+                println(playerType)
+
+                if (playerType!= "null") {
+
+                myRef.child(lobbyCode).child(playerType).child("position").setValue(position)
+                myRef.child(lobbyCode).child(playerType).child("target_position").setValue(targetPostion)
+                }
+
+            }
+        }
+
+
+    }
+
+    override fun playerIsReadyToFire(lobbyCode: String) {
         var myRef: DatabaseReference = database.getReference("lobbies")
         var playerType="null"
         var playerID = auth.currentUser?.uid
@@ -227,20 +256,35 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 if(it.child("host").value== playerID) playerType = "host";
                 if(it.child("player_2").value== playerID) playerType = "player_2";
 
+                if (playerType!= "null") {
+
+                    myRef.child(lobbyCode).child(playerType).child("ready_to_fire").setValue(true)
+                }
+
+
             }
         }
 
-        if(playerType!="null") {
-
-        myRef.child(lobbyCode).get().addOnSuccessListener {
-            if(it.value!==null) {
-                myRef.child(lobbyCode).child(playerType).child("position").setValue(position)
-                myRef.child(lobbyCode).child(playerType).child("target_position").setValue(targetPostion)
-            }
-        }
-        }
 
     }
+
+    override fun bothPLayersAreReady(lobbyCode: String): Boolean {
+        var myRef: DatabaseReference = database.getReference("lobbies")
+        var ready = false
+
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            if(it.value != null)
+            {
+                println(it.child("host").child("ready_to_fire").value)
+                println(it.child("player_2").child("ready_to_fire").value)
+                if(it.child("host").child("ready_to_fire").value== "true" && it.child("player_2").child("ready_to_fire").value== "true") ready = true;
+
+            }
+        }
+        return ready
+
+    }
+
 
 
 }

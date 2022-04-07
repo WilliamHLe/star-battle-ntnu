@@ -24,15 +24,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-
-
-
+import group16.project.game.models.GameState
 
 
 class GameScreen(val gameController: StarBattle) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
     private val camera = OrthographicCamera()
     private val game = Game(screenRect, camera)
+    lateinit private var gameState: GameState;
 
     override fun draw(delta: Float) {
         game.render(delta)
@@ -63,6 +62,7 @@ class GameScreen(val gameController: StarBattle) : View() {
         // Init game model and camera
         camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
         game.init()
+        gameState = GameState.PLAYERS_CHOOSING
     }
     fun drawLayout() {
         var table = VisTable()
@@ -93,7 +93,17 @@ class GameScreen(val gameController: StarBattle) : View() {
         val btnFire = VisTextButton("Fire!")
         btnFire.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                if(gameController.currentGame=="null") {
+
                 game.fireShots()
+                } else {
+
+                println(gameController.currentGame)
+                gameController.getDBConnection().setPlayersChoice(gameController.currentGame, InputHandler.playerPosition, InputHandler.playerTrajectoryPosition)
+                gameController.getDBConnection().playerIsReadyToFire(gameController.currentGame)
+                println(gameController.getDBConnection().bothPLayersAreReady(gameController.currentGame))
+                if(gameController.getDBConnection().bothPLayersAreReady(gameController.currentGame)) game.fireShots()
+                }
             }
         })
         // Create the layout
@@ -137,7 +147,8 @@ class GameScreen(val gameController: StarBattle) : View() {
                 if (i == 0)
                     btn.addListener(object : ChangeListener() {
                         override fun changed(event: ChangeEvent, actor: Actor) {
-                            InputHandler.playerPosition = Integer.parseInt(btn.text.toString()).toFloat()
+                            InputHandler.playerPosition =
+                                Integer.parseInt(btn.text.toString())
                             print("PS ")
                             println(InputHandler.playerPosition)
                         }
@@ -145,7 +156,7 @@ class GameScreen(val gameController: StarBattle) : View() {
                 else
                     btn.addListener(object : ChangeListener() {
                         override fun changed(event: ChangeEvent, actor: Actor) {
-                            InputHandler.playerTrajectoryPosition = Integer.parseInt(btn.text.toString()).toFloat()
+                            InputHandler.playerTrajectoryPosition = Integer.parseInt(btn.text.toString())
                             print("PTS ")
                             println(InputHandler.playerTrajectoryPosition)
                         }

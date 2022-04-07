@@ -1,6 +1,7 @@
 package group16.project.game
 
 import group16.project.game.models.FirebaseInterface
+import group16.project.game.models.GameState
 import group16.project.game.views.HighScoreScreen
 import group16.project.game.views.JoinLobbyScreen
 import pl.mk5.gdx.fireapp.GdxFIRApp
@@ -35,6 +36,23 @@ class DesktopFirebaseConnection : FirebaseInterface {
     }
 
     override fun getHighScoreListner(screen: HighScoreScreen) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun updateCurrentGameState(lobbyCode: String, state: GameState) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun setPlayersChoice(
+        lobbyCode: String,
+        player: String,
+        position: Int,
+        targetPosition: Int
+    ) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun playerIsReadyToFire(lobbyCode: String, player: String) {
         //TODO("Not yet implemented")
     }
 }

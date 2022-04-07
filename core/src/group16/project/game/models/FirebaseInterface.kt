@@ -17,15 +17,20 @@ interface FirebaseInterface {
      */
     fun setValueInDb(target: String, value:String)
 
-    fun createLobby(lobbyName: String)
+    fun createLobby(lobbyName: String) : String
 
-    fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen)
+    fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen): String
 
     fun getHighScoreListner(screen: HighScoreScreen)
 
     fun updateCurrentGameState(lobbyCode: String, state: GameState)
 
-    fun setPlayersChoice(lobbyCode: String, player: String, position: Int, targetPostion: Int)
+    fun setPlayersChoice(lobbyCode: String, position: Int, targetPosition: Int)
+
+    fun playerIsReadyToFire(lobbyCode: String)
+
+    fun bothPLayersAreReady(lobbyCode: String) : Boolean
+
 
 
     //TODO: more functions should be added based on what we need for our project.

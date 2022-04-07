@@ -42,7 +42,7 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
                     errorMessageLabel.setText("Need a lobby name")
                 }else {
                     //Create lobby and change to game screen.
-                    dbconnection.createLobby(nameField.toString())
+                    gameController.currentGame = dbconnection.createLobby(nameField.toString())
                     gameController.changeScreen(GameScreen::class.java)
                 }
             }
