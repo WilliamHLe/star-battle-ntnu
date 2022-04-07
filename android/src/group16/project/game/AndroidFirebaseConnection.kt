@@ -197,12 +197,49 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     }
 
-    override fun updateCurrentGameState(state: GameState) {
-        TODO("Not yet implemented")
+    override fun updateCurrentGameState(lobbyCode: String, state: GameState) {
+        //TODO("Not yet implemented")
+        var myRef: DatabaseReference = database.getReference("lobbies")
+
+
+        var updatingUser = auth.currentUser
+        var host = myRef.child(lobbyCode).child("host").get()
+
+
+
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            if(it.value!==null) {
+                myRef.child(lobbyCode).child("current_gamestate").setValue(state.state)
+            }
+        }
+
     }
 
-    override fun setPlayersChoice(player: String, position: Int, targetPostion: Int) {
-        TODO("Not yet implemented")
+    override fun setPlayersChoice(lobbyCode: String, player: String, position: Int, targetPostion: Int) {
+        //TODO("Not yet implemented")
+        var myRef: DatabaseReference = database.getReference("lobbies")
+        var playerType="null"
+        var playerID = auth.currentUser?.uid
+
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            if(it.value != null)
+            {
+                if(it.child("host").value== playerID) playerType = "host";
+                if(it.child("player_2").value== playerID) playerType = "player_2";
+
+            }
+        }
+
+        if(playerType!="null") {
+
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            if(it.value!==null) {
+                myRef.child(lobbyCode).child(playerType).child("position").setValue(position)
+                myRef.child(lobbyCode).child(playerType).child("target_position").setValue(targetPostion)
+            }
+        }
+        }
+
     }
 
 

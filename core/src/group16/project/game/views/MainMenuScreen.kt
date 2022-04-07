@@ -11,6 +11,8 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
+import group16.project.game.models.GameState
+
 //import group16.project.game.models.CoreFirebaseConnection
 
 class MainMenuScreen(val gameController: StarBattle) : View() {
@@ -55,6 +57,7 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         btnStart.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 gameController.changeScreen(GameScreen::class.java)
+                gameController.getDBConnection().updateCurrentGameState("j4qfSG", GameState.POINTS_UPDATING)
             }
         })
         // Add a "JoinLobby" button

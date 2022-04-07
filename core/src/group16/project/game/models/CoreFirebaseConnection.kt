@@ -26,4 +26,19 @@ class CoreFirebaseConnection: FirebaseInterface {
     override fun getHighScoreListner(screen: HighScoreScreen) {
 
     }
+
+    override fun updateCurrentGameState(lobbyCode: String, state: GameState) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun setPlayersChoice(
+        lobbyCode: String,
+        player: String,
+        position: Int,
+        targetPostion: Int
+    ) {
+        //TODO("Not yet implemented")
+    }
+
+
 }
