@@ -23,5 +23,10 @@ interface FirebaseInterface {
 
     fun getHighScoreListner(screen: HighScoreScreen)
 
-    //TODO: more functions should be addes based on what we need for our project.
+    fun updateCurrentGameState(state: GameState)
+
+    fun setPlayersChoice(player: String, position: Int, targetPostion: Int)
+
+
+    //TODO: more functions should be added based on what we need for our project.
 }

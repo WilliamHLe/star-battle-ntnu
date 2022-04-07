@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 
 import group16.project.game.models.FirebaseInterface
+import group16.project.game.models.GameState
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
 
@@ -194,6 +195,14 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             // [END_EXCLUDE]
         })
 
+    }
+
+    override fun updateCurrentGameState(state: GameState) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setPlayersChoice(player: String, position: Int, targetPostion: Int) {
+        TODO("Not yet implemented")
     }
 
 
