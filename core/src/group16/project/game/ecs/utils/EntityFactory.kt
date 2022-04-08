@@ -65,6 +65,11 @@ class EntityFactory {
                 entity.add(engine.createComponent(HealthComponent::class.java).apply {
                     hp = 3
                 })
+                entity.add(engine.createComponent(TransformComponent::class.java).apply {
+                    rotation = 0f
+                    flipped = !isPlayer
+                    opacity = 1f
+                })
             }
 
         fun createTarget(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
@@ -118,6 +123,8 @@ class EntityFactory {
             })
             entity.add(engine.createComponent(TransformComponent::class.java).apply {
                 rotation = 0f
+                flipped = false
+                opacity = 1f
             })
 
         }

@@ -60,6 +60,8 @@ class RenderingSystem(
         sprite.setOrigin(rectShape.width/2, rectShape.height/2)
         sprite.setSize(rectShape.width, rectShape.height)
         sprite.rotation = transformComponent.rotation
+        sprite.setAlpha(transformComponent.opacity)
+        sprite.flip(transformComponent.flipped, false);
         sprite.draw(batch)
     }
 }

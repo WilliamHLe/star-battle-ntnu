@@ -24,9 +24,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
-
-
-
+import group16.project.game.models.GameState
 
 
 class GameScreen(val gameController: StarBattle) : View() {
@@ -96,12 +94,22 @@ class GameScreen(val gameController: StarBattle) : View() {
                 game.fireShots()
             }
         })
+
+        val btnChangeState = VisTextButton("Current state: "+game.state.name)
+        btnChangeState.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                game.changeState()
+                btnChangeState.setText("Current state: "+game.state.name)
+            }
+        })
         // Create the layout
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)
         table.add(btnBack).size(stage.width / 2, 45.0f)
         table.row()
         table.add(btnFire).size(stage.width/2, 45.0f)
+        table.row()
+        table.add(btnChangeState).size(stage.width/2, 45.0f)
         stage.addActor(table)
 
         for (i in 0..1) {
@@ -137,21 +145,26 @@ class GameScreen(val gameController: StarBattle) : View() {
                 if (i == 0)
                     btn.addListener(object : ChangeListener() {
                         override fun changed(event: ChangeEvent, actor: Actor) {
-                            InputHandler.playerPosition = Integer.parseInt(btn.text.toString()).toFloat()
-                            print("PS ")
-                            println(InputHandler.playerPosition)
+                            if (game.state == GameState.SETUP) {
+                                InputHandler.playerPosition = Integer.parseInt(btn.text.toString()).toFloat()
+                                print("PS ")
+                                println(InputHandler.playerPosition)
+                            }
                         }
                     })
                 else
                     btn.addListener(object : ChangeListener() {
                         override fun changed(event: ChangeEvent, actor: Actor) {
-                            InputHandler.playerTrajectoryPosition = Integer.parseInt(btn.text.toString()).toFloat()
-                            print("PTS ")
-                            println(InputHandler.playerTrajectoryPosition)
+                            if (game.state == GameState.SETUP) {
+                                InputHandler.playerTrajectoryPosition = Integer.parseInt(btn.text.toString()).toFloat()
+                                print("PTS ")
+                                println(InputHandler.playerTrajectoryPosition)
+                            }
                         }
                     })
                 vbox.add(btn).size(150f, 100f)
                 vbox.row()
+
                 // BAR
                 val bar = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bar.png")))))
                 bar.setSize(200f, 40f)
@@ -160,7 +173,7 @@ class GameScreen(val gameController: StarBattle) : View() {
             }
             stage.addActor(vbox)
         }
-        Gdx.app.log("VIEW", "Game loaded")
 
+        Gdx.app.log("VIEW", "Game loaded")
     }
 }
