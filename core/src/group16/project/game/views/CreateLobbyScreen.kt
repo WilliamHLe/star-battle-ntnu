@@ -11,6 +11,8 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
+import group16.project.game.models.GameState
+import group16.project.game.models.GameStateManager
 
 class CreateLobbyScreen(val gameController: StarBattle) : View() {
 
@@ -43,6 +45,8 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
                 }else {
                     //Create lobby and change to game screen.
                     gameController.currentGame = dbconnection.createLobby(nameField.toString())
+                    gameController.gameStateManager = GameStateManager(gameController.currentGame, gameController.getDBConnection())
+                    //gameController.gameStateManager.lobbyCreated()
                     gameController.changeScreen(GameScreen::class.java)
                 }
             }

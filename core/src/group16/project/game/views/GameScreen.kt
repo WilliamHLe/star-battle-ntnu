@@ -107,7 +107,10 @@ class GameScreen(val gameController: StarBattle) : View() {
                     var bothReady = gameController.getDBConnection()
                         .playerIsReadyToFire(gameController.currentGame)
                     print("BOTH PLAYERS ARE: ")
-                    if(bothReady) game.fireShots()
+                    if(bothReady) {
+                        game.fireShots()
+                        gameController.gameStateManager.fireShots()
+                    }
 
 
                 }

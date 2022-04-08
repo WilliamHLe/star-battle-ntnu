@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 
 import group16.project.game.models.FirebaseInterface
+import group16.project.game.models.Game
 import group16.project.game.models.GameState
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
@@ -92,6 +93,8 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 //Set name of lobby and host with the user id
                 myRef.child(randomLobbyCode).child("name").setValue(lobbyName)
                 myRef.child(randomLobbyCode).child("host").child("id").setValue(user.uid)
+                myRef.child(randomLobbyCode).child("host").child("lives").setValue(3)
+                updateCurrentGameState(randomLobbyCode, GameState.WAITING_FOR_PLAYER_TO_JOIN)
                 // Adds newly created lobby to user in db
                 database.getReference("users").child(user.uid).child(randomLobbyCode).setValue(true)
                 Gdx.app.log("Firebase", "Success on creating lobby")
@@ -125,6 +128,8 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 //If lobby exist and do not contain already a user add user to lobby
                 if (!lobby.containsKey("player_2")) {
                     myRef.child(lobbyCode).child("player_2").child("id").setValue(user.uid)
+                    myRef.child(lobbyCode).child("player_2").child("lives").setValue(3)
+                    updateCurrentGameState(lobbyCode, GameState.PLAYERS_CHOOSING)
                     //Add lobby to user
                     database.getReference("users")
                             .child(user.uid).child(lobbyCode).setValue(true)
@@ -252,6 +257,71 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     }
 
+    override fun getCurrentState(lobbyCode: String) : GameState {
+        var currentState = GameState.NO_STATE
+        var myRef: DatabaseReference = database.getReference("lobbies")
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            var state = it.child("current_gamestate").value
+            currentState = GameState.valueOf(state as String)
+        }
+        return currentState
+    }
+
+    override fun reduceHeartsAmount(lobbyCode: String, player: String) {
+        val updates: MutableMap<String, Any> = HashMap()
+        updates["$lobbyCode/$player/lives"] = ServerValue.increment(-1)
+        database.getReference("lobbies").updateChildren(updates)
+    }
+
+    override fun getAmountOfLives(lobbyCode: String, player: String) : Int {
+        var amountOfLives = -1
+        var temp = -3
+        var myRef: DatabaseReference = database.getReference("lobbies")
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            temp = (it.child(player).child("lives").value as Long).toInt()
+
+        }
+        if(temp == -3) {
+            Thread.sleep(1000)
+        }
+        println("HJKJKHHJKHJKHJKKJHHJK:  " + temp)
+        amountOfLives = temp
+        return amountOfLives
+    }
+
+    override fun player1HitPlayer2(lobbyCode: String) : Boolean {
+        var player1TargetPosition = -1
+        var player2Position = -2
+
+        var myRef: DatabaseReference = database.getReference("lobbies")
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            player1TargetPosition = (it.child("host").child("target_position").value as Long).toInt()
+            player2Position = (it.child("player_2").child("position").value as Long).toInt()
+        }
+
+        if(player1TargetPosition == -1 || player2Position == -2) {
+            Thread.sleep(1000)
+            println("inn i wait")
+        }
+        println("hit position sjekkes her: ")
+        print(player1TargetPosition)
+                println(" Og " + player2Position)
+
+        return player1TargetPosition == player2Position
+    }
+
+    override fun player2HitPlayer1(lobbyCode: String) : Boolean {
+        var player2TargetPosition = -1
+        var player1Position = -2
+
+        var myRef: DatabaseReference = database.getReference("lobbies")
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            player2TargetPosition = (it.child("player_2").child("target_position").value as Long).toInt()
+            player1Position = (it.child("host").child("position").value as Long).toInt()
+        }
+        return player2TargetPosition == player1Position
+    }
+
     override fun playerIsReadyToFire(lobbyCode: String) : Boolean {
 
         var myRef: DatabaseReference = database.getReference("lobbies")
@@ -307,6 +377,20 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         return bothPlayersAreReady
 
 
+    }
+
+    override fun playerChoosingPostion(lobbyCode: String) {
+
+        var myRef: DatabaseReference = database.getReference("lobbies")
+
+
+        myRef.child(lobbyCode).get().addOnSuccessListener {
+            if (it.value != null) {
+                myRef.child(lobbyCode).child("host").child("ready_to_fire").setValue(false)
+                myRef.child(lobbyCode).child("player_2").child("ready_to_fire").setValue(false)
+
+            }
+        }
     }
 
 

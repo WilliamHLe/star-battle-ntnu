@@ -12,6 +12,8 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
+import group16.project.game.models.GameState
+import group16.project.game.models.GameStateManager
 
 class JoinLobbyScreen(val gameController: StarBattle) : View() {
 
@@ -55,7 +57,11 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
                     //If could not join lobby error message will be updated in errorMessage function
                     var temp = dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
                     println("temp: "+ temp)
-                    if (temp!= "error") gameController.currentGame = temp
+                    if (temp!= "error") {
+                        gameController.currentGame = temp
+                        gameController.gameStateManager = GameStateManager(temp, gameController.getDBConnection())
+                        //gameController.gameStateManager.player2Joined()
+                    }
                     println("HEEER:  " + gameController.currentGame)
                     errorMessageLabel.setText("Waiting...")
                 }

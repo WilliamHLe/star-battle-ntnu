@@ -46,13 +46,42 @@ class DesktopFirebaseConnection : FirebaseInterface {
     }
 
     override fun setPlayersChoice(lobbyCode: String, position: Int, targetPosition: Int) {
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
     }
 
     override fun playerIsReadyToFire(lobbyCode: String) : Boolean{
-        TODO("Not yet implemented")
+        //TODO("Not yet implemented")
+        return false
     }
 
+    override fun getCurrentState(lobbyCode: String): GameState {
+        //TODO("Not yet implemented")
+        return GameState.NO_STATE
+    }
+
+    override fun player1HitPlayer2(lobbyCode: String): Boolean {
+        //TODO("Not yet implemented")
+        return false
+    }
+
+    override fun player2HitPlayer1(lobbyCode: String): Boolean {
+        //TODO("Not yet implemented")
+        return false
+
+    }
+
+    override fun getAmountOfLives(lobbyCode: String, player: String): Int {
+        //TODO("Not yet implemented")
+        return 2
+    }
+
+    override fun reduceHeartsAmount(lobbyCode: String, player: String) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun playerChoosingPostion(lobbyCode: String) {
+        //TODO("Not yet implemented")
+    }
 
 
 }

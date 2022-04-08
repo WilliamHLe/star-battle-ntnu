@@ -14,6 +14,8 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
 
      var currentGame = "null"
 
+    lateinit var gameStateManager : GameStateManager
+
     fun getDBConnection() : FirebaseInterface {
         return fbic
     }
