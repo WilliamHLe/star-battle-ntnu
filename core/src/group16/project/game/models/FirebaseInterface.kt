@@ -27,9 +27,8 @@ interface FirebaseInterface {
 
     fun setPlayersChoice(lobbyCode: String, position: Int, targetPosition: Int)
 
-    fun playerIsReadyToFire(lobbyCode: String)
+    fun playerIsReadyToFire(lobbyCode: String) : Boolean
 
-    fun bothPLayersAreReady(lobbyCode: String) : Boolean
 
 
 

@@ -37,13 +37,10 @@ class CoreFirebaseConnection: FirebaseInterface {
         TODO("Not yet implemented")
     }
 
-    override fun playerIsReadyToFire(lobbyCode: String) {
+    override fun playerIsReadyToFire(lobbyCode: String) : Boolean{
         TODO("Not yet implemented")
     }
 
-    override fun bothPLayersAreReady(lobbyCode: String): Boolean {
-        TODO("Not yet implemented")
-    }
 
 
 

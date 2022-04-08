@@ -1,6 +1,8 @@
 package group16.project.game
 
 import android.app.Activity
+import android.content.ContentValues.TAG
+import android.util.Log
 import com.badlogic.gdx.Gdx
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
@@ -14,6 +16,7 @@ import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameState
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
+import kotlin.properties.Delegates
 
 
 class AndroidFirebaseConnection : FirebaseInterface, Activity() {
@@ -88,7 +91,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             if (it.value == null && user != null) {
                 //Set name of lobby and host with the user id
                 myRef.child(randomLobbyCode).child("name").setValue(lobbyName)
-                myRef.child(randomLobbyCode).child("host").setValue(user.uid)
+                myRef.child(randomLobbyCode).child("host").child("id").setValue(user.uid)
                 // Adds newly created lobby to user in db
                 database.getReference("users").child(user.uid).child(randomLobbyCode).setValue(true)
                 Gdx.app.log("Firebase", "Success on creating lobby")
@@ -121,7 +124,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             else if (lobby != null && lobby is Map<*, *> ) {
                 //If lobby exist and do not contain already a user add user to lobby
                 if (!lobby.containsKey("player_2")) {
-                    myRef.child(lobbyCode).child("player_2").setValue(user.uid)
+                    myRef.child(lobbyCode).child("player_2").child("id").setValue(user.uid)
                     //Add lobby to user
                     database.getReference("users")
                             .child(user.uid).child(lobbyCode).setValue(true)
@@ -229,59 +232,80 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             if(it.value != null)
             {
                 println("2")
-                if(it.child("host").value== playerID) playerType = "host";
-                if(it.child("player_2").value== playerID) playerType = "player_2";
+                if(it.child("host").child("id").value== playerID) playerType = "host";
+                if(it.child("player_2").child("id").value== playerID) playerType = "player_2";
                 println(playerType)
 
                 if (playerType!= "null") {
+                    println("IKKE NULL")
 
                 myRef.child(lobbyCode).child(playerType).child("position").setValue(position)
                 myRef.child(lobbyCode).child(playerType).child("target_position").setValue(targetPostion)
                 }
 
             }
+        }.addOnFailureListener {
+            //Failure, could not connect to db
+            Gdx.app.log("Firebase", "Error getting data", it)
         }
 
 
     }
 
-    override fun playerIsReadyToFire(lobbyCode: String) {
+    override fun playerIsReadyToFire(lobbyCode: String) : Boolean {
+
         var myRef: DatabaseReference = database.getReference("lobbies")
         var playerType="null"
         var playerID = auth.currentUser?.uid
 
+        var bothPlayersAreReady=false
+
+
         myRef.child(lobbyCode).get().addOnSuccessListener {
             if(it.value != null)
             {
-                if(it.child("host").value== playerID) playerType = "host";
-                if(it.child("player_2").value== playerID) playerType = "player_2";
+                if(it.child("host").child("id").value== playerID) playerType = "host";
+                if(it.child("player_2").child("id").value== playerID) playerType = "player_2";
 
                 if (playerType!= "null") {
 
                     myRef.child(lobbyCode).child(playerType).child("ready_to_fire").setValue(true)
                 }
 
+                var hostReady = it.child("host").child("ready_to_fire").value== true
+                var player2Ready = it.child("player_2").child("ready_to_fire").value==true
+                print("Host ready? ")
+                println(it.child("host").child("ready_to_fire").value==true)
+                print("Player2 ready? ")
+                println(it.child("player_2").child("ready_to_fire").value==true)
+
+                if(hostReady and player2Ready) {
+                    bothPlayersAreReady = true
+                    println("BOTHE PLAYERS ARE READY: " + bothPlayersAreReady)
+                    Log.d(TAG, "DocumentSnapshot data: ${bothPlayersAreReady}")
+                } else{
+                    bothPlayersAreReady = false
+                }
+
 
             }
+        }.addOnFailureListener {
+            //Failure, could not connect to db
+            Gdx.app.log("Firebase", "Error getting data", it)
         }
 
-
-    }
-
-    override fun bothPLayersAreReady(lobbyCode: String): Boolean {
-        var myRef: DatabaseReference = database.getReference("lobbies")
-        var ready = false
-
-        myRef.child(lobbyCode).get().addOnSuccessListener {
-            if(it.value != null)
-            {
-                println(it.child("host").child("ready_to_fire").value)
-                println(it.child("player_2").child("ready_to_fire").value)
-                if(it.child("host").child("ready_to_fire").value== "true" && it.child("player_2").child("ready_to_fire").value== "true") ready = true;
-
-            }
+        //TODO: to wait for reading from the database. Should actually use som async function instead
+        if(bothPlayersAreReady) {
+            return true
+        } else
+        {
+            Thread.sleep(1000)
         }
-        return ready
+
+        print("etter scopen:  ")
+        println(bothPlayersAreReady)
+        return bothPlayersAreReady
+
 
     }
 

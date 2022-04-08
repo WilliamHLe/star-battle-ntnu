@@ -93,19 +93,26 @@ class GameScreen(val gameController: StarBattle) : View() {
         val btnFire = VisTextButton("Fire!")
         btnFire.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                if(gameController.currentGame=="null") {
+                if (gameController.currentGame == "null") {
 
-                game.fireShots()
+                    game.fireShots()
                 } else {
 
-                println(gameController.currentGame)
-                gameController.getDBConnection().setPlayersChoice(gameController.currentGame, InputHandler.playerPosition, InputHandler.playerTrajectoryPosition)
-                gameController.getDBConnection().playerIsReadyToFire(gameController.currentGame)
-                println(gameController.getDBConnection().bothPLayersAreReady(gameController.currentGame))
-                if(gameController.getDBConnection().bothPLayersAreReady(gameController.currentGame)) game.fireShots()
+                    println(gameController.currentGame)
+                    gameController.getDBConnection().setPlayersChoice(
+                        gameController.currentGame,
+                        InputHandler.playerPosition,
+                        InputHandler.playerTrajectoryPosition
+                    )
+                    var bothReady = gameController.getDBConnection()
+                        .playerIsReadyToFire(gameController.currentGame)
+                    print("BOTH PLAYERS ARE: ")
+                    if(bothReady) game.fireShots()
+
+
                 }
             }
-        })
+        });
         // Create the layout
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)
@@ -174,4 +181,4 @@ class GameScreen(val gameController: StarBattle) : View() {
         Gdx.app.log("VIEW", "Game loaded")
 
     }
-}
+            }
