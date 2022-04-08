@@ -38,6 +38,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
         engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 60f - 160f, Configuration.gameHeight - 60f, ship2.getComponent(HealthComponent::class.java)))
 
+        state = GameState.START
         Gdx.app.log("MODEL", "Engine loaded")
     }
 

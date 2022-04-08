@@ -90,6 +90,11 @@ class EntityFactory {
                 entity.add(engine.createComponent(TargetComponent::class.java).apply {
                     player = isPlayer
                 })
+                entity.add(engine.createComponent(TransformComponent::class.java).apply {
+                    rotation = 0f
+                    flipped = false
+                    opacity = if (isPlayer) 1f else 0f
+                })
             }
 
         fun createTrajectory(

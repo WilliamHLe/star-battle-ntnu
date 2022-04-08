@@ -2,19 +2,19 @@ package group16.project.game.models
 
 enum class GameState {
     START {
-        override fun signal() = WAITING
-    },
-
-    WAITING {
         override fun signal() = SETUP
     },
 
     SETUP {
+        override fun signal() = WAITING
+    },
+
+    WAITING {
         override fun signal() = ANIMATION
     },
 
     ANIMATION {
-        override fun signal() = WAITING
+        override fun signal() = SETUP
     },
 
     GAME_OVER {
