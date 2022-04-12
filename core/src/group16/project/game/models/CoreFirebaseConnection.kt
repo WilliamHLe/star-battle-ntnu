@@ -1,5 +1,6 @@
 package group16.project.game.models
 
+import group16.project.game.views.GameScreen
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
 
@@ -36,9 +37,9 @@ class CoreFirebaseConnection: FirebaseInterface {
         //TODO("Not yet implemented")
     }
 
-    override fun playerIsReadyToFire(lobbyCode: String) : Boolean{
+    override fun playerIsReadyToFire(lobbyCode: String, gameScreen: GameScreen) {
         //TODO("Not yet implemented")
-        return false
+        //return false
     }
 
     override fun getCurrentState(lobbyCode: String): GameState {

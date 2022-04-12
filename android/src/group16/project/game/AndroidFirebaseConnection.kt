@@ -15,6 +15,7 @@ import com.google.firebase.auth.ktx.auth
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.Game
 import group16.project.game.models.GameState
+import group16.project.game.views.GameScreen
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
 import kotlin.properties.Delegates
@@ -209,6 +210,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     }
 
+
     override fun updateCurrentGameState(lobbyCode: String, state: GameState) {
         var myRef: DatabaseReference = database.getReference("lobbies")
 
@@ -322,7 +324,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         return player2TargetPosition == player1Position
     }
 
-    override fun playerIsReadyToFire(lobbyCode: String) : Boolean {
+    override fun playerIsReadyToFire(lobbyCode: String, screen : GameScreen) {
 
         var myRef: DatabaseReference = database.getReference("lobbies")
         var playerType="null"
@@ -332,6 +334,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
 
         myRef.child(lobbyCode).get().addOnSuccessListener {
+            println("GOOD DEBUG MESSAGE")
             if(it.value != null)
             {
                 if(it.child("host").child("id").value== playerID) playerType = "host";
@@ -339,7 +342,9 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
                 if (playerType!= "null") {
 
-                    myRef.child(lobbyCode).child(playerType).child("ready_to_fire").setValue(true)
+                    myRef.child(lobbyCode).child(playerType).child("ready_to_fire").setValue(true).addOnSuccessListener {
+
+                    }
                 }
 
                 var hostReady = it.child("host").child("ready_to_fire").value== true
@@ -349,14 +354,27 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 print("Player2 ready? ")
                 println(it.child("player_2").child("ready_to_fire").value==true)
 
+
+                val player1 = it.child("host")
+                val player2 = it.child("player_2")
+                println("VERY GOOD DEBUG MESSAGE")
                 if(hostReady and player2Ready) {
                     bothPlayersAreReady = true
                     println("BOTHE PLAYERS ARE READY: " + bothPlayersAreReady)
                     Log.d(TAG, "DocumentSnapshot data: ${bothPlayersAreReady}")
+
+                    val player1MovingTo = player1.child("position").value.toString().toInt()
+                    val player1Shooting = player1.child("target_position").value.toString().toInt()
+
+                    val player2MovingTo = player2.child("position").value.toString().toInt()
+                    val player2Shooting = player2.child("target_position").value.toString().toInt()
+
+                    if (playerType == "host") screen.bothReady(player1MovingTo, player1Shooting, player2MovingTo, player2Shooting)
+                    else screen.bothReady(player2MovingTo, player2Shooting, player1MovingTo, player1Shooting)
                 } else{
                     bothPlayersAreReady = false
+                    playerIsReadyToFire(lobbyCode, screen)
                 }
-
 
             }
         }.addOnFailureListener {
@@ -364,6 +382,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             Gdx.app.log("Firebase", "Error getting data", it)
         }
 
+        /*
         //TODO: to wait for reading from the database. Should actually use som async function instead
         if(bothPlayersAreReady) {
             return true
@@ -375,7 +394,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         print("etter scopen:  ")
         println(bothPlayersAreReady)
         return bothPlayersAreReady
-
+        */
 
     }
 

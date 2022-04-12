@@ -64,6 +64,12 @@ class GameScreen(val gameController: StarBattle) : View() {
         game.init()
         gameState = GameState.PLAYERS_CHOOSING
     }
+    fun bothReady(meMovingTo : Int, meShooting : Int, opponentMovingTo : Int, opponentShooting : Int) {
+        // Not sure how this should work, but I've made all the information about
+        // self and opponent's choices available as parameters
+        game.fireShots()
+        gameController.gameStateManager.fireShots()
+    }
     fun drawLayout() {
         var table = VisTable()
 
@@ -91,6 +97,7 @@ class GameScreen(val gameController: StarBattle) : View() {
         stage.addActor(tubox)
 
         val btnFire = VisTextButton("Fire!")
+        val tempScreen = this
         btnFire.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 if (gameController.currentGame == "null") {
@@ -104,13 +111,17 @@ class GameScreen(val gameController: StarBattle) : View() {
                         InputHandler.playerPosition,
                         InputHandler.playerTrajectoryPosition
                     )
-                    var bothReady = gameController.getDBConnection()
-                        .playerIsReadyToFire(gameController.currentGame)
-                    print("BOTH PLAYERS ARE: ")
-                    if(bothReady) {
-                        game.fireShots()
-                        gameController.gameStateManager.fireShots()
-                    }
+
+                    //gameController.getDBConnection().getReadyToFireListener(gameController.currentGame, tempScreen)
+
+                    gameController.getDBConnection().playerIsReadyToFire(gameController.currentGame, tempScreen)
+                    //var bothReady = gameController.getDBConnection()
+                    //    .playerIsReadyToFire(gameController.currentGame)
+                    //print("BOTH PLAYERS ARE: ")
+                    //if(bothReady) {
+                    //    game.fireShots()
+                    //    gameController.gameStateManager.fireShots()
+                    //}
 
 
                 }

@@ -1,5 +1,6 @@
 package group16.project.game.models
 
+import group16.project.game.views.GameScreen
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
 
@@ -27,7 +28,7 @@ interface FirebaseInterface {
 
     fun setPlayersChoice(lobbyCode: String, position: Int, targetPosition: Int)
 
-    fun playerIsReadyToFire(lobbyCode: String) : Boolean
+    fun playerIsReadyToFire(lobbyCode: String, gameScreen: GameScreen)
     fun getCurrentState(lobbyCode: String) : GameState
 
      fun player1HitPlayer2(lobbyCode: String) : Boolean
