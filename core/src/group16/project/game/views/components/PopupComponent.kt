@@ -11,7 +11,7 @@ import com.kotcrab.vis.ui.layout.FloatingGroup
 import com.kotcrab.vis.ui.widget.VisTextButton
 
 
-class PopupComponent(isFullscreen: Boolean = false): FloatingGroup() {
+class PopupComponent(isFullscreen: Boolean = false, child: Actor): FloatingGroup() {
 
     init {
         // Root widget
@@ -21,7 +21,7 @@ class PopupComponent(isFullscreen: Boolean = false): FloatingGroup() {
         if (isFullscreen) drawSemiTransparentBackground()
 
         // Child widget
-        this.addActor(SlideshowComponent())
+        this.addActor(child)
 
         // Close button
         if (isFullscreen) {

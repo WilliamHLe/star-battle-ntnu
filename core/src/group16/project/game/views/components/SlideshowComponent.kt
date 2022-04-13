@@ -13,7 +13,7 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 
-class SlideshowComponent: FloatingGroup() {
+class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>): FloatingGroup() {
     private val WIDTH = Gdx.graphics.width.toFloat()
     private val HEIGHT = Gdx.graphics.height.toFloat()
 
@@ -21,7 +21,6 @@ class SlideshowComponent: FloatingGroup() {
     private val display = VisTable()
     private val dots = GridGroup(20f, 10f)
 
-    private val slides = ArrayList<ImageSlideshowComponent>()
     private var currentSlide = 0
 
     fun updateSlide() {
@@ -81,18 +80,11 @@ class SlideshowComponent: FloatingGroup() {
         })
         this.addActor(btnRight)
 
-        // Display
-        slides.add(ImageSlideshowComponent("background.png", "Example text 1: background.png"))
-        slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
-        slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
-        slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
-
         // Dots
         updateDots()
         dots.setSize((dots.itemWidth + dots.spacing) * slides.size + dots.spacing, 40f)
 
         // Text
-        text.setText("Lorem ipsum...")
         text.setAlignment(1)
 
         // Root table

@@ -15,7 +15,9 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
+import group16.project.game.views.components.ImageSlideshowComponent
 import group16.project.game.views.components.PopupComponent
+import group16.project.game.views.components.SlideshowComponent
 
 class PlaceholderTutorialScreen(val gameController: StarBattle) : View() {
 
@@ -49,8 +51,13 @@ class PlaceholderTutorialScreen(val gameController: StarBattle) : View() {
         //stage.addActor(table)
         Gdx.app.log("VIEW", "Create lobby loaded")
 
-        // Add popup
-        stage.addActor(PopupComponent(true))
+        // Add popup with slideshow
+        val slides = ArrayList<ImageSlideshowComponent>()
+        slides.add(ImageSlideshowComponent("background.png", "Example text 1: background.png"))
+        slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
+        slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
+        slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
+        stage.addActor(PopupComponent(true, SlideshowComponent(slides)))
     }
 
     override fun draw(delta: Float) {}
