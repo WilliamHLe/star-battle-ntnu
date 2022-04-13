@@ -46,7 +46,7 @@ class PlaceholderTutorialScreen(val gameController: StarBattle) : View() {
         table.row()
         table.add(btnReturn).size(stage.width / 3, 45.0f)
 
-        stage.addActor(table)
+        //stage.addActor(table)
         Gdx.app.log("VIEW", "Create lobby loaded")
 
         // Add popup
