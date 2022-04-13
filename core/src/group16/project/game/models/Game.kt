@@ -11,8 +11,9 @@ import group16.project.game.controllers.InputHandler
 import group16.project.game.ecs.Engine
 import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.EntityFactory
+import group16.project.game.views.GameScreen
 
-class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
+class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera, private val gameScreen: GameScreen) {
     private val batch = SpriteBatch()
     private val engine by lazy {
         Engine(
@@ -54,7 +55,8 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     }
 
     fun changeState() {
-        state = state?.signal()
+        state = state.signal()
+        gameScreen.updateUi()
     }
 
     fun render(delta: Float) {

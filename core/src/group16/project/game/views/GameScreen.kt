@@ -3,9 +3,6 @@ package group16.project.game.views
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.kotcrab.vis.ui.widget.VisTable
-import com.kotcrab.vis.ui.widget.VisTextButton
-import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import com.badlogic.gdx.math.Rectangle
@@ -16,7 +13,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
-import com.kotcrab.vis.ui.widget.ButtonBar
 import java.util.ArrayList
 import com.badlogic.gdx.physics.box2d.World
 import group16.project.game.controllers.InputHandler
@@ -24,13 +20,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.kotcrab.vis.ui.widget.*
 import group16.project.game.models.GameState
 
 
 class GameScreen(val gameController: StarBattle) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
     private val camera = OrthographicCamera()
-    private val game = Game(screenRect, camera)
+    private val game = Game(screenRect, camera, this)
+
+    private val statusText = VisLabel("")
+    private val btnEndTurn = VisTextButton("End Turn")
 
     override fun draw(delta: Float) {
         game.render(delta)
@@ -62,6 +62,15 @@ class GameScreen(val gameController: StarBattle) : View() {
         camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
         game.init()
     }
+
+    fun updateUi() {
+        // Update display text
+        statusText.setText(game.state.text)
+        // Update end turn
+        if (game.state == GameState.SETUP) btnEndTurn.isDisabled = false
+        else btnEndTurn.isDisabled = true
+    }
+
     fun drawLayout() {
         var table = VisTable()
 
@@ -78,6 +87,12 @@ class GameScreen(val gameController: StarBattle) : View() {
         tbox.setPosition((stage.width/2) - 180f, stage.height - 60f)
         stage.addActor(tbox)
 
+        // Draw status display text
+        statusText.setPosition((stage.width/2) - 180f, stage.height - 50f)
+        statusText.setSize(360f, 60f)
+        statusText.setAlignment(1) // center text
+        stage.addActor(statusText)
+
         // Draw bottombox
         val bbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bottombox.png")))))
         bbox.setSize(670f, 90f)
@@ -88,6 +103,17 @@ class GameScreen(val gameController: StarBattle) : View() {
         tubox.setPosition((stage.width/2) - 130f, 50f)
         stage.addActor(tubox)
 
+        // Draw end turn button
+        btnEndTurn.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                println("end turn clicked")
+                game.changeState()
+            }
+        })
+        btnEndTurn.setSize(110f, 25f)
+        btnEndTurn.setPosition((stage.width/2) - 55f, 70f)
+        stage.addActor(btnEndTurn)
+
         val btnFire = VisTextButton("Fire!")
         btnFire.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
@@ -95,11 +121,10 @@ class GameScreen(val gameController: StarBattle) : View() {
             }
         })
 
-        val btnChangeState = VisTextButton("Current state: "+game.state.name)
+        val btnChangeState = VisTextButton("Change state")
         btnChangeState.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 game.changeState()
-                btnChangeState.setText("Current state: "+game.state.name)
             }
         })
         // Create the layout
@@ -145,7 +170,7 @@ class GameScreen(val gameController: StarBattle) : View() {
                 if (i == 0)
                     btn.addListener(object : ChangeListener() {
                         override fun changed(event: ChangeEvent, actor: Actor) {
-                            if (game.state == GameState.SETUP) {
+                            if (game.state == GameState.SETUP) { // Let player move position only if state is on SETUP
                                 InputHandler.playerPosition = Integer.parseInt(btn.text.toString()).toFloat()
                                 print("PS ")
                                 println(InputHandler.playerPosition)
@@ -173,7 +198,7 @@ class GameScreen(val gameController: StarBattle) : View() {
             }
             stage.addActor(vbox)
         }
-
+        updateUi()
         Gdx.app.log("VIEW", "Game loaded")
     }
 }
