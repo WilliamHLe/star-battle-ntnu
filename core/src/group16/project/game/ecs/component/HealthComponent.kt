@@ -7,16 +7,15 @@ class HealthComponent : Component {
 
     var hp = 2
 
-
-    public fun addListener(listener : HealthListener) {
+    fun addListener(listener : HealthListener) {
         listeners.add(listener);
     }
 
-    public fun increase() {
+    fun increase() {
         hp++;
         fireHealthChanged()
     }
-    public fun decrease() {
+    fun decrease() {
         hp--;
         fireHealthChanged()
     }
@@ -25,7 +24,7 @@ class HealthComponent : Component {
             listener.healthChanged()
         }
     }
-    public fun get(): Int {
+    fun get(): Int {
         return hp;
     }
 }
