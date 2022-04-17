@@ -28,7 +28,6 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     lateinit var ship1: Entity
     lateinit var ship2: Entity
 
-
     fun init() {
         state = GameState.START
         // Ship
@@ -60,7 +59,6 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     fun fireShots() {
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
-            changeState(state.signal())
         }
         gameScreen.fbic.updatePlayerHealth()
         gameScreen.fbic.resetReady()
@@ -81,8 +79,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         engine.addEntity(EntityFactory.createTrajectory(engine, Configuration.gameWidth - 10f - 100f, startPosY, false, shootPosX, shootPosY))
 
         if (GameInfo.player == "host") {
-            changeState(state.signal())
-            gameScreen.fbic.updateCurrentGameState(state.signal())
+            gameScreen.fbic.updateCurrentGameState(GameState.SETUP)
         }
     }
 

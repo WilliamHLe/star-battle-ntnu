@@ -145,8 +145,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("end turn clicked")
-                game.changeState(game.state.signal())
                 game.updatePosition()
+                game.changeState(game.state.signal())
             }
         })
         btnEndTurn.setSize(110f, 25f)

@@ -216,6 +216,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 myRef.child(GameInfo.player).child("position").setValue(position)
                 myRef.child(GameInfo.player).child("target_position").setValue(targetPostion)
                 myRef.child(GameInfo.player).child("ready_to_fire").setValue(true)
+                println("YOU FIRE")
                 fire(gameScreen)
             }
         }.addOnFailureListener {
@@ -243,7 +244,6 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
         health.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                println(dataSnapshot.getValue())
                 if (dataSnapshot.getValue() != null) {
                     println("HEART LISTENER")
                     println(Integer.parseInt(dataSnapshot.getValue().toString()))
@@ -283,6 +283,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val isReady = dataSnapshot.getValue()
                 if (isReady == true) {
+                    println("ENEMY FIRE")
                     fire(screen)
                 }
             }
