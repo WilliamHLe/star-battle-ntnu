@@ -230,7 +230,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             if(it.value != null) {
                 myRef.child(GameInfo.player).child("position").setValue(position)
                 myRef.child(GameInfo.player).child("target_position").setValue(targetPostion)
-                myRef.child(GameInfor.player).child("ready_to_fire").setValue(true)
+                myRef.child(GameInfo.player).child("ready_to_fire").setValue(true)
                 fire(gameScreen)
             }
         }.addOnFailureListener {
