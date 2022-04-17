@@ -8,23 +8,19 @@ class HealthComponent : Component {
     var hp = 2
 
     fun addListener(listener : HealthListener) {
-        listeners.add(listener);
+        listeners.add(listener)
+    }
+    fun set(hp: Int) {
+        this.hp = hp
+        fireHealthChanged()
     }
 
-    fun increase() {
-        hp++;
-        fireHealthChanged()
-    }
-    fun decrease() {
-        hp--;
-        fireHealthChanged()
-    }
     private fun fireHealthChanged() {
         for (listener : HealthListener in listeners) {
             listener.healthChanged()
         }
     }
     fun get(): Int {
-        return hp;
+        return hp
     }
 }
