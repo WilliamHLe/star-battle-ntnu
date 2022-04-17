@@ -1,5 +1,6 @@
 package group16.project.game.models
 
+import group16.project.game.StarBattle
 import group16.project.game.views.GameScreen
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
@@ -15,17 +16,23 @@ class CoreFirebaseConnection: FirebaseInterface {
         println("Desktop connection class")
     }
 
-    override fun createLobby(lobbyName: String) : String{
+    override fun createLobby(lobbyName: String, gameController: StarBattle){
         //TODO("Not yet implemented")
-        return ""
     }
 
-    override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen) : String{
+    override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen){
         //TODO("Not yet implemented")
-        return ""
     }
 
-    override fun getHighScoreListner(screen: HighScoreScreen) {
+    override fun heartListener(lobbyCode: String, player: String, screen: GameScreen) {
+
+    }
+
+    override fun updateScore(points: Int) {
+
+    }
+
+    override fun getHighScoreListener(screen: HighScoreScreen) {
         //TODO("Not yet implemented")
     }
 
@@ -42,19 +49,16 @@ class CoreFirebaseConnection: FirebaseInterface {
         //return false
     }
 
-    override fun getCurrentState(lobbyCode: String): GameState {
+    override fun getCurrentState(lobbyCode: String, game: Game) {
         //TODO("Not yet implemented")
-        return GameState.NO_STATE
     }
 
-    override fun player1HitPlayer2(lobbyCode: String): Boolean {
+    override fun checkIfYouGotHit(lobbyCode: String, player: String) {
         //TODO("Not yet implemented")
-        return false
     }
 
-    override fun player2HitPlayer1(lobbyCode: String): Boolean {
+    override fun player2HitPlayer1(lobbyCode: String) {
         //TODO("Not yet implemented")
-        return false
 
     }
 

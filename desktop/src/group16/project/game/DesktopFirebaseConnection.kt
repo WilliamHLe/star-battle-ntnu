@@ -37,7 +37,7 @@ class DesktopFirebaseConnection : FirebaseInterface {
         return ""
     }
 
-    override fun getHighScoreListner(screen: HighScoreScreen) {
+    override fun getHighScoreListener(screen: HighScoreScreen) {
         //TODO("Not yet implemented")
     }
 

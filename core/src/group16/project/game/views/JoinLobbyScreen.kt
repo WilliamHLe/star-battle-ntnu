@@ -48,20 +48,14 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
                 errorMessageLabel.setText("")
                 //If lobby code is blank display error message
                 if (nameField.toString() == "") {
-                    errorMessageLabel.setText("Need a lobby code")
+                    errorMessageLabel.setText("Need a lobby name")
                 //If lobby code is not 6 character
                 }else if(nameField.toString().length != 6) {
-                    errorMessageLabel.setText("Lobby code is 6 character and/or numbers long")
+                    errorMessageLabel.setText("Lobby name is 6 character and/or numbers long")
                 //Else join lobby and display waiting
                 }else {
                     //If could not join lobby error message will be updated in errorMessage function
-                    var temp = dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
-                    println("temp: "+ temp)
-                    if (temp!= "error") {
-                        gameController.currentGame = temp
-                        gameController.gameStateManager = GameStateManager(temp, gameController.getDBConnection())
-                        //gameController.gameStateManager.player2Joined()
-                    }
+                    dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
                     println("HEEER:  " + gameController.currentGame)
                     errorMessageLabel.setText("Waiting...")
                 }
@@ -110,6 +104,10 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         //Only change screen to change screen to game screen if error message is "Success"
         if (errorMessageLabel.textEquals("Success")) {
             gameController.changeScreen(GameScreen::class.java)
+        }
+        if (gameController.currentGame != "null") {
+            gameController.gameStateManager = GameStateManager(gameController.currentGame, gameController.player, gameController.getDBConnection())
+            //gameController.gameStateManager.player2Joined()
         }
     }
 

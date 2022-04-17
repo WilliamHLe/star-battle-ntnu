@@ -1,6 +1,9 @@
 package group16.project.game.models
 
-class GameStateManager(val lobbyCode: String, var fbic: FirebaseInterface) {
+import java.util.*
+
+class GameStateManager(val lobbyCode: String, val player: String, var fbic: FirebaseInterface) {
+
 
     var player1Hearts : Int
     var player2Hearts : Int
@@ -24,21 +27,29 @@ class GameStateManager(val lobbyCode: String, var fbic: FirebaseInterface) {
     }
 
     fun fireShots() {
-        fbic.updateCurrentGameState(lobbyCode, GameState.SHOTS_FIRING)
+        if (player == "host") {
+            fbic.updateCurrentGameState(lobbyCode, GameState.SHOTS_FIRING)
+        }
         updating_points()
         fbic.playerChoosingPostion(lobbyCode)
     }
 
     fun updating_points() {
-        fbic.updateCurrentGameState(lobbyCode, GameState.POINTS_UPDATING)
-        if (check_if_player_got_hit("host")) {
+        if (player == "host") {
+            fbic.updateCurrentGameState(lobbyCode, GameState.POINTS_UPDATING)
+        }
+        /*if (check_if_player_got_hit("host")) {
             decrementLiveOfPlayer("host")
         }
         if (check_if_player_got_hit("player_2")) {
             decrementLiveOfPlayer("player_2")
-        }
+        }*/
+        //check_if_player_got_hit()
+        fbic.checkIfYouGotHit(lobbyCode, player)
 
-        var player1_won = check_if_player_lost("host")
+        //check_if_player_got_hit("player_2")
+
+        /*var player1_won = check_if_player_lost("host")
         var player2_won = check_if_player_lost("player_2")
 
         if (player1_won) {
@@ -52,23 +63,26 @@ class GameStateManager(val lobbyCode: String, var fbic: FirebaseInterface) {
 
         if(!player1_won and !player2_won) {
             fbic.updateCurrentGameState(lobbyCode, GameState.PLAYERS_CHOOSING)
-        }
+        }*/
 
 
     }
 
-    private fun check_if_player_got_hit(player: String) : Boolean {
+    /*private fun check_if_player_got_hit() : Boolean {
         var returnBoolean = false
         println(returnBoolean)
-        if(player == "host") returnBoolean = fbic.player2HitPlayer1(lobbyCode)
+        //if(player == "host") returnBoolean = fbic.player2HitPlayer1(lobbyCode)
+        fbic.checkIfYouGotHit(lobbyCode, player)
         println(returnBoolean)
-        if(player == "player_2") returnBoolean = fbic.player1HitPlayer2(lobbyCode)
+        //if(player == "player_2") returnBoolean = bic.player1HitPlayer2(lobbyCode)
+        //fbic.player1HitPlayer2(lobbyCode)
         println(returnBoolean)
         return returnBoolean
-    }
+    }*/
 
-    private fun decrementLiveOfPlayer(player: String) {
+    /*private fun decrementLiveOfPlayer(player: String) {
         fbic.reduceHeartsAmount(lobbyCode, player)
+
     }
 
     private fun check_if_player_lost(player: String) : Boolean {
@@ -78,7 +92,7 @@ class GameStateManager(val lobbyCode: String, var fbic: FirebaseInterface) {
 
     private fun player_won(player: String) {
         //todo:
-    }
+    }*/
 
 
 

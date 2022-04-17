@@ -1,5 +1,6 @@
 package group16.project.game.models
 
+import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
@@ -13,7 +14,7 @@ import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.EntityFactory
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera) {
-    //lateinit private var gameState: GameState;
+    lateinit private var gameState: GameState;
     private val batch = SpriteBatch()
     private val engine by lazy {
         Engine(
@@ -23,10 +24,21 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         )
     }
 
+    lateinit var ship1: Entity
+    lateinit var ship2: Entity
+
+    fun updateGameState(gameState: GameState) {
+        this.gameState = gameState
+    }
+    fun getGameState(): GameState {
+        return gameState
+    }
+
     fun init() {
+        ship1 = EntityFactory.createUfo(engine, -10f, 0f, true)
+        ship2 = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, false)
+        gameState = GameState.NO_STATE
         // Ship
-        val ship1: Entity = EntityFactory.createUfo(engine, -10f, 0f, true)
-        val ship2: Entity = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, false)
         engine.addEntity(ship1)
         engine.addEntity(ship2)
         // Target
@@ -50,7 +62,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
 
         //Hearts
         engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
-        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 50f - 130f, Configuration.gameHeight - 60f, ship2.getComponent(HealthComponent::class.java)))
         Gdx.app.log("MODEL", "Engine loaded")
         //gameState = GameState.PLAYERS_CHOOSING
     }
@@ -64,6 +76,9 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         InputHandler.fireShots = true
         println("Fire shots")
         engine.addEntity(EntityFactory.createTrajectory(engine, 10f, startPosY, true, shootPosX, shootPosY))
+    }
+    fun endGame(){
+
     }
     fun render(delta: Float) {
         Gdx.gl.glClearColor(0.5f, 0f, 0.2f, 1f)

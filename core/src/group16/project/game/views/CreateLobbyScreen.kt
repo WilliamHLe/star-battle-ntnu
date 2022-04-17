@@ -44,10 +44,8 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
                     errorMessageLabel.setText("Need a lobby name")
                 }else {
                     //Create lobby and change to game screen.
-                    gameController.currentGame = dbconnection.createLobby(nameField.toString())
-                    gameController.gameStateManager = GameStateManager(gameController.currentGame, gameController.getDBConnection())
-                    //gameController.gameStateManager.lobbyCreated()
-                    gameController.changeScreen(GameScreen::class.java)
+                    dbconnection.createLobby(nameField.toString(), gameController)
+
                 }
             }
         })
@@ -83,7 +81,14 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
         super.resize(width, height)
     }
 
-    override fun draw(delta: Float) {}
+    override fun draw(delta: Float) {
+        if (gameController.currentGame != "null") {
+            gameController.gameStateManager =
+                GameStateManager(gameController.currentGame, gameController.player, gameController.getDBConnection())
+            //gameController.gameStateManager.lobbyCreated()
+            gameController.changeScreen(GameScreen::class.java)
+        }
+    }
 
     override fun pause() {
         super.pause()

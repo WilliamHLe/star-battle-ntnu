@@ -5,25 +5,19 @@ import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import com.badlogic.gdx.math.Rectangle
 import group16.project.game.models.Game
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
-import com.kotcrab.vis.ui.widget.ButtonBar
-import java.util.ArrayList
-import com.badlogic.gdx.physics.box2d.World
 import group16.project.game.controllers.InputHandler
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import group16.project.game.ecs.component.HealthComponent
+import group16.project.game.ecs.utils.ComponentMapper
 import group16.project.game.models.GameState
 
 
@@ -31,10 +25,30 @@ class GameScreen(val gameController: StarBattle) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
     private val camera = OrthographicCamera()
     private val game = Game(screenRect, camera)
-    lateinit private var gameState: GameState;
+    private lateinit var yourHealth: HealthComponent
+    private lateinit var opponentHealth: HealthComponent
 
     override fun draw(delta: Float) {
         game.render(delta)
+
+    }
+
+    fun updateHealth(player: String){
+        if (gameController.player == player) {
+            yourHealth.decrease()
+            if (yourHealth.get() == 0) {
+                endGame()
+            }else {
+                gameController.fbic.updateCurrentGameState(gameController.currentGame, GameState.PLAYERS_CHOOSING)
+            }
+        }else {
+            opponentHealth.decrease()
+            if (opponentHealth.get() == 0) {
+                endGame()
+            }else {
+                gameController.fbic.updateCurrentGameState(gameController.currentGame, GameState.PLAYERS_CHOOSING)
+            }
+        }
     }
 
     override fun resize(width: Int, height: Int) {
@@ -58,11 +72,19 @@ class GameScreen(val gameController: StarBattle) : View() {
         stage.clear()
     }
     override fun init() {
+        game.init()
         drawLayout()
         // Init game model and camera
         camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
-        game.init()
-        gameState = GameState.PLAYERS_CHOOSING
+        yourHealth = ComponentMapper.health.get(game.ship1)
+        opponentHealth = ComponentMapper.health.get(game.ship2)
+
+        //gameState = GameState.PLAYERS_CHOOSING
+        //Hearth listeners
+        gameController.fbic.heartListener(gameController.currentGame, "host", this)
+        gameController.fbic.heartListener(gameController.currentGame, "player_2", this)
+        //gameState listener
+        gameController.fbic.getCurrentState(gameController.currentGame, game)
     }
     fun bothReady(meMovingTo : Int, meShooting : Int, opponentMovingTo : Int, opponentShooting : Int) {
         // Not sure how this should work, but I've made all the information about
@@ -70,12 +92,29 @@ class GameScreen(val gameController: StarBattle) : View() {
         game.fireShots()
         gameController.gameStateManager.fireShots()
     }
+
+    fun endGame() {
+        //This player won
+        gameController.fbic.updateCurrentGameState(gameController.currentGame, GameState.GAME_ENDED)
+        if (yourHealth.get() != 0) {
+            println("you won, you have " + yourHealth.get() + "heart left")
+            println("Your score is " + (10+yourHealth.get()*5))
+            //Negative numbers when won
+            gameController.fbic.updateScore(-(10+yourHealth.get()*5))
+        }else {
+            println("You loose")
+            println("5 point get deducted from your score")
+            //Positive number when loose
+            gameController.fbic.updateScore(5)
+        }
+    }
     fun drawLayout() {
         var table = VisTable()
 
         val btnBack = VisTextButton("Return to main menu")
         btnBack.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                gameController.updateCurrentGame("null", "null")
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
         })
@@ -103,7 +142,7 @@ class GameScreen(val gameController: StarBattle) : View() {
                 if (gameController.currentGame == "null") {
 
                     game.fireShots()
-                } else {
+                } else if (game.getGameState() == GameState.PLAYERS_CHOOSING) {
 
                     println(gameController.currentGame)
                     gameController.getDBConnection().setPlayersChoice(

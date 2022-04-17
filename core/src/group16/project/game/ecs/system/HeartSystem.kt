@@ -51,7 +51,7 @@ class HeartSystem (
         println("end derp")
 
          */
-        heartDisplayComponent.hearts = 2
+        //heartDisplayComponent.hearts = 2
         for (i in 1..3) {
             if(heartDisplayComponent.hearts < i) batch.draw(heartDisplayComponent.textureEmpty, positionComponent.x + (i-1)*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)
             else batch.draw(heartDisplayComponent.texture, positionComponent.x + (i-1)*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)

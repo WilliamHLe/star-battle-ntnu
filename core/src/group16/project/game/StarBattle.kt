@@ -13,8 +13,15 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
     private var view: View? = null
 
      var currentGame = "null"
+    var player = "null"
 
     lateinit var gameStateManager : GameStateManager
+
+
+    fun updateCurrentGame(gameCode: String, player: String){
+        currentGame = gameCode
+        this.player = player
+    }
 
     fun getDBConnection() : FirebaseInterface {
         return fbic
@@ -31,7 +38,7 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
         val highScoreScreen = screens[HighScoreScreen::class.java]
         if( highScoreScreen is HighScoreScreen) {
             //Get highscoreList lisener
-            fbic.getHighScoreListner(highScoreScreen)
+            fbic.getHighScoreListener(highScoreScreen)
         }
         // Log in here.
         fbic.signInAnonymously()
