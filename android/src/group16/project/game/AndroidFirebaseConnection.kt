@@ -121,14 +121,14 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 if (!lobby.containsKey("player_2")) {
                     it.child("player_2").child("id").setValue(user.uid)
                     it.child("player_2").child("lives").setValue(3)
-                    updateCurrentGameState(lobbyCode, GameState.SETUP)
+                    screen.gameController.updateCurrentGame(lobbyCode, "player_2", "host")
+                    updateCurrentGameState(GameState.SETUP)
                     //Add lobby to user
                     database.getReference("users")
                             .child(user.uid).child(lobbyCode).setValue(true)
                     Gdx.app.log("Firebase", "Success joining lobby")
                     //Sendig success message to user, also enabled to change screen
                     screen.errorMessage("Success")
-                    screen.gameController.updateCurrentGame(lobbyCode, "player_2", "host")
                 } else {
                     //Sending error messge to user
                     screen.errorMessage("Lobby is full")
