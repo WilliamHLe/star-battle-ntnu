@@ -83,9 +83,9 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             //and user logged in
             if (it.value == null && user != null) {
                 //Set name of lobby and host with the user id
-                it.child("name").setValue(lobbyName)
-                it.child("host").child("id").setValue(user.uid)
-                it.child("host").child("lives").setValue(3)
+                myRef.child("name").setValue(lobbyName)
+                myRef.child("host").child("id").setValue(user.uid)
+                myRef.child("host").child("lives").setValue(3)
                 gameController.updateCurrentGame(randomLobbyCode, "host", "player_2")
                 updateCurrentGameState(GameState.START)
                 // Adds newly created lobby to user in db
@@ -119,8 +119,8 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             else if (lobby != null && lobby is Map<*, *> ) {
                 //If lobby exist and do not contain already a user add user to lobby
                 if (!lobby.containsKey("player_2")) {
-                    it.child("player_2").child("id").setValue(user.uid)
-                    it.child("player_2").child("lives").setValue(3)
+                    myRef.child("player_2").child("id").setValue(user.uid)
+                    myRef.child("player_2").child("lives").setValue(3)
                     screen.gameController.updateCurrentGame(lobbyCode, "player_2", "host")
                     updateCurrentGameState(GameState.SETUP)
                     //Add lobby to user
@@ -229,8 +229,8 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
         myRef.get().addOnSuccessListener {
             if(it.value != null) {
-                it.child(GameInfo.player).child("position").setValue(position)
-                it.child(GameInfo.player).child("target_position").setValue(targetPostion)
+                myRef.child(GameInfo.player).child("position").setValue(position)
+                myRef.child(GameInfo.player).child("target_position").setValue(targetPostion)
                 fire(gameScreen)
             }
         }.addOnFailureListener {
@@ -246,7 +246,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val currentState = dataSnapshot.getValue()
                 if (currentState != null) {
-                    game.updateGameState(GameState.valueOf(currentState))
+                    game.state = GameState.valueOf(currentState.toString())
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -265,13 +265,13 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             val opponentTargetPosition = (it.child(GameInfo.opponent).child("target_position").value as Long).toInt()
             val yourPosition = (it.child(GameInfo.player).child("position").value as Long).toInt()
             if (opponentTargetPosition == yourPosition) {
-                reduceHeartsAmount(GameInfo.currentGame, GameInfo.player)
+                reduceHeartsAmount()
             }
         }
     }
 
     override fun checkIfOpponentReady(screen: GameScreen) {
-        var myRef: DatabaseReference = database.getReference("lobbies").child(lobbyCode).child(
+        var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child(
             GameInfo.opponent).child("ready_to_fire")
 
         myRef.addValueEventListener(object : ValueEventListener {
@@ -323,8 +323,8 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
         myRef.get().addOnSuccessListener {
             if (it.value != null) {
-                it.child("host").child("ready_to_fire").setValue(false)
-                it.child("player_2").child("ready_to_fire").setValue(false)
+                myRef.child("host").child("ready_to_fire").setValue(false)
+                myRef.child("player_2").child("ready_to_fire").setValue(false)
             }
         }
     }

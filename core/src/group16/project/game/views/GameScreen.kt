@@ -38,8 +38,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     }
 
-    fun updateHealth(player: String){
-        healths[player]!!.decrease()
+    fun updateHealth(player: String, health: Int){
+        healths[player]!!.hp = health
         if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) {
             endGame()
         }else {

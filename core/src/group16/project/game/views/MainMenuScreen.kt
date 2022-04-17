@@ -11,11 +11,12 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
+import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameState
 
 //import group16.project.game.models.CoreFirebaseConnection
 
-class MainMenuScreen(val gameController: StarBattle) : View() {
+class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
     override fun draw(delta: Float) {}
     override fun pause() {}
     override fun resume() {}
@@ -29,13 +30,12 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
     }
 
     override fun init() {
-        var dbconnection = gameController.getDBConnection()
 
         //Log in user
         //if ()
         //dbconnection.signInAnonymously()
         // Log in user
-        dbconnection.signInAnonymously()
+        fbic.signInAnonymously()
         // Draw layout
         drawLayout()
     }
@@ -57,7 +57,7 @@ class MainMenuScreen(val gameController: StarBattle) : View() {
         btnStart.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 gameController.changeScreen(GameScreen::class.java)
-                gameController.getDBConnection().updateCurrentGameState("j4qfSG", GameState.POINTS_UPDATING)
+                fbic.updateCurrentGameState(GameState.SETUP)
             }
         })
         // Add a "JoinLobby" button
