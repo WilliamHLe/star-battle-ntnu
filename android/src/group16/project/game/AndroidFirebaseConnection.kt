@@ -160,9 +160,6 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     }
 
-    fun onTopPlayerChange(dataSnapshot: DataSnapshot) {
-    }
-
     /**
      * Create listener for highScore, update highScoreScreen when top 10 change og score change
      */
@@ -221,6 +218,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     override fun updateCurrentGameState(state: GameState) {
         var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
+        println("State: ${state.name}")
         myRef.setValue(state.name)
     }
 
@@ -246,7 +244,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val currentState = dataSnapshot.getValue()
                 if (currentState != null) {
-                    game.state = GameState.valueOf(currentState.toString())
+                    game.changeState(GameState.valueOf(currentState.toString()))
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}

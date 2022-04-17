@@ -76,8 +76,9 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
 
 
 
-    fun changeState() {
-        state = state.signal()
+    fun changeState(state: GameState) {
+        //state = state.signal()
+        this.state = state
         gameScreen.updateUi()
     }
 

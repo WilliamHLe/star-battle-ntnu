@@ -72,6 +72,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         drawLayout()
         // Init game model and camera
         camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
+
+        healths = HashMap<String, HealthComponent>()
         healths.set(GameInfo.player, ComponentMapper.health.get(game.ship1))
         healths.set(GameInfo.opponent, ComponentMapper.health.get(game.ship2))
 
@@ -145,8 +147,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("end turn clicked")
-                game.changeState()
                 game.updatePosition()
+                game.changeState(game.state.signal())
             }
         })
         btnEndTurn.setSize(110f, 25f)
@@ -156,7 +158,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         val btnChangeState = VisTextButton("Change state")
         btnChangeState.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                game.changeState()
+                game.changeState(game.state.signal())
             }
         })
         // Create the layout
