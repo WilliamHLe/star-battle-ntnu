@@ -164,7 +164,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         table.setFillParent(true)
         table.add(btnBack).size(stage.width / 2, 45.0f)
         table.row()
-        table.add(btnChangeState).size(stage.width/2, 45.0f)
+        //table.add(btnChangeState).size(stage.width/2, 45.0f)
         stage.addActor(table)
 
         for (i in 0..1) {
