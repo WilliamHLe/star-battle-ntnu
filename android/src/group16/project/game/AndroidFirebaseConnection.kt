@@ -146,21 +146,6 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         }
     }
 
-    override fun heartListener(player: String, screen: GameScreen){
-        val health = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("lives")
-
-        health.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                println(dataSnapshot.getValue())
-                if (dataSnapshot.getValue() != null) {
-                    screen.updateHealth(player, Integer.parseInt(dataSnapshot.getValue().toString()))
-                }
-            }
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-
-    }
-
     /**
      * Create listener for highScore, update highScoreScreen when top 10 change og score change
      */
@@ -253,6 +238,23 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         })
     }
 
+    override fun heartListener(player: String, screen: GameScreen){
+        val health = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("lives")
+
+        health.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                println(dataSnapshot.getValue())
+                if (dataSnapshot.getValue() != null) {
+                    println("HEART LISTENER")
+                    println(Integer.parseInt(dataSnapshot.getValue().toString()))
+                    screen.updateHealth(player, Integer.parseInt(dataSnapshot.getValue().toString()))
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+
+    }
+
     override fun reduceHeartsAmount() {
         val updates: MutableMap<String, Any> = HashMap()
         updates["${GameInfo.currentGame}/${GameInfo.player}/lives"] = ServerValue.increment(-1)
@@ -265,6 +267,9 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             val opponentTargetPosition = (it.child(GameInfo.opponent).child("target_position").value as Long).toInt()
             val yourPosition = (it.child(GameInfo.player).child("position").value as Long).toInt()
             if (opponentTargetPosition == yourPosition) {
+                println("UPDATE PLAYER HEALTH")
+                println(opponentTargetPosition)
+                println(yourPosition)
                 reduceHeartsAmount()
             }
         }

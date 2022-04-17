@@ -40,11 +40,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     fun updateHealth(player: String, health: Int){
         healths[player]!!.set(health)
-        if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) {
-            endGame()
-        }else {
-            fbic.updateCurrentGameState(GameState.SETUP)
-        }
+        if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) endGame()
     }
 
     override fun resize(width: Int, height: Int) {
@@ -149,8 +145,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("end turn clicked")
-                game.updatePosition()
                 game.changeState(game.state.signal())
+                game.updatePosition()
             }
         })
         btnEndTurn.setSize(110f, 25f)

@@ -3,6 +3,7 @@ package group16.project.game.ecs.system
 import com.badlogic.ashley.core.Entity
 import com.badlogic.ashley.core.Family
 import com.badlogic.ashley.systems.IteratingSystem
+import group16.project.game.controllers.InputHandler
 import group16.project.game.ecs.component.*
 import group16.project.game.ecs.lerp
 import group16.project.game.ecs.utils.ComponentMapper
@@ -40,7 +41,8 @@ class ShootingSystem ():  IteratingSystem(
         bodyComponent.rectangle.y = lerp(positionComponent.y, targetY, 0.05f)
         positionComponent.y = lerp(positionComponent.y, targetY, 0.05f)
 
-        if (abs(positionComponent.x - targetX) < 10 && abs(positionComponent.y - targetY) < 10)
+        if (abs(positionComponent.x - targetX) < 10 && abs(positionComponent.y - targetY) < 10) {
             engine.removeEntity(entity)
+        }
     }
 }

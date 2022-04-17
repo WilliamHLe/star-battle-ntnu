@@ -58,19 +58,32 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     }
 
     fun fireShots() {
-        if (GameInfo.player == "host") gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
+        if (GameInfo.player == "host") {
+            gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
+            changeState(state.signal())
+        }
         gameScreen.fbic.updatePlayerHealth()
         gameScreen.fbic.resetReady()
 
         val padding = (Configuration.gameHeight - 4*100) / 2
         val buttonHeight = 100
-        val startPosY = InputHandler.playerPosition * buttonHeight + padding
-        val shootPosX = Configuration.gameWidth - 10f - 100f;
-        val shootPosY = InputHandler.playerTrajectoryPosition * buttonHeight + padding
-        InputHandler.fireShots = true
+
+        var startPosY = InputHandler.playerPosition * buttonHeight + padding
+        var shootPosX = Configuration.gameWidth - 10f - 100f;
+        var shootPosY = InputHandler.playerTrajectoryPosition * buttonHeight + padding
         println("Fire shots")
         engine.addEntity(EntityFactory.createTrajectory(engine, 10f, startPosY, true, shootPosX, shootPosY))
-        if (GameInfo.player == "player_2" && state == GameState.ANIMATION) gameScreen.fbic.updateCurrentGameState(state.signal())
+
+        startPosY = InputHandler.enemyPosition * buttonHeight + padding
+        shootPosX = 10f;
+        shootPosY = InputHandler.enemyTrajectoryPosition * buttonHeight + padding
+        println("Enemy fire shots")
+        engine.addEntity(EntityFactory.createTrajectory(engine, Configuration.gameWidth - 10f - 100f, startPosY, false, shootPosX, shootPosY))
+
+        if (GameInfo.player == "host") {
+            changeState(state.signal())
+            gameScreen.fbic.updateCurrentGameState(state.signal())
+        }
     }
 
 
