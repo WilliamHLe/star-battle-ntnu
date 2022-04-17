@@ -98,6 +98,7 @@ dependencies {
     implementation "pl.mk5.gdx-fireapp:gdx-fireapp-android:$gdxFireappVersion"
     implementation 'com.google.firebase:firebase-database-ktx:20.0.4'
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
 }
 
 eclipse.project.name = appName + "-android"

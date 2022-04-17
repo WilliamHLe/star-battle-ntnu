@@ -1,5 +1,7 @@
 package group16.project.game.models
 
+import group16.project.game.StarBattle
+import group16.project.game.views.GameScreen
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
 
@@ -9,19 +11,28 @@ import group16.project.game.views.HighScoreScreen
 interface FirebaseInterface {
 
     fun signInAnonymously()
-
-    /**
-     * Method used to set given value to given database
-     * @param target the reference we want to set value to in the database
-     * @param value the value we want to set to
-     */
-    fun setValueInDb(target: String, value:String)
-
-    fun createLobby(lobbyName: String)
-
+    fun createLobby(lobbyName: String, gameController: StarBattle)
     fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen)
 
-    fun getHighScoreListner(screen: HighScoreScreen)
+    fun heartListener(player: String, screen: GameScreen)
 
-    //TODO: more functions should be addes based on what we need for our project.
+    fun getHighScoreListener(screen: HighScoreScreen)
+
+    fun updateCurrentGameState(state: GameState)
+
+    fun setPlayersChoice(position: Int, targetPostion: Int, gameScreen: GameScreen)
+
+    fun checkIfOpponentReady(screen: GameScreen)
+    fun fire(gameScreen: GameScreen)
+    fun getCurrentState(game: Game)
+    fun updateScore(points: Int)
+
+    fun updatePlayerHealth()
+    fun reduceHeartsAmount()
+    fun resetReady()
+
+
+
+
+    //TODO: more functions should be added based on what we need for our project.
 }

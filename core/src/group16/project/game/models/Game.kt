@@ -1,5 +1,6 @@
 package group16.project.game.models
 
+import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
@@ -22,12 +23,16 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
                 screenRect = screenRect
         )
     }
-    var state: GameState = GameState.START
+    lateinit var state: GameState
+
+    lateinit var ship1: Entity
+    lateinit var ship2: Entity
 
     fun init() {
-        // Ships
-        val ship1: Entity = EntityFactory.createUfo(engine, -10f, 0f, true)
-        val ship2: Entity = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, false)
+        state = GameState.START
+        // Ship
+        ship1 = EntityFactory.createUfo(engine, -10f, 0f, true)
+        ship2 = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, false)
         engine.addEntity(ship1)
         engine.addEntity(ship2)
         // Target
@@ -38,24 +43,51 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         //Hearts
         engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
         engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 60f - 160f, Configuration.gameHeight - 60f, ship2.getComponent(HealthComponent::class.java)))
-
-        state = GameState.START
         Gdx.app.log("MODEL", "Engine loaded")
     }
 
-    fun fireShots() {
-        val padding = (Configuration.gameHeight - 4*100) / 2
-        val buttonHeight = 100
-        val startPosY = InputHandler.playerPosition * buttonHeight + padding
-        val shootPosX = Configuration.gameWidth - 10f - 100f;
-        val shootPosY = InputHandler.playerTrajectoryPosition * buttonHeight + padding
-        InputHandler.fireShots = true
-        println("Fire shots")
-        engine.addEntity(EntityFactory.createTrajectory(engine, 10f, startPosY, true, shootPosX, shootPosY))
+    fun updatePosition() {
+        if (state == GameState.SETUP) {
+            gameScreen.fbic.setPlayersChoice(
+                InputHandler.playerPosition,
+                InputHandler.playerTrajectoryPosition,
+                gameScreen
+            )
+        }
     }
 
-    fun changeState() {
-        state = state.signal()
+    fun fireShots() {
+        if (GameInfo.player == "host") {
+            gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
+        }
+        gameScreen.fbic.updatePlayerHealth()
+        gameScreen.fbic.resetReady()
+
+        val padding = (Configuration.gameHeight - 4*100) / 2
+        val buttonHeight = 100
+
+        var startPosY = InputHandler.playerPosition * buttonHeight + padding
+        var shootPosX = Configuration.gameWidth - 10f - 100f;
+        var shootPosY = InputHandler.playerTrajectoryPosition * buttonHeight + padding
+        println("Fire shots")
+        engine.addEntity(EntityFactory.createTrajectory(engine, 10f, startPosY, true, shootPosX, shootPosY))
+
+        startPosY = InputHandler.enemyPosition * buttonHeight + padding
+        shootPosX = 10f;
+        shootPosY = InputHandler.enemyTrajectoryPosition * buttonHeight + padding
+        println("Enemy fire shots")
+        engine.addEntity(EntityFactory.createTrajectory(engine, Configuration.gameWidth - 10f - 100f, startPosY, false, shootPosX, shootPosY))
+
+        if (GameInfo.player == "host") {
+            gameScreen.fbic.updateCurrentGameState(GameState.SETUP)
+        }
+    }
+
+
+
+    fun changeState(state: GameState) {
+        //state = state.signal()
+        this.state = state
         gameScreen.updateUi()
     }
 

@@ -4,11 +4,11 @@ import com.badlogic.gdx.math.MathUtils
 
 
 object InputHandler {
-    var playerPosition = 0f
-    var enemyPosition = MathUtils.random(0f, 3f).toInt()
+    var playerPosition = 0
+    var enemyPosition = MathUtils.random(0, 3)
 
-    var playerTrajectoryPosition = 0f
-    var enemyTrajectoryPosition = 0f
+    var playerTrajectoryPosition = 0
+    var enemyTrajectoryPosition = 0
 
-    var fireShots = false;
+    var fireShots = false
 }
