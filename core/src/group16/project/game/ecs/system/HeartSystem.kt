@@ -24,37 +24,29 @@ class HeartSystem (
     private val heartDisplayComponentMapper = ComponentMapper.getFor(HeartDisplayComponent::class.java)
 
     override fun update(deltaTime: Float) {
-        // Tell the camera to update its matrices
         batch.begin()
-
         super.update(deltaTime)
-
-
         batch.end()
     }
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
         notNull(
-                positionComponentMapper[entity],
-                bodyComponentMapper[entity],
-                heartDisplayComponentMapper[entity],
-                ::render
+            positionComponentMapper[entity],
+            bodyComponentMapper[entity],
+            heartDisplayComponentMapper[entity],
+            ::render
         )
     }
 
     private fun render(positionComponent: PositionComponent, bodyComponent: BodyComponent, heartDisplayComponent: HeartDisplayComponent) {
         val rectShape = bodyComponent.rectangle
-        /*
-        println("Derp")
-        println(positionComponent.y)
-        println(Configuration.gameHeight-60f)
-        println("end derp")
+        var isPlayer = false
+        if (positionComponent.x < 100)
+            isPlayer = true
 
-         */
-        //heartDisplayComponent.hearts = 2
-        for (i in 1..3) {
-            if(heartDisplayComponent.hearts < i) batch.draw(heartDisplayComponent.textureEmpty, positionComponent.x + (i-1)*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)
-            else batch.draw(heartDisplayComponent.texture, positionComponent.x + (i-1)*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)
+        for (i in 0..2) {
+            if(heartDisplayComponent.hearts < i+1 && isPlayer || heartDisplayComponent.hearts < 3-i && !isPlayer) batch.draw(heartDisplayComponent.textureEmpty, positionComponent.x + i*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)
+            else batch.draw(heartDisplayComponent.texture, positionComponent.x + i*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)
         }
     }
 }
