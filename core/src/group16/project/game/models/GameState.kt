@@ -38,6 +38,11 @@ enum class GameState {
     GAME_OVER {
         override var text = "Game Over"
         override fun signal() = GAME_OVER
+    },
+
+    LOBBY_DELETED {
+        override var text = "Lobby deleted return to main menu"
+        override fun signal() = LOBBY_DELETED
     };
     open var text = ""
     abstract fun signal(): GameState

@@ -114,7 +114,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         val btnBack = VisTextButton("Return to main menu")
         btnBack.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                gameController.updateCurrentGame("null", "null", "null")
+                game.deleteLobby()
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
         })

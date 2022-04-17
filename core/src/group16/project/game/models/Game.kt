@@ -56,6 +56,12 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         }
     }
 
+    fun deleteLobby() {
+        gameScreen.fbic.updateCurrentGameState(GameState.LOBBY_DELETED)
+        gameScreen.fbic.deleteLobby()
+        gameScreen.gameController.updateCurrentGame("null", "null", "null")
+    }
+
     fun fireShots() {
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
@@ -82,8 +88,6 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
             gameScreen.fbic.updateCurrentGameState(GameState.SETUP)
         }
     }
-
-
 
     fun changeState(state: GameState) {
         //state = state.signal()

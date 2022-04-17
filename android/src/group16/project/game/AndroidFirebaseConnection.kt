@@ -335,6 +335,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         }
     }
 
-
-
+    override fun deleteLobby() {
+        database.getReference("lobbies").child(GameInfo.currentGame).removeValue()
+    }
 }
