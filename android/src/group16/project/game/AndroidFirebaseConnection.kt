@@ -303,14 +303,10 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                     val player2Shooting = player2.child("target_position").value.toString().toInt()
 
                     if (GameInfo.player == "host") screen.bothReady(
-                        player1MovingTo,
-                        player1Shooting,
                         player2MovingTo,
                         player2Shooting
                     )
                     else screen.bothReady(
-                        player2MovingTo,
-                        player2Shooting,
                         player1MovingTo,
                         player1Shooting
                     )

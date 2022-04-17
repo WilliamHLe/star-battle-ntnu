@@ -43,7 +43,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) {
             endGame()
         }else {
-            fbic.updateCurrentGameState(GameInfo.currentGame, GameState.SETUP)
+            fbic.updateCurrentGameState(GameState.SETUP)
         }
     }
 
@@ -76,21 +76,20 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         healths.set(GameInfo.opponent, ComponentMapper.health.get(game.ship2))
 
         //Hearth listeners
-        fbic.heartListener(GameInfo.currentGame, "host", this)
-        fbic.heartListener(GameInfo.currentGame, "player_2", this)
+        fbic.heartListener("host", this)
+        fbic.heartListener("player_2", this)
         //gameState listener
-        fbic.getCurrentState(GameInfo.currentGame, game)
+        fbic.getCurrentState(game)
     }
-    fun bothReady(meMovingTo : Int, meShooting : Int, opponentMovingTo : Int, opponentShooting : Int) {
-        // Not sure how this should work, but I've made all the information about
-        // self and opponent's choices available as parameters
+    fun bothReady(opponentMovingTo : Int, opponentShooting : Int) {
+        InputHandler.enemyPosition = opponentMovingTo
+        InputHandler.enemyTrajectoryPosition = opponentShooting
         game.fireShots()
-        gameController.gameStateManager.fireShots()
     }
 
     fun endGame() {
         //This player won
-        fbic.updateCurrentGameState(GameInfo.currentGame, GameState.GAME_OVER)
+        fbic.updateCurrentGameState(GameState.GAME_OVER)
         if (healths[GameInfo.player]!!.get() != 0) {
             println("you won, you have " + healths[GameInfo.player]!!.get() + "heart left")
             println("Your score is " + (10+healths[GameInfo.player]!!.get()*5))

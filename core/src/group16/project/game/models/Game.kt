@@ -61,7 +61,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
         }
-        gameScreen.fbic.checkIfYouGotHit()
+        gameScreen.fbic.updatePlayerHealth()
         gameScreen.fbic.resetReady()
 
         val padding = (Configuration.gameHeight - 4*100) / 2
