@@ -82,6 +82,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         fbic.heartListener("player_2", this)
         //gameState listener
         fbic.getCurrentState(game)
+        //Opponent ready listener
+        fbic.checkIfOpponentReady(this)
     }
     fun bothReady(opponentMovingTo : Int, opponentShooting : Int) {
         InputHandler.enemyPosition = opponentMovingTo

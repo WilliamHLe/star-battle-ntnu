@@ -58,9 +58,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     }
 
     fun fireShots() {
-        if (GameInfo.player == "host") {
-            gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
-        }
+        if (GameInfo.player == "host") gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
         gameScreen.fbic.updatePlayerHealth()
         gameScreen.fbic.resetReady()
 
@@ -72,6 +70,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         InputHandler.fireShots = true
         println("Fire shots")
         engine.addEntity(EntityFactory.createTrajectory(engine, 10f, startPosY, true, shootPosX, shootPosY))
+        if (GameInfo.player == "host") gameScreen.fbic.updateCurrentGameState(state.signal())
     }
 
 
