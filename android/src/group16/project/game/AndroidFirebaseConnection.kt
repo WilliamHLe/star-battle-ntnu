@@ -73,12 +73,13 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
      * Create new lobby with lobby name.
      */
     override fun createLobby(lobbyName: String, gameController: StarBattle){
-        var myRef: DatabaseReference = database.getReference("lobbies")
-        //Creates a random lobby code with letters and numbers (6 char code)
         val randomLobbyCode = generateLobbyCode()
+        var myRef: DatabaseReference = database.getReference("lobbies").child(randomLobbyCode)
+        //Creates a random lobby code with letters and numbers (6 char code)
+
         val user = auth.currentUser
 
-        myRef.child(randomLobbyCode).get().addOnSuccessListener {
+        myRef.get().addOnSuccessListener {
             //If lobby with the randomly created lobby code do not exists create lobby
             //and user logged in
             if (it.value == null && user != null) {
@@ -229,6 +230,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             if(it.value != null) {
                 myRef.child(GameInfo.player).child("position").setValue(position)
                 myRef.child(GameInfo.player).child("target_position").setValue(targetPostion)
+                myRef.child(GameInfor.player).child("ready_to_fire").setValue(true)
                 fire(gameScreen)
             }
         }.addOnFailureListener {
