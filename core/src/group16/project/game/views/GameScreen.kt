@@ -20,17 +20,18 @@ import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.ComponentMapper
 import group16.project.game.models.GameState
 import com.kotcrab.vis.ui.widget.*
+import group16.project.game.models.FirebaseInterface
+import group16.project.game.models.GameInfo
 
 
-class GameScreen(val gameController: StarBattle) : View() {
+class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
     private val camera = OrthographicCamera()
     private val game = Game(screenRect, camera, this)
 
     private val statusText = VisLabel("")
     private val btnEndTurn = VisTextButton("End Turn")
-    private lateinit var yourHealth: HealthComponent
-    private lateinit var opponentHealth: HealthComponent
+    private lateinit var healths: HashMap<String, HealthComponent>
 
     override fun draw(delta: Float) {
         game.render(delta)
@@ -38,20 +39,11 @@ class GameScreen(val gameController: StarBattle) : View() {
     }
 
     fun updateHealth(player: String){
-        if (gameController.player == player) {
-            yourHealth.decrease()
-            if (yourHealth.get() == 0) {
-                endGame()
-            }else {
-                gameController.fbic.updateCurrentGameState(gameController.currentGame, GameState.SETUP)
-            }
+        healths[player]!!.decrease()
+        if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) {
+            endGame()
         }else {
-            opponentHealth.decrease()
-            if (opponentHealth.get() == 0) {
-                endGame()
-            }else {
-                gameController.fbic.updateCurrentGameState(gameController.currentGame, GameState.SETUP)
-            }
+            fbic.updateCurrentGameState(GameInfo.currentGame, GameState.SETUP)
         }
     }
 
@@ -80,15 +72,14 @@ class GameScreen(val gameController: StarBattle) : View() {
         drawLayout()
         // Init game model and camera
         camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
-        yourHealth = ComponentMapper.health.get(game.ship1)
-        opponentHealth = ComponentMapper.health.get(game.ship2)
+        healths.set(GameInfo.player, ComponentMapper.health.get(game.ship1))
+        healths.set(GameInfo.opponent, ComponentMapper.health.get(game.ship2))
 
-        //gameState = GameState.PLAYERS_CHOOSING
         //Hearth listeners
-        gameController.fbic.heartListener(gameController.currentGame, "host", this)
-        gameController.fbic.heartListener(gameController.currentGame, "player_2", this)
+        fbic.heartListener(GameInfo.currentGame, "host", this)
+        fbic.heartListener(GameInfo.currentGame, "player_2", this)
         //gameState listener
-        gameController.fbic.getCurrentState(gameController.currentGame, game)
+        fbic.getCurrentState(GameInfo.currentGame, game)
     }
     fun bothReady(meMovingTo : Int, meShooting : Int, opponentMovingTo : Int, opponentShooting : Int) {
         // Not sure how this should work, but I've made all the information about
@@ -99,17 +90,15 @@ class GameScreen(val gameController: StarBattle) : View() {
 
     fun endGame() {
         //This player won
-        gameController.fbic.updateCurrentGameState(gameController.currentGame, GameState.GAME_OVER)
-        if (yourHealth.get() != 0) {
-            println("you won, you have " + yourHealth.get() + "heart left")
-            println("Your score is " + (10+yourHealth.get()*5))
-            //Negative numbers when won
-            gameController.fbic.updateScore(-(10+yourHealth.get()*5))
+        fbic.updateCurrentGameState(GameInfo.currentGame, GameState.GAME_OVER)
+        if (healths[GameInfo.player]!!.get() != 0) {
+            println("you won, you have " + healths[GameInfo.player]!!.get() + "heart left")
+            println("Your score is " + (10+healths[GameInfo.player]!!.get()*5))
+            fbic.updateScore(10+healths[GameInfo.player]!!.get()*5)
         }else {
             println("You loose")
             println("5 point get deducted from your score")
-            //Positive number when loose
-            gameController.fbic.updateScore(5)
+            fbic.updateScore(-5)
         }
     }
 
@@ -117,8 +106,7 @@ class GameScreen(val gameController: StarBattle) : View() {
         // Update display text
         statusText.setText(game.state.text)
         // Update end turn
-        if (game.state == GameState.SETUP) btnEndTurn.isDisabled = false
-        else btnEndTurn.isDisabled = true
+        btnEndTurn.isDisabled = game.state != GameState.SETUP
     }
 
     fun drawLayout() {
@@ -127,7 +115,7 @@ class GameScreen(val gameController: StarBattle) : View() {
         val btnBack = VisTextButton("Return to main menu")
         btnBack.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                gameController.updateCurrentGame("null", "null")
+                gameController.updateCurrentGame("null", "null", "null")
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
         })
@@ -159,43 +147,12 @@ class GameScreen(val gameController: StarBattle) : View() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("end turn clicked")
                 game.changeState()
+                game.updatePosition()
             }
         })
         btnEndTurn.setSize(110f, 25f)
         btnEndTurn.setPosition((stage.width/2) - 55f, 70f)
         stage.addActor(btnEndTurn)
-
-        val btnFire = VisTextButton("Fire!")
-        val tempScreen = this
-        btnFire.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent, actor: Actor) {
-                if (gameController.currentGame == "null") {
-
-                    game.fireShots()
-                } else if (game.state == GameState.SETUP) {
-
-                    println(gameController.currentGame)
-                    gameController.getDBConnection().setPlayersChoice(
-                        gameController.currentGame,
-                        InputHandler.playerPosition,
-                        InputHandler.playerTrajectoryPosition
-                    )
-
-                    //gameController.getDBConnection().getReadyToFireListener(gameController.currentGame, tempScreen)
-
-                    gameController.getDBConnection().playerIsReadyToFire(gameController.currentGame, tempScreen)
-                    //var bothReady = gameController.getDBConnection()
-                    //    .playerIsReadyToFire(gameController.currentGame)
-                    //print("BOTH PLAYERS ARE: ")
-                    //if(bothReady) {
-                    //    game.fireShots()
-                    //    gameController.gameStateManager.fireShots()
-                    //}
-
-
-                }
-            }
-        })
 
         val btnChangeState = VisTextButton("Change state")
         btnChangeState.addListener(object : ChangeListener() {
@@ -207,8 +164,6 @@ class GameScreen(val gameController: StarBattle) : View() {
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)
         table.add(btnBack).size(stage.width / 2, 45.0f)
-        table.row()
-        table.add(btnFire).size(stage.width/2, 45.0f)
         table.row()
         table.add(btnChangeState).size(stage.width/2, 45.0f)
         stage.addActor(table)

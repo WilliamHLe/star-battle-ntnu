@@ -5,26 +5,18 @@ import com.badlogic.gdx.Gdx
 import com.kotcrab.vis.ui.VisUI
 import com.badlogic.gdx.utils.ObjectMap
 import group16.project.game.models.FirebaseInterface
-import group16.project.game.models.GameStateManager
+import group16.project.game.models.GameInfo
 import group16.project.game.views.*
 
-class StarBattle(val fbic: FirebaseInterface) : Game() {
+class StarBattle(private val fbic: FirebaseInterface) : Game() {
     private val screens: ObjectMap<Class<out View?>, View> = ObjectMap<Class<out View?>, View>()
     private var view: View? = null
 
-     var currentGame = "null"
-    var player = "null"
 
-    lateinit var gameStateManager : GameStateManager
-
-
-    fun updateCurrentGame(gameCode: String, player: String){
-        currentGame = gameCode
-        this.player = player
-    }
-
-    fun getDBConnection() : FirebaseInterface {
-        return fbic
+    fun updateCurrentGame(gameCode: String, player: String, opponent: String){
+        GameInfo.currentGame = gameCode
+        GameInfo.player = player
+        GameInfo.opponent = opponent
     }
 
     override fun create() {
@@ -36,8 +28,8 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
 
         //check if the view in screens are a highScoreScreen
         val highScoreScreen = screens[HighScoreScreen::class.java]
-        if( highScoreScreen is HighScoreScreen) {
-            //Get highscoreList lisener
+        if(highScoreScreen is HighScoreScreen) {
+            //Get highscoreList listener
             fbic.getHighScoreListener(highScoreScreen)
         }
         // Log in here.
@@ -71,9 +63,9 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
 
     fun loadScreens() {
         screens.put(MainMenuScreen::class.java, MainMenuScreen(this))
-        screens.put(GameScreen::class.java, GameScreen(this))
-        screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this))
-        screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this))
+        screens.put(GameScreen::class.java, GameScreen(this, fbic))
+        screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this, fbic))
+        screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this, fbic))
         screens.put(HighScoreScreen::class.java, HighScoreScreen(this))
     }
 }

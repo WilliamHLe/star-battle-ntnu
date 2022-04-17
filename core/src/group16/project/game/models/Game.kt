@@ -47,7 +47,23 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         Gdx.app.log("MODEL", "Engine loaded")
     }
 
+    fun updatePosition() {
+        if (state == GameState.SETUP) {
+            gameScreen.fbic.setPlayersChoice(
+                InputHandler.playerPosition,
+                InputHandler.playerTrajectoryPosition,
+                gameScreen
+            )
+        }
+    }
+
     fun fireShots() {
+        if (GameInfo.player == "host") {
+            gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
+        }
+        gameScreen.fbic.checkIfYouGotHit()
+        gameScreen.fbic.resetReady()
+
         val padding = (Configuration.gameHeight - 4*100) / 2
         val buttonHeight = 100
         val startPosY = InputHandler.playerPosition * buttonHeight + padding
@@ -57,6 +73,8 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         println("Fire shots")
         engine.addEntity(EntityFactory.createTrajectory(engine, 10f, startPosY, true, shootPosX, shootPosY))
     }
+
+
 
     fun changeState() {
         state = state.signal()

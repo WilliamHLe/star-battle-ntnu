@@ -12,10 +12,9 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
-import group16.project.game.models.GameState
-import group16.project.game.models.GameStateManager
+import group16.project.game.models.FirebaseInterface
 
-class JoinLobbyScreen(val gameController: StarBattle) : View() {
+class JoinLobbyScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
 
     //Error label
     var errorMessageLabel: Label =Label("", LabelStyle(BitmapFont(), Color.RED))
@@ -23,7 +22,6 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
 
     override fun init() {
         var table = VisTable()
-        var dbconnection = gameController.getDBConnection()
 
 
         // Create title
@@ -55,8 +53,7 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
                 //Else join lobby and display waiting
                 }else {
                     //If could not join lobby error message will be updated in errorMessage function
-                    dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
-                    println("HEEER:  " + gameController.currentGame)
+                    fbic.joinLobby(nameField.toString(), this@JoinLobbyScreen)
                     errorMessageLabel.setText("Waiting...")
                 }
             }
@@ -104,10 +101,6 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
         //Only change screen to change screen to game screen if error message is "Success"
         if (errorMessageLabel.textEquals("Success")) {
             gameController.changeScreen(GameScreen::class.java)
-        }
-        if (gameController.currentGame != "null") {
-            gameController.gameStateManager = GameStateManager(gameController.currentGame, gameController.player, gameController.getDBConnection())
-            //gameController.gameStateManager.player2Joined()
         }
     }
 

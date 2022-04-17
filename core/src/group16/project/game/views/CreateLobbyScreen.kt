@@ -11,15 +11,14 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
-import group16.project.game.models.GameState
-import group16.project.game.models.GameStateManager
+import group16.project.game.models.FirebaseInterface
+import group16.project.game.models.GameInfo
 
-class CreateLobbyScreen(val gameController: StarBattle) : View() {
+class CreateLobbyScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
 
 
     override fun init() {
         var table = VisTable()
-        var dbconnection = gameController.getDBConnection()
 
         // Create title
         val txtTitle = VisLabel("Create game lobby")
@@ -44,7 +43,7 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
                     errorMessageLabel.setText("Need a lobby name")
                 }else {
                     //Create lobby and change to game screen.
-                    dbconnection.createLobby(nameField.toString(), gameController)
+                    fbic.createLobby(nameField.toString(), gameController)
 
                 }
             }
@@ -82,10 +81,7 @@ class CreateLobbyScreen(val gameController: StarBattle) : View() {
     }
 
     override fun draw(delta: Float) {
-        if (gameController.currentGame != "null") {
-            gameController.gameStateManager =
-                GameStateManager(gameController.currentGame, gameController.player, gameController.getDBConnection())
-            //gameController.gameStateManager.lobbyCreated()
+        if (GameInfo.currentGame != "null") {
             gameController.changeScreen(GameScreen::class.java)
         }
     }
