@@ -30,6 +30,8 @@ class HighScoreScreen(val gameController: StarBattle): View(){
             }
         })
 
+        updateTable()
+
         Gdx.app.log("VIEW", "Join lobby loaded")
     }
 
