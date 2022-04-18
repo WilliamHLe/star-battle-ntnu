@@ -57,7 +57,7 @@ class PlaceholderTutorialScreen(val gameController: StarBattle) : View() {
         slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
         slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
         slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
-        stage.addActor(PopupComponent(true, SlideshowComponent(slides)))
+        stage.addActor(PopupComponent(SlideshowComponent(slides), true))
     }
 
     override fun draw(delta: Float) {}

@@ -95,7 +95,23 @@ class GameScreen(val gameController: StarBattle) : View() {
         val btnMenu = VisTextButton("")
         btnMenu.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                println("MENU")
+                println("PAUSE")
+                val btnContinue = VisTextButton("Continue game")
+                val popup = PopupComponent(null, true, false)
+                btnContinue.addListener(object : ChangeListener() {
+                    override fun changed(event: ChangeEvent, actor: Actor) {
+                        popup.closePopup()
+                    }
+                })
+
+                val pauseTable = VisTable()
+                pauseTable.columnDefaults(0).pad(10f)
+                pauseTable.setFillParent(true)
+                pauseTable.add(btnBack).size(stage.width / 2, 45.0f)
+                pauseTable.row()
+                pauseTable.add(btnContinue).size(stage.width/2, 45.0f)
+                popup.setChild(pauseTable)
+                stage.addActor(popup)
             }
         })
         btnMenu.setSize(50f, 58f)
@@ -117,7 +133,7 @@ class GameScreen(val gameController: StarBattle) : View() {
                 slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
                 slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
                 slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
-                stage.addActor(PopupComponent(true, SlideshowComponent(slides)))
+                stage.addActor(PopupComponent(SlideshowComponent(slides), true))
             }
         })
         btnHelp.setSize(50f, 58f)
