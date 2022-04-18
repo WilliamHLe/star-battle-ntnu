@@ -16,7 +16,6 @@ import group16.project.game.models.GameInfo
 
 class CreateLobbyScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
 
-
     override fun init() {
         var table = VisTable()
 

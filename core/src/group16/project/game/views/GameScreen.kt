@@ -11,15 +11,18 @@ import com.badlogic.gdx.math.Rectangle
 import group16.project.game.models.Game
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
+import java.util.ArrayList
 import group16.project.game.controllers.InputHandler
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.kotcrab.vis.ui.widget.*
+import group16.project.game.views.components.ImageSlideshowComponent
+import group16.project.game.views.components.PopupComponent
+import group16.project.game.views.components.SlideshowComponent
 import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.ComponentMapper
 import group16.project.game.models.GameState
-import com.kotcrab.vis.ui.widget.*
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameInfo
 
@@ -109,16 +112,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     }
 
     fun drawLayout() {
-        var table = VisTable()
-
-        val btnBack = VisTextButton("Return to main menu")
-        btnBack.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent, actor: Actor) {
-                gameController.updateCurrentGame("null", "null", "null")
-                gameController.changeScreen(MainMenuScreen::class.java)
-            }
-        })
-
         // Draw topbox
         val tbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("topbox.png")))))
         tbox.setSize(360f, 60f)
@@ -141,6 +134,70 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         tubox.setPosition((stage.width/2) - 130f, 50f)
         stage.addActor(tubox)
 
+        // Draw menu icon
+        val cogIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("cog_icon.png")))))
+        cogIcon.setSize(50f, 58f)
+        cogIcon.setPosition((stage.width/2) + 670/2f - 100f, 1f)
+        val btnMenu = VisTextButton("")
+        btnMenu.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                println("PAUSE")
+                // Continue button
+                val popup = PopupComponent(null, true, false)
+                val btnContinue = VisTextButton("Continue game")
+                btnContinue.addListener(object : ChangeListener() {
+                    override fun changed(event: ChangeEvent, actor: Actor) {
+                        popup.closePopup()
+                    }
+                })
+                // Return to main menu button
+                val btnBack = VisTextButton("Return to main menu")
+                btnBack.addListener(object : ChangeListener() {
+                    override fun changed(event: ChangeEvent, actor: Actor) {
+                        gameController.updateCurrentGame("null", "null", "null")
+                        gameController.changeScreen(MainMenuScreen::class.java)
+                    }
+                })
+                // Create table layout
+                val pauseTable = VisTable()
+                pauseTable.columnDefaults(0).pad(10f)
+                pauseTable.setFillParent(true)
+                pauseTable.add(btnContinue).size(stage.width/2, 45.0f)
+                pauseTable.row()
+                pauseTable.add(btnBack).size(stage.width / 2, 45.0f)
+
+                popup.setChild(pauseTable)
+                stage.addActor(popup)
+            }
+        })
+        btnMenu.setSize(50f, 58f)
+        btnMenu.setPosition((stage.width/2) + 670/2f - 100f, 1f)
+        btnMenu.setColor(0f,0f,0f,0f)
+        stage.addActor(cogIcon)
+        stage.addActor(btnMenu)
+
+        // Draw help icon
+        val helpIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("help_icon.png")))))
+        helpIcon.setSize(50f, 58f)
+        helpIcon.setPosition((stage.width/2) + 670/2f - 155f, 1f)
+        val btnHelp = VisTextButton("")
+        btnHelp.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                println("HELP")
+                val slides = ArrayList<ImageSlideshowComponent>()
+                slides.add(ImageSlideshowComponent("background.png", "Example text 1: background.png"))
+                slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
+                slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
+                slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
+                stage.addActor(PopupComponent(SlideshowComponent(slides), true))
+            }
+        })
+        btnHelp.setSize(50f, 58f)
+        btnHelp.setPosition((stage.width/2) + 670/2f - 155f, 1f)
+        btnHelp.setColor(0f,0f,0f,0f)
+        stage.addActor(helpIcon)
+        stage.addActor(btnHelp)
+
         // Draw end turn button
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
@@ -153,20 +210,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         btnEndTurn.setPosition((stage.width/2) - 55f, 70f)
         stage.addActor(btnEndTurn)
 
-        val btnChangeState = VisTextButton("Change state")
-        btnChangeState.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent, actor: Actor) {
-                game.changeState(game.state.signal())
-            }
-        })
-        // Create the layout
-        table.columnDefaults(0).pad(10f)
-        table.setFillParent(true)
-        table.add(btnBack).size(stage.width / 2, 45.0f)
-        table.row()
-        //table.add(btnChangeState).size(stage.width/2, 45.0f)
-        stage.addActor(table)
-
+        // Draw spots
         for (i in 0..1) {
             // Draw table
             val vbox = VisTable()
