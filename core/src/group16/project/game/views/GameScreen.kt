@@ -22,7 +22,8 @@ import group16.project.game.models.GameState
 import com.kotcrab.vis.ui.widget.*
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameInfo
-
+import group16.project.game.views.components.EndGameComponent
+import group16.project.game.views.components.PopupComponent
 
 class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
@@ -35,7 +36,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     override fun draw(delta: Float) {
         game.render(delta)
-
     }
 
     fun updateHealth(player: String, health: Int){
@@ -90,15 +90,15 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     fun endGame() {
         //This player won
         fbic.updateCurrentGameState(GameState.GAME_OVER)
+        var score: Int
         if (healths[GameInfo.player]!!.get() != 0) {
-            println("you won, you have " + healths[GameInfo.player]!!.get() + "heart left")
-            println("Your score is " + (10+healths[GameInfo.player]!!.get()*5))
-            fbic.updateScore(10+healths[GameInfo.player]!!.get()*5)
+            score = 10+healths[GameInfo.player]!!.get()*5
+            fbic.updateScore(score)
         }else {
-            println("You loose")
-            println("5 point get deducted from your score")
-            fbic.updateScore(-5)
+            score = -5
+            fbic.updateScore(score)
         }
+        stage.addActor(PopupComponent(false, EndGameComponent(score, game, gameController)))
     }
 
     fun updateUi() {
@@ -109,16 +109,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     }
 
     fun drawLayout() {
-        var table = VisTable()
-
-        val btnBack = VisTextButton("Return to main menu")
-        btnBack.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent, actor: Actor) {
-                game.deleteLobby()
-                gameController.changeScreen(MainMenuScreen::class.java)
-            }
-        })
-
         // Draw topbox
         val tbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("topbox.png")))))
         tbox.setSize(360f, 60f)
@@ -159,13 +149,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 game.changeState(game.state.signal())
             }
         })
-        // Create the layout
-        table.columnDefaults(0).pad(10f)
-        table.setFillParent(true)
-        table.add(btnBack).size(stage.width / 2, 45.0f)
-        table.row()
-        //table.add(btnChangeState).size(stage.width/2, 45.0f)
-        stage.addActor(table)
 
         for (i in 0..1) {
             // Draw table
@@ -227,6 +210,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 stage.addActor(bar)
             }
             stage.addActor(vbox)
+
         }
         updateUi()
         Gdx.app.log("VIEW", "Game loaded")

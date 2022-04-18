@@ -16,7 +16,7 @@ package group16.project.game.models
 
 enum class GameState {
     START {
-        override var  text = "Starting..."
+        override var  text = "Waiting For Player To Join..."
         override fun signal() = SETUP
     },
 
