@@ -3,37 +3,47 @@ package group16.project.game.views
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.kotcrab.vis.ui.widget.VisTable
+import com.kotcrab.vis.ui.widget.VisTextButton
 import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import com.badlogic.gdx.math.Rectangle
 import group16.project.game.models.Game
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
 import java.util.ArrayList
-import com.badlogic.gdx.physics.box2d.World
 import group16.project.game.controllers.InputHandler
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
-
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.kotcrab.vis.ui.widget.*
-import group16.project.game.models.GameState
 import group16.project.game.views.components.ImageSlideshowComponent
 import group16.project.game.views.components.PopupComponent
 import group16.project.game.views.components.SlideshowComponent
+import group16.project.game.ecs.component.HealthComponent
+import group16.project.game.ecs.utils.ComponentMapper
+import group16.project.game.models.GameState
+import group16.project.game.models.FirebaseInterface
+import group16.project.game.models.GameInfo
 
 
-class GameScreen(val gameController: StarBattle) : View() {
+class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
     private val camera = OrthographicCamera()
-    private val game = Game(screenRect, camera)
+    private val game = Game(screenRect, camera, this)
+
+    private val statusText = VisLabel("")
+    private val btnEndTurn = VisTextButton("End Turn")
+    private lateinit var healths: HashMap<String, HealthComponent>
 
     override fun draw(delta: Float) {
         game.render(delta)
+
+    }
+
+    fun updateHealth(player: String, health: Int){
+        healths[player]!!.set(health)
+        if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) endGame()
     }
 
     override fun resize(width: Int, height: Int) {
@@ -57,26 +67,62 @@ class GameScreen(val gameController: StarBattle) : View() {
         stage.clear()
     }
     override fun init() {
+        game.init()
         drawLayout()
         // Init game model and camera
         camera.setToOrtho(false, Configuration.gameWidth, Configuration.gameHeight)
-        game.init()
+
+        healths = HashMap<String, HealthComponent>()
+        healths.set(GameInfo.player, ComponentMapper.health.get(game.ship1))
+        healths.set(GameInfo.opponent, ComponentMapper.health.get(game.ship2))
+
+        //Hearth listeners
+        fbic.heartListener("host", this)
+        fbic.heartListener("player_2", this)
+        //gameState listener
+        fbic.getCurrentState(game)
+        //Opponent ready listener
+        fbic.checkIfOpponentReady(this)
     }
+    fun bothReady(opponentMovingTo : Int, opponentShooting : Int) {
+        InputHandler.enemyPosition = opponentMovingTo
+        InputHandler.enemyTrajectoryPosition = opponentShooting
+        game.fireShots()
+    }
+
+    fun endGame() {
+        //This player won
+        fbic.updateCurrentGameState(GameState.GAME_OVER)
+        if (healths[GameInfo.player]!!.get() != 0) {
+            println("you won, you have " + healths[GameInfo.player]!!.get() + "heart left")
+            println("Your score is " + (10+healths[GameInfo.player]!!.get()*5))
+            fbic.updateScore(10+healths[GameInfo.player]!!.get()*5)
+        }else {
+            println("You loose")
+            println("5 point get deducted from your score")
+            fbic.updateScore(-5)
+        }
+    }
+
+    fun updateUi() {
+        // Update display text
+        statusText.setText(game.state.text)
+        // Update end turn
+        btnEndTurn.isDisabled = game.state != GameState.SETUP
+    }
+
     fun drawLayout() {
-        var table = VisTable()
-
-        val btnBack = VisTextButton("Return to main menu")
-        btnBack.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent, actor: Actor) {
-                gameController.changeScreen(MainMenuScreen::class.java)
-            }
-        })
-
         // Draw topbox
         val tbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("topbox.png")))))
         tbox.setSize(360f, 60f)
         tbox.setPosition((stage.width/2) - 180f, stage.height - 60f)
         stage.addActor(tbox)
+
+        // Draw status display text
+        statusText.setPosition((stage.width/2) - 180f, stage.height - 50f)
+        statusText.setSize(360f, 60f)
+        statusText.setAlignment(1) // center text
+        stage.addActor(statusText)
 
         // Draw bottombox
         val bbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bottombox.png")))))
@@ -96,20 +142,30 @@ class GameScreen(val gameController: StarBattle) : View() {
         btnMenu.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("PAUSE")
-                val btnContinue = VisTextButton("Continue game")
+                // Continue button
                 val popup = PopupComponent(null, true, false)
+                val btnContinue = VisTextButton("Continue game")
                 btnContinue.addListener(object : ChangeListener() {
                     override fun changed(event: ChangeEvent, actor: Actor) {
                         popup.closePopup()
                     }
                 })
-
+                // Return to main menu button
+                val btnBack = VisTextButton("Return to main menu")
+                btnBack.addListener(object : ChangeListener() {
+                    override fun changed(event: ChangeEvent, actor: Actor) {
+                        gameController.updateCurrentGame("null", "null", "null")
+                        gameController.changeScreen(MainMenuScreen::class.java)
+                    }
+                })
+                // Create table layout
                 val pauseTable = VisTable()
                 pauseTable.columnDefaults(0).pad(10f)
                 pauseTable.setFillParent(true)
-                pauseTable.add(btnBack).size(stage.width / 2, 45.0f)
-                pauseTable.row()
                 pauseTable.add(btnContinue).size(stage.width/2, 45.0f)
+                pauseTable.row()
+                pauseTable.add(btnBack).size(stage.width / 2, 45.0f)
+
                 popup.setChild(pauseTable)
                 stage.addActor(popup)
             }
@@ -142,30 +198,17 @@ class GameScreen(val gameController: StarBattle) : View() {
         stage.addActor(helpIcon)
         stage.addActor(btnHelp)
 
-        // Draw debug table
-        val btnFire = VisTextButton("Fire!")
-        btnFire.addListener(object : ChangeListener() {
+        // Draw end turn button
+        btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                game.fireShots()
+                println("end turn clicked")
+                game.updatePosition()
+                game.changeState(game.state.signal())
             }
         })
-
-        val btnChangeState = VisTextButton("Current state: "+game.state.name)
-        btnChangeState.addListener(object : ChangeListener() {
-            override fun changed(event: ChangeEvent, actor: Actor) {
-                game.changeState()
-                btnChangeState.setText("Current state: "+game.state.name)
-            }
-        })
-        // Create the layout
-        table.columnDefaults(0).pad(10f)
-        table.setFillParent(true)
-        table.add(btnBack).size(stage.width / 2, 45.0f)
-        table.row()
-        table.add(btnFire).size(stage.width/2, 45.0f)
-        table.row()
-        table.add(btnChangeState).size(stage.width/2, 45.0f)
-        stage.addActor(table)
+        btnEndTurn.setSize(110f, 25f)
+        btnEndTurn.setPosition((stage.width/2) - 55f, 70f)
+        stage.addActor(btnEndTurn)
 
         // Draw spots
         for (i in 0..1) {
@@ -201,8 +244,8 @@ class GameScreen(val gameController: StarBattle) : View() {
                 if (i == 0)
                     btn.addListener(object : ChangeListener() {
                         override fun changed(event: ChangeEvent, actor: Actor) {
-                            if (game.state == GameState.SETUP) {
-                                InputHandler.playerPosition = Integer.parseInt(btn.text.toString()).toFloat()
+                            if (game.state == GameState.SETUP) { // Let player move position only if state is on SETUP
+                                InputHandler.playerPosition = Integer.parseInt(btn.text.toString())
                                 print("PS ")
                                 println(InputHandler.playerPosition)
                             }
@@ -212,7 +255,7 @@ class GameScreen(val gameController: StarBattle) : View() {
                     btn.addListener(object : ChangeListener() {
                         override fun changed(event: ChangeEvent, actor: Actor) {
                             if (game.state == GameState.SETUP) {
-                                InputHandler.playerTrajectoryPosition = Integer.parseInt(btn.text.toString()).toFloat()
+                                InputHandler.playerTrajectoryPosition = Integer.parseInt(btn.text.toString())
                                 print("PTS ")
                                 println(InputHandler.playerTrajectoryPosition)
                             }
@@ -229,7 +272,7 @@ class GameScreen(val gameController: StarBattle) : View() {
             }
             stage.addActor(vbox)
         }
-
+        updateUi()
         Gdx.app.log("VIEW", "Game loaded")
     }
 }

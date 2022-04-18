@@ -12,8 +12,9 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
+import group16.project.game.models.FirebaseInterface
 
-class JoinLobbyScreen(val gameController: StarBattle) : View() {
+class JoinLobbyScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
 
     //Error label
     var errorMessageLabel: Label =Label("", LabelStyle(BitmapFont(), Color.RED))
@@ -21,8 +22,6 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
 
     override fun init() {
         var table = VisTable()
-        var dbconnection = gameController.getDBConnection()
-
 
         // Create title
         val txtTitle = VisLabel("Join game lobby")
@@ -46,14 +45,14 @@ class JoinLobbyScreen(val gameController: StarBattle) : View() {
                 errorMessageLabel.setText("")
                 //If lobby code is blank display error message
                 if (nameField.toString() == "") {
-                    errorMessageLabel.setText("Need a lobby code")
+                    errorMessageLabel.setText("Need a lobby name")
                 //If lobby code is not 6 character
                 }else if(nameField.toString().length != 6) {
-                    errorMessageLabel.setText("Lobby code is 6 character and/or numbers long")
+                    errorMessageLabel.setText("Lobby name is 6 character and/or numbers long")
                 //Else join lobby and display waiting
                 }else {
                     //If could not join lobby error message will be updated in errorMessage function
-                    dbconnection.joinLobby(nameField.toString(), this@JoinLobbyScreen)
+                    fbic.joinLobby(nameField.toString(), this@JoinLobbyScreen)
                     errorMessageLabel.setText("Waiting...")
                 }
             }

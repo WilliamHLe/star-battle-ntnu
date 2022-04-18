@@ -16,9 +16,6 @@ class HighScoreScreen(val gameController: StarBattle): View(){
     val txtTitle = VisLabel("High score List")
     val btnReturn = VisTextButton("Return to main menu")
 
-
-
-
     override fun init() {
         // High score title
         txtTitle.setAlignment(1)
@@ -30,6 +27,8 @@ class HighScoreScreen(val gameController: StarBattle): View(){
             }
         })
 
+        updateTable()
+
         Gdx.app.log("VIEW", "Join lobby loaded")
     }
 
@@ -39,24 +38,17 @@ class HighScoreScreen(val gameController: StarBattle): View(){
     /**
      * Update score for child that moved og changed
      */
-    fun childMoved(userName: String, score: Int) {
+    fun updateHighscore(userName: String, score: Int) {
         players[userName] = score
         updateTable()
     }
 
-    /**
-     * Remove child that is no longer top 10
-     */
-    fun userRemoved(userName: String) {
-        players.remove(userName)
-        updateTable()
-    }
 
     /**
      * Update table vith new highscore list
      */
     fun updateTable() {
-        val result = players.toList().sortedBy { (_, value) -> value}.toMap()
+        val result = players.toList().sortedBy { (_, value) -> value}.reversed().toMap()
         //Clear stage to remove table
         stage.clear()
 

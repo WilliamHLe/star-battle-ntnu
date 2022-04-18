@@ -3,9 +3,6 @@ package group16.project.game
 import kotlin.jvm.JvmStatic
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
-import group16.project.game.StarBattle
-import group16.project.game.models.CoreFirebaseConnection
-import pl.mk5.gdx.fireapp.GdxFIRApp
 
 // Please note that on macOS your application needs to be started with the -XstartOnFirstThread JVM argument
 object DesktopLauncher {

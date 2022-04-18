@@ -6,5 +6,5 @@ object Configuration {
     var gameWidth = 1280.0f
     var gameHeight = 720.0f
     var gameTitle = "Star Battle NTNU"
-    var debug = true
+    var debug = false
 }
