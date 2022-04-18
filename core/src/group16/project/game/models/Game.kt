@@ -93,6 +93,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         //state = state.signal()
         this.state = state
         gameScreen.updateUi()
+        if (this.state == GameState.LOBBY_DELETED) gameScreen.updateLayout()
     }
 
     fun render(delta: Float) {

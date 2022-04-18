@@ -52,6 +52,11 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         drawLayout()
     }
 
+    fun updateLayout(){
+        stage.clear()
+        drawLayout()
+    }
+
     override fun dispose() {
         super.dispose()
         game.dispose()
@@ -109,6 +114,15 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     }
 
     fun drawLayout() {
+        var table = VisTable()
+
+        val btnBack = VisTextButton("Return to main menu")
+        btnBack.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                gameController.updateCurrentGame("null", "null", "null")
+                gameController.changeScreen(MainMenuScreen::class.java)
+            }
+        })
         // Draw topbox
         val tbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("topbox.png")))))
         tbox.setSize(360f, 60f)
@@ -149,6 +163,15 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 game.changeState(game.state.signal())
             }
         })
+        if (game.state == GameState.LOBBY_DELETED || GameInfo.currentGame == "null") {
+            // Create the layout
+            table.columnDefaults(0).pad(10f)
+            table.setFillParent(true)
+            table.add(btnBack).size(stage.width / 2, 45.0f)
+            table.row()
+            //table.add(btnChangeState).size(stage.width/2, 45.0f)
+            stage.addActor(table)
+        }
 
         for (i in 0..1) {
             // Draw table
@@ -171,6 +194,10 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             bbar.setSize(200f, 40f)
             bbar.setPosition((stage.width - 150f)*i - 20f, padding - 20f)
             stage.addActor(bbar)
+
+            var lobbycode = VisLabel(GameInfo.currentGame)
+            lobbycode.setPosition(stage.width/2-lobbycode.width/2, 0+15f)
+            stage.addActor(lobbycode)
 
             // Draw buttons
             val btn1 = VisTextButton("3")
