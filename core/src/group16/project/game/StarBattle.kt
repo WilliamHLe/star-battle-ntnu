@@ -30,7 +30,8 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
         }
         // Log in here.
         fbic.signInAnonymously()
-        changeScreen(PlaceholderTutorialScreen::class.java)
+        changeScreen(MainMenuScreen::class.java)
+        // changeScreen(PlaceholderTutorialScreen::class.java)
         Gdx.app.log("CONTROLLER", "StarBattleController loaded")
     }
 

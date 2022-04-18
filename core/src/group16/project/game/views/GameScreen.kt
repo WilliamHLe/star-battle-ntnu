@@ -3,9 +3,6 @@ package group16.project.game.views
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
-import com.kotcrab.vis.ui.widget.VisTable
-import com.kotcrab.vis.ui.widget.VisTextButton
-import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import com.badlogic.gdx.math.Rectangle
@@ -16,7 +13,6 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable
-import com.kotcrab.vis.ui.widget.ButtonBar
 import java.util.ArrayList
 import com.badlogic.gdx.physics.box2d.World
 import group16.project.game.controllers.InputHandler
@@ -24,7 +20,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.kotcrab.vis.ui.widget.*
 import group16.project.game.models.GameState
+import group16.project.game.views.components.ImageSlideshowComponent
+import group16.project.game.views.components.PopupComponent
+import group16.project.game.views.components.SlideshowComponent
 
 
 class GameScreen(val gameController: StarBattle) : View() {
@@ -88,6 +88,45 @@ class GameScreen(val gameController: StarBattle) : View() {
         tubox.setPosition((stage.width/2) - 130f, 50f)
         stage.addActor(tubox)
 
+        // Draw menu icon
+        val cogIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("cog_icon.png")))))
+        cogIcon.setSize(50f, 58f)
+        cogIcon.setPosition((stage.width/2) + 670/2f - 100f, 1f)
+        val btnMenu = VisTextButton("")
+        btnMenu.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                println("MENU")
+            }
+        })
+        btnMenu.setSize(50f, 58f)
+        btnMenu.setPosition((stage.width/2) + 670/2f - 100f, 1f)
+        btnMenu.setColor(0f,0f,0f,0f)
+        stage.addActor(cogIcon)
+        stage.addActor(btnMenu)
+
+        // Draw help icon
+        val helpIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("help_icon.png")))))
+        helpIcon.setSize(50f, 58f)
+        helpIcon.setPosition((stage.width/2) + 670/2f - 155f, 1f)
+        val btnHelp = VisTextButton("")
+        btnHelp.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                println("HELP")
+                val slides = ArrayList<ImageSlideshowComponent>()
+                slides.add(ImageSlideshowComponent("background.png", "Example text 1: background.png"))
+                slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
+                slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
+                slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
+                stage.addActor(PopupComponent(true, SlideshowComponent(slides)))
+            }
+        })
+        btnHelp.setSize(50f, 58f)
+        btnHelp.setPosition((stage.width/2) + 670/2f - 155f, 1f)
+        btnHelp.setColor(0f,0f,0f,0f)
+        stage.addActor(helpIcon)
+        stage.addActor(btnHelp)
+
+        // Draw debug table
         val btnFire = VisTextButton("Fire!")
         btnFire.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
@@ -112,6 +151,7 @@ class GameScreen(val gameController: StarBattle) : View() {
         table.add(btnChangeState).size(stage.width/2, 45.0f)
         stage.addActor(table)
 
+        // Draw spots
         for (i in 0..1) {
             // Draw table
             val vbox = VisTable()
