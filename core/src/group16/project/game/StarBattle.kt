@@ -31,7 +31,6 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
         // Log in here.
         fbic.signInAnonymously()
         changeScreen(MainMenuScreen::class.java)
-        // changeScreen(PlaceholderTutorialScreen::class.java)
         Gdx.app.log("CONTROLLER", "StarBattleController loaded")
     }
 
@@ -64,6 +63,5 @@ class StarBattle(val fbic: FirebaseInterface) : Game() {
         screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this))
         screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this))
         screens.put(HighScoreScreen::class.java, HighScoreScreen(this))
-        screens.put(PlaceholderTutorialScreen::class.java, PlaceholderTutorialScreen(this))
     }
 }
