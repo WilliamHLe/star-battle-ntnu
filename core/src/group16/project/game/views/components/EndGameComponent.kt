@@ -82,8 +82,8 @@ class EndGameComponent(score: Int, game: Game, gameController: StarBattle): Floa
         table.row()
         table.add(text).size(WIDTH*0.7f, HEIGHT*0.05f)
         table.row()
-        table.add(btnPlayAgain)
-        table.row()
+        //table.add(btnPlayAgain)
+        //table.row()
         table.add(btnBack)
 
 
