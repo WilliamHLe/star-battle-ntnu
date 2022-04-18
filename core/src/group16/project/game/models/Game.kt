@@ -28,6 +28,9 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     lateinit var ship1: Entity
     lateinit var ship2: Entity
 
+    lateinit var shield1: Entity
+    lateinit var shield2: Entity
+
     fun init() {
         state = GameState.START
         // Ship
@@ -35,6 +38,11 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         ship2 = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, false)
         engine.addEntity(ship1)
         engine.addEntity(ship2)
+        // Shields
+        shield1 = EntityFactory.createShield(engine, 190f, 0f, true)
+        shield2 = EntityFactory.createShield(engine, Configuration.gameWidth - 370f, 0f, false)
+        engine.addEntity(shield1)
+        engine.addEntity(shield2)
         // Target
         engine.addEntity(EntityFactory.createTarget(engine, Configuration.gameWidth - 160f, 0f, true))
         engine.addEntity(EntityFactory.createTarget(engine, 10f, 0f, false))
@@ -51,6 +59,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
             gameScreen.fbic.setPlayersChoice(
                 InputHandler.playerPosition,
                 InputHandler.playerTrajectoryPosition,
+                    InputHandler.playerShieldPosition,
                 gameScreen
             )
         }

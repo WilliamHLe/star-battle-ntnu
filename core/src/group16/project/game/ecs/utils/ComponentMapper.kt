@@ -13,4 +13,5 @@ object ComponentMapper {
     val trajectory = ComponentMapper.getFor(TrajectoryComponent::class.java)
     val transform = ComponentMapper.getFor(TransformComponent::class.java)
     val health = ComponentMapper.getFor((HealthComponent::class.java))
+    val shield = ComponentMapper.getFor((ShieldComponent::class.java))
 }

@@ -208,13 +208,14 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         myRef.setValue(state.name)
     }
 
-    override fun setPlayersChoice(position: Int, targetPostion: Int, gameScreen: GameScreen) {
+    override fun setPlayersChoice(position: Int, targetPostion: Int, shieldPosition: Int, gameScreen: GameScreen) {
         var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
 
         myRef.get().addOnSuccessListener {
             if(it.value != null) {
                 myRef.child(GameInfo.player).child("position").setValue(position)
                 myRef.child(GameInfo.player).child("target_position").setValue(targetPostion)
+                myRef.child(GameInfo.player).child("shield_position").setValue(shieldPosition)
                 myRef.child(GameInfo.player).child("ready_to_fire").setValue(true)
                 println("YOU FIRE")
                 fire(gameScreen)
@@ -252,19 +253,42 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
+    }
+    override fun shieldListener(player: String, screen: GameScreen){
+        val health = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("shield_position")
 
+        health.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.getValue() != null) {
+                    println("SHIELD LISTENER")
+                    println(Integer.parseInt(dataSnapshot.getValue().toString()))
+                    screen.updateShield(player, Integer.parseInt(dataSnapshot.getValue().toString()))
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
     }
 
     override fun reduceHeartsAmount() {
         val updates: MutableMap<String, Any> = HashMap()
         updates["${GameInfo.currentGame}/${GameInfo.player}/lives"] = ServerValue.increment(-1)
+        updates["${GameInfo.currentGame}/${GameInfo.player}/shield_position"] = -1
         database.getReference("lobbies").updateChildren(updates)
     }
+    /*
+    override fun removeShield() {
+        val updates: MutableMap<String, Any> = HashMap()
+        updates["${GameInfo.currentGame}/${GameInfo.player}/lives"] = ServerValue.increment(-1)
+        updates["${GameInfo.currentGame}/${GameInfo.player}/shield_position"] = -1
+        database.getReference("lobbies").updateChildren(updates)
+    }
+     */
 
     override fun updatePlayerHealth(){
         var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
         myRef.get().addOnSuccessListener {
             val opponentTargetPosition = (it.child(GameInfo.opponent).child("target_position").value as Long).toInt()
+            val shieldPosition = (it.child(GameInfo.player).child("shield_position").value as Long).toInt()
             val yourPosition = (it.child(GameInfo.player).child("position").value as Long).toInt()
             if (opponentTargetPosition == yourPosition) {
                 println("UPDATE PLAYER HEALTH")

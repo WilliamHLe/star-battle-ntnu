@@ -15,12 +15,13 @@ interface FirebaseInterface {
     fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen)
 
     fun heartListener(player: String, screen: GameScreen)
+    fun shieldListener(player: String, screen: GameScreen)
 
     fun getHighScoreListener(screen: HighScoreScreen)
 
     fun updateCurrentGameState(state: GameState)
 
-    fun setPlayersChoice(position: Int, targetPostion: Int, gameScreen: GameScreen)
+    fun setPlayersChoice(position: Int, targetPostion: Int, shieldPosition: Int, gameScreen: GameScreen)
 
     fun checkIfOpponentReady(screen: GameScreen)
     fun fire(gameScreen: GameScreen)

@@ -20,6 +20,7 @@ import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.ComponentMapper
 import group16.project.game.models.GameState
 import com.kotcrab.vis.ui.widget.*
+import group16.project.game.ecs.component.ShieldComponent
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameInfo
 
@@ -31,7 +32,9 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     private val statusText = VisLabel("")
     private val btnEndTurn = VisTextButton("End Turn")
+    private val btnPlaceShield = VisTextButton("Place shield")
     private lateinit var healths: HashMap<String, HealthComponent>
+    private lateinit var shields: HashMap<String, ShieldComponent>
 
     override fun draw(delta: Float) {
         game.render(delta)
@@ -41,6 +44,9 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     fun updateHealth(player: String, health: Int){
         healths[player]!!.set(health)
         if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) endGame()
+    }
+    fun updateShield(player: String, position: Int) {
+        shields[player]!!.set(position)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -73,9 +79,16 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         healths.set(GameInfo.player, ComponentMapper.health.get(game.ship1))
         healths.set(GameInfo.opponent, ComponentMapper.health.get(game.ship2))
 
+        shields = HashMap<String, ShieldComponent>()
+        shields.set(GameInfo.player, ComponentMapper.shield.get(game.shield1))
+        shields.set(GameInfo.opponent, ComponentMapper.shield.get(game.shield2))
+
         //Hearth listeners
         fbic.heartListener("host", this)
         fbic.heartListener("player_2", this)
+        //Shield listeners
+        fbic.shieldListener("host", this)
+        fbic.shieldListener("player_2", this)
         //gameState listener
         fbic.getCurrentState(game)
         //Opponent ready listener
@@ -106,6 +119,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         statusText.setText(game.state.text)
         // Update end turn
         btnEndTurn.isDisabled = game.state != GameState.SETUP
+        btnPlaceShield.isDisabled = game.state != GameState.SETUP
     }
 
     fun drawLayout() {
@@ -152,6 +166,17 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         btnEndTurn.setSize(110f, 25f)
         btnEndTurn.setPosition((stage.width/2) - 55f, 70f)
         stage.addActor(btnEndTurn)
+
+        // Draw place shield button
+        btnPlaceShield.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                println("Placed a shield")
+                InputHandler.playerShieldPosition = InputHandler.playerPosition
+            }
+        })
+        btnPlaceShield.setSize(110f, 25f)
+        btnPlaceShield.setPosition((stage.width/2) - 55f, 170f)
+        stage.addActor(btnPlaceShield)
 
         val btnChangeState = VisTextButton("Change state")
         btnChangeState.addListener(object : ChangeListener() {

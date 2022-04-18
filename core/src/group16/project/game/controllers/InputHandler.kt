@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.MathUtils
 
 object InputHandler {
     var playerPosition = 0
+    var playerShieldPosition = -1
     var enemyPosition = MathUtils.random(0, 3)
 
     var playerTrajectoryPosition = 0

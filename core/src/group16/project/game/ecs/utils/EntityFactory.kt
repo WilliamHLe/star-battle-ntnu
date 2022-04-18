@@ -96,6 +96,28 @@ class EntityFactory {
                     opacity = if (isPlayer) 1f else 0f
                 })
             }
+        fun createShield(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
+            engine.createEntity().also { entity ->
+                entity.add(engine.createComponent(PositionComponent::class.java).apply {
+                    z = 1f
+                    x = posx
+                    y = posy
+                })
+                entity.add(engine.createComponent(BodyComponent::class.java).apply {
+                    rectangle.setWidth(160f)
+                    rectangle.setHeight(160f)
+                    rectangle.setPosition(posx, posy)
+                })
+                entity.add(engine.createComponent(TextureComponent::class.java).apply {
+                    texture = Texture("ufo3.png")
+                })
+                entity.add(engine.createComponent(ShieldComponent::class.java))
+                entity.add(engine.createComponent(TransformComponent::class.java).apply {
+                    rotation = 0f
+                    flipped = !isPlayer
+                    opacity = 1f
+                })
+            }
 
         fun createTrajectory(
             engine: Engine,
