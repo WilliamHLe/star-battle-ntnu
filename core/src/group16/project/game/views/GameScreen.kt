@@ -35,6 +35,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     private val btnPlaceShield = VisTextButton("Place shield")
     private lateinit var healths: HashMap<String, HealthComponent>
     private lateinit var shields: HashMap<String, ShieldComponent>
+    private var usedShield = false
 
     override fun draw(delta: Float) {
         game.render(delta)
@@ -46,7 +47,10 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) endGame()
     }
     fun updateShield(player: String, position: Int) {
-        shields[player]!!.set(position)
+        shields[player]!!.setPos(position)
+    }
+    fun destroyShield(player: String, destroyed: Boolean) {
+        shields[player]!!.destroyed = destroyed
     }
 
     override fun resize(width: Int, height: Int) {
@@ -119,7 +123,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         statusText.setText(game.state.text)
         // Update end turn
         btnEndTurn.isDisabled = game.state != GameState.SETUP
-        btnPlaceShield.isDisabled = game.state != GameState.SETUP
+        btnPlaceShield.isDisabled = game.state != GameState.SETUP || usedShield
     }
 
     fun drawLayout() {
@@ -163,7 +167,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 game.changeState(game.state.signal())
             }
         })
-        btnEndTurn.setSize(110f, 25f)
+        btnEndTurn.setSize(110f, 30f)
         btnEndTurn.setPosition((stage.width/2) - 55f, 70f)
         stage.addActor(btnEndTurn)
 
@@ -174,8 +178,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 InputHandler.playerShieldPosition = InputHandler.playerPosition
             }
         })
-        btnPlaceShield.setSize(110f, 25f)
-        btnPlaceShield.setPosition((stage.width/2) - 55f, 170f)
+        btnPlaceShield.setSize(110f, 30f)
+        btnPlaceShield.setPosition((stage.width/2) - 55f, 100f)
         stage.addActor(btnPlaceShield)
 
         val btnChangeState = VisTextButton("Change state")

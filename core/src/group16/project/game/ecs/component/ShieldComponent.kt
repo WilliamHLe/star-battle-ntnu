@@ -7,11 +7,11 @@ class ShieldComponent: Component  {
 
     var shield = 0
     var position = -1
+    var destroyed = false
 
-    fun set(position: Int) {
+    fun setPos(position: Int) {
         println("Set SHIELD POSITION to "+position+" (was "+this.position+")")
         this.position = position
-
     }
 
 }

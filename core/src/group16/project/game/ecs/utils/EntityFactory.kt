@@ -104,12 +104,12 @@ class EntityFactory {
                     y = posy
                 })
                 entity.add(engine.createComponent(BodyComponent::class.java).apply {
-                    rectangle.setWidth(160f)
-                    rectangle.setHeight(160f)
+                    rectangle.setWidth(64f)
+                    rectangle.setHeight(120f)
                     rectangle.setPosition(posx, posy)
                 })
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                    texture = Texture("ufo3.png")
+                    texture = Texture("Shield.png")
                 })
                 entity.add(engine.createComponent(ShieldComponent::class.java))
                 entity.add(engine.createComponent(TransformComponent::class.java).apply {
