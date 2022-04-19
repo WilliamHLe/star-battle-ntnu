@@ -34,6 +34,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     private val btnEndTurn = VisTextButton("End Turn")
     private lateinit var healths: HashMap<String, HealthComponent>
     var bothHit = false
+    var clicked = false
 
     override fun draw(delta: Float) {
         game.render(delta)
@@ -154,8 +155,12 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("end turn clicked")
-                game.updatePosition()
-                game.changeState(game.state.signal())
+                if (!clicked) {
+                    game.updatePosition()
+                    game.changeState(game.state.signal())
+                    clicked = true
+                }
+
             }
         })
         btnEndTurn.setSize(110f, 25f)

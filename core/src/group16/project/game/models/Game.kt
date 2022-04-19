@@ -63,6 +63,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     }
 
     fun fireShots() {
+        println("FIRE SHOT, SCREEN")
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
         }
@@ -87,13 +88,19 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.SETUP)
         }
+        gameScreen.clicked = false
+        println(gameScreen.clicked)
     }
 
     fun changeState(state: GameState) {
         //state = state.signal()
-        this.state = state
-        gameScreen.updateUi()
-        if (this.state == GameState.LOBBY_DELETED) gameScreen.updateLayout()
+        if (!(this.state == GameState.SETUP && state == GameState.ANIMATION)) {
+            this.state = state
+            gameScreen.updateUi()
+            gameScreen.clicked = false
+            println(gameScreen.clicked)
+        }
+        else if (this.state == GameState.LOBBY_DELETED) gameScreen.updateLayout()
     }
 
     fun render(delta: Float) {
