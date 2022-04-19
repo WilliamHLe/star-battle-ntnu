@@ -33,6 +33,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     private val statusText = VisLabel("")
     private val btnEndTurn = VisTextButton("End Turn")
     private lateinit var healths: HashMap<String, HealthComponent>
+    var bothHit = false
 
     override fun draw(delta: Float) {
         game.render(delta)
@@ -40,7 +41,9 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     fun updateHealth(player: String, health: Int){
         healths[player]!!.set(health)
-        if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) endGame()
+        println(!bothHit && (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0))
+        if (!bothHit && (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0)) endGame()
+        else bothHit = false
     }
 
     override fun resize(width: Int, height: Int) {
@@ -86,7 +89,9 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         //Opponent ready listener
         fbic.checkIfOpponentReady(this)
     }
-    fun bothReady(opponentMovingTo : Int, opponentShooting : Int) {
+    fun bothReady(opponentMovingTo : Int, opponentShooting : Int, bothHit: Boolean) {
+        println("BOTH READY, SCREEN")
+        this.bothHit = bothHit
         InputHandler.enemyPosition = opponentMovingTo
         InputHandler.enemyTrajectoryPosition = opponentShooting
         game.fireShots()
