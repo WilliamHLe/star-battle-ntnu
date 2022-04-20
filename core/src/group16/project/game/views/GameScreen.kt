@@ -26,7 +26,6 @@ import group16.project.game.models.GameState
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameInfo
 import group16.project.game.views.components.EndGameComponent
-import group16.project.game.views.components.PopupComponent
 
 class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
