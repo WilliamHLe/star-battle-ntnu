@@ -102,7 +102,10 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         //This player won
         fbic.updateCurrentGameState(GameState.GAME_OVER)
         var score: Int
-        if (healths[GameInfo.player]!!.get() != 0) {
+        if (healths[GameInfo.player]!!.get() == 0 && healths[GameInfo.opponent]!!.get() == 0){
+            score = 0
+            fbic.updateScore(score)
+        }else if (healths[GameInfo.player]!!.get() != 0) {
             score = 10+healths[GameInfo.player]!!.get()*5
             fbic.updateScore(score)
         }else {
@@ -151,14 +154,19 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         tubox.setPosition((stage.width/2) - 130f, 50f)
         stage.addActor(tubox)
 
+        //Draw lobbyCode label
+        var lobbycode = VisLabel(GameInfo.currentGame)
+        lobbycode.setPosition(stage.width/2-lobbycode.width/2, stage.height-tbox.height-20)
+        stage.addActor(lobbycode)
+
         // Draw end turn button
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("end turn clicked")
                 if (!clicked) {
+                    clicked = true
                     game.updatePosition()
                     game.changeState(game.state.signal())
-                    clicked = true
                 }
 
             }
@@ -204,10 +212,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             bbar.setSize(200f, 40f)
             bbar.setPosition((stage.width - 150f)*i - 20f, padding - 20f)
             stage.addActor(bbar)
-
-            var lobbycode = VisLabel(GameInfo.currentGame)
-            lobbycode.setPosition(stage.width/2-lobbycode.width/2, 0+15f)
-            stage.addActor(lobbycode)
 
             // Draw buttons
             val btn1 = VisTextButton("3")

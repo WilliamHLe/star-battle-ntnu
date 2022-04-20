@@ -2,14 +2,9 @@ package group16.project.game.views.components
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Pixmap
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.scenes.scene2d.Actor
-import com.badlogic.gdx.scenes.scene2d.ui.Image
-import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.layout.FloatingGroup
-import com.kotcrab.vis.ui.layout.GridGroup
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
@@ -26,23 +21,15 @@ class EndGameComponent(score: Int, game: Game, gameController: StarBattle): Floa
     private var text = VisLabel("")
 
     init {
-        val pixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888)
-        pixmap.setColor(Color.BLACK)
-        pixmap.fillRectangle(0, 0, 1, 1)
-        val texture = Texture(pixmap)
-        pixmap.dispose()
-
-        val image = Image(texture)
-        image.color.a=1.0f
-        image.setSize(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        //this.addActor(image)
-
         this.setPosition(0f ,0f)
         this.setSize(WIDTH, HEIGHT)
 
-        if (score < 0) {
+        if (score == 0) {
+            winOrLooseText.setText("Tie :|")
+            text.setText("No point will be added or deducted from your score")
+        } else if (score < 0) {
             winOrLooseText.setText("You lost :'( ")
-            text.setText("${-score} points will be deducted form your score")
+            text.setText("${-score} points will be deducted from your score")
         } else {
             winOrLooseText.setText("You won!! :)")
             text.setText("$score points will be added to your score")
@@ -72,8 +59,6 @@ class EndGameComponent(score: Int, game: Game, gameController: StarBattle): Floa
 
         // Root table
         var table = VisTable()
-        table.sizeBy(WIDTH/2, HEIGHT/2)
-        table.color.set(Color.BLACK)
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)
         table.add(header).size(WIDTH*0.8f, HEIGHT*0.05f)

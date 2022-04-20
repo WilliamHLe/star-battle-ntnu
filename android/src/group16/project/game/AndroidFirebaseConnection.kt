@@ -340,7 +340,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     }
 
     override fun deleteLobby() {
-        database.gerReference("users").child(auth.currentUser.uid).child(GameInfo.currentGame).removeValue()
+        database.getReference("users").child(auth.currentUser!!.uid).child(GameInfo.currentGame).removeValue()
         database.getReference("lobbies").child(GameInfo.currentGame).removeValue()
     }
 }
