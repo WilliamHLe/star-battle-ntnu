@@ -16,9 +16,6 @@ class HighScoreScreen(val gameController: StarBattle): View(){
     val txtTitle = VisLabel("High score List")
     val btnReturn = VisTextButton("Return to main menu")
 
-
-
-
     override fun init() {
         // High score title
         txtTitle.setAlignment(1)

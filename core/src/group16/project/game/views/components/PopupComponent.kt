@@ -11,7 +11,7 @@ import com.kotcrab.vis.ui.layout.FloatingGroup
 import com.kotcrab.vis.ui.widget.VisTextButton
 
 
-class PopupComponent(isFullscreen: Boolean = false, child: Actor): FloatingGroup() {
+class PopupComponent(child: Actor?, isFullscreen: Boolean = false, hasCloseButton: Boolean = true): FloatingGroup() {
 
     init {
         // Root widget
@@ -21,24 +21,30 @@ class PopupComponent(isFullscreen: Boolean = false, child: Actor): FloatingGroup
         if (isFullscreen) drawSemiTransparentBackground()
 
         // Child widget
-        this.addActor(child)
+        this.setChild(child)
 
         // Close button
-        if (isFullscreen) {
-            val btnClosePopup = VisTextButton("X")
-            btnClosePopup.setSize(60f, 60f)
-            btnClosePopup.setPosition(Gdx.graphics.width.toFloat() - 60f ,Gdx.graphics.height.toFloat() - 60f)
-            btnClosePopup.addListener(object : ChangeListener() {
-                override fun changed(event: ChangeEvent, actor: Actor) {
-                    closePopup()
-                }
-            })
-            this.addActor(btnClosePopup)
-        }
+        if (hasCloseButton) this.drawCloseButton()
+    }
+
+    fun drawCloseButton() {
+        val btnClosePopup = VisTextButton("X")
+        btnClosePopup.setSize(60f, 60f)
+        btnClosePopup.setPosition(Gdx.graphics.width.toFloat() - 60f ,Gdx.graphics.height.toFloat() - 60f)
+        btnClosePopup.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                closePopup()
+            }
+        })
+        this.addActor(btnClosePopup)
     }
 
     fun closePopup() {
         this.parent.removeActor(this)
+    }
+
+    fun setChild(child: Actor?) {
+        if (child != null) this.addActor(child)
     }
 
     private fun drawSemiTransparentBackground() {

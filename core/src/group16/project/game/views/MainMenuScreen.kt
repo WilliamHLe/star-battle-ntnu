@@ -11,10 +11,12 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
+import group16.project.game.views.components.ImageSlideshowComponent
+import group16.project.game.views.components.PopupComponent
+import group16.project.game.views.components.SlideshowComponent
+import java.util.ArrayList
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameState
-
-//import group16.project.game.models.CoreFirebaseConnection
 
 class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
     override fun draw(delta: Float) {}
@@ -30,10 +32,6 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
     }
 
     override fun init() {
-
-        //Log in user
-        //if ()
-        //dbconnection.signInAnonymously()
         // Log in user
         fbic.signInAnonymously()
         // Draw layout
@@ -99,6 +97,29 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         table.add(btnHighScore).size(stage.width / 8, 45.0f)
 
         stage.addActor(table)
+
+        // Draw help icon on top right corner
+        val helpIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("help_icon.png")))))
+        helpIcon.setSize(50f, 58f)
+        helpIcon.setPosition(stage.width - 60f, stage.height - 66f)
+        val btnHelp = VisTextButton("")
+        btnHelp.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                println("HELP")
+                val slides = ArrayList<ImageSlideshowComponent>()
+                slides.add(ImageSlideshowComponent("background.png", "Example text 1: background.png"))
+                slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
+                slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
+                slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
+                stage.addActor(PopupComponent(SlideshowComponent(slides), true))
+            }
+        })
+        btnHelp.setSize(50f, 58f)
+        btnHelp.setPosition(stage.width - 60f, stage.height - 66f)
+        btnHelp.setColor(0f,0f,0f,0f)
+        stage.addActor(helpIcon)
+        stage.addActor(btnHelp)
+
         Gdx.app.log("VIEW", "Main Menu loaded")
     }
 }

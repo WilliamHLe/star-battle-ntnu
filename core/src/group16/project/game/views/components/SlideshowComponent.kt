@@ -23,39 +23,12 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
 
     private var currentSlide = 0
 
-    fun updateSlide() {
-        val imgSlideshow = slides[currentSlide]
-        // Update display
-        display.clear()
-        val img = imgSlideshow.image
-        img.setSize(WIDTH*0.7f, HEIGHT*0.6f)
-        display.addActor(img)
-        // Update dots
-        updateDots()
-        // Update text
-        text.setText(imgSlideshow.text)
-    }
-    fun updateDots() {
-        dots.clear()
-        for (i in 0 until slides.size) {
-            if (i == currentSlide) {
-                var markedDot = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("heart_full.png")))))
-                markedDot.name = "marked"
-                markedDot.setSize(dots.itemWidth, dots.itemHeight)
-                dots.addActor(markedDot)
-            } else {
-                val dot = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("heart.png")))))
-                dot.setSize(dots.itemWidth, dots.itemHeight)
-                dots.addActor(dot)
-            }
-        }
-    }
     init {
         this.setPosition(0f ,0f)
         this.setSize(WIDTH, HEIGHT)
 
         // Navigation buttons
-        val btnLeft = VisTextButton("left")
+        val btnLeft = VisTextButton("<")
         btnLeft.setSize(100f, 200f)
         btnLeft.setPosition(0f ,HEIGHT/2 - 100f)
         btnLeft.addListener(object : ChangeListener() {
@@ -68,7 +41,7 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
         })
         this.addActor(btnLeft)
 
-        val btnRight = VisTextButton("right")
+        val btnRight = VisTextButton(">")
         btnRight.setSize(100f, 200f)
         btnRight.setPosition(WIDTH - 100f ,HEIGHT/2 - 100f)
         btnRight.addListener(object : ChangeListener() {
@@ -100,5 +73,34 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
 
         this.addActor(table)
         updateSlide()
+    }
+
+    fun updateSlide() {
+        val imgSlideshow = slides[currentSlide]
+        // Update display
+        display.clear()
+        val img = imgSlideshow.image
+        img.setSize(WIDTH*0.7f, HEIGHT*0.6f)
+        display.addActor(img)
+        // Update dots
+        updateDots()
+        // Update text
+        text.setText(imgSlideshow.text)
+    }
+
+    fun updateDots() {
+        dots.clear()
+        for (i in 0 until slides.size) {
+            if (i == currentSlide) {
+                var markedDot = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("heart_full.png")))))
+                markedDot.name = "marked"
+                markedDot.setSize(dots.itemWidth, dots.itemHeight)
+                dots.addActor(markedDot)
+            } else {
+                val dot = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("heart.png")))))
+                dot.setSize(dots.itemWidth, dots.itemHeight)
+                dots.addActor(dot)
+            }
+        }
     }
 }
