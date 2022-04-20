@@ -179,9 +179,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-
     }
-
 
     override fun updateScore(points: Int) {
         val updates: MutableMap<String, Any> = HashMap()
@@ -206,6 +204,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
         println("State: ${state.name}")
         myRef.setValue(state.name)
+        println("UPDATE GAME STATE: $state")
     }
 
     override fun setPlayersChoice(position: Int, targetPostion: Int, gameScreen: GameScreen) {
@@ -233,6 +232,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 val currentState = dataSnapshot.getValue()
                 if (currentState != null) {
                     game.changeState(GameState.valueOf(currentState.toString()))
+                    println("GET GAME STATE: ${GameState.valueOf(currentState.toString())}")
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -244,15 +244,14 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
         health.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    println("HEART LISTENER")
-                    println(Integer.parseInt(dataSnapshot.getValue().toString()))
-                    screen.updateHealth(player, Integer.parseInt(dataSnapshot.getValue().toString()))
+                val playerHealth = dataSnapshot.getValue()
+                if(playerHealth != null) {
+                    println("HEART LISTENER: ${player} ${playerHealth.toString()}")
+                    screen.updateHealth(player, Integer.parseInt(playerHealth.toString()))
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
         })
-
     }
 
     override fun reduceHeartsAmount() {
@@ -293,6 +292,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     override fun fire(screen : GameScreen) {
         var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
+        var bothHit = false
 
         myRef.get().addOnSuccessListener {
             if(it.value != null) {
@@ -308,13 +308,17 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                     val player2MovingTo = player2.child("position").value.toString().toInt()
                     val player2Shooting = player2.child("target_position").value.toString().toInt()
 
+                    if (player1MovingTo == player2Shooting && player2MovingTo == player1Shooting) bothHit = true
+
                     if (GameInfo.player == "host") screen.bothReady(
                         player2MovingTo,
-                        player2Shooting
+                        player2Shooting,
+                        bothHit
                     )
                     else screen.bothReady(
                         player1MovingTo,
-                        player1Shooting
+                        player1Shooting,
+                        bothHit
                     )
                 }
             }
@@ -335,6 +339,8 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         }
     }
 
-
-
+    override fun deleteLobby() {
+        database.getReference("users").child(auth.currentUser!!.uid).child(GameInfo.currentGame).removeValue()
+        database.getReference("lobbies").child(GameInfo.currentGame).removeValue()
+    }
 }

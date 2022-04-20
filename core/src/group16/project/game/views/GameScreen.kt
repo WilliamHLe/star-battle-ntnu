@@ -25,7 +25,7 @@ import group16.project.game.ecs.utils.ComponentMapper
 import group16.project.game.models.GameState
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameInfo
-
+import group16.project.game.views.components.EndGameComponent
 
 class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
@@ -35,15 +35,18 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     private val statusText = VisLabel("")
     private val btnEndTurn = VisTextButton("End Turn")
     private lateinit var healths: HashMap<String, HealthComponent>
+    var bothHit = false
+    var clicked = false
 
     override fun draw(delta: Float) {
         game.render(delta)
-
     }
 
     fun updateHealth(player: String, health: Int){
         healths[player]!!.set(health)
-        if (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0) endGame()
+        println(!bothHit && (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0))
+        if (!bothHit && (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0)) endGame()
+        else bothHit = false
     }
 
     override fun resize(width: Int, height: Int) {
@@ -51,6 +54,11 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         screenRect.width = stage.viewport.worldWidth
         screenRect.height = stage.viewport.worldHeight
         // Redraw on resize
+        stage.clear()
+        drawLayout()
+    }
+
+    fun updateLayout(){
         stage.clear()
         drawLayout()
     }
@@ -84,7 +92,9 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         //Opponent ready listener
         fbic.checkIfOpponentReady(this)
     }
-    fun bothReady(opponentMovingTo : Int, opponentShooting : Int) {
+    fun bothReady(opponentMovingTo : Int, opponentShooting : Int, bothHit: Boolean) {
+        println("BOTH READY, SCREEN")
+        this.bothHit = bothHit
         InputHandler.enemyPosition = opponentMovingTo
         InputHandler.enemyTrajectoryPosition = opponentShooting
         game.fireShots()
@@ -93,15 +103,18 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     fun endGame() {
         //This player won
         fbic.updateCurrentGameState(GameState.GAME_OVER)
-        if (healths[GameInfo.player]!!.get() != 0) {
-            println("you won, you have " + healths[GameInfo.player]!!.get() + "heart left")
-            println("Your score is " + (10+healths[GameInfo.player]!!.get()*5))
-            fbic.updateScore(10+healths[GameInfo.player]!!.get()*5)
+        var score: Int
+        if (healths[GameInfo.player]!!.get() == 0 && healths[GameInfo.opponent]!!.get() == 0){
+            score = 0
+            fbic.updateScore(score)
+        }else if (healths[GameInfo.player]!!.get() != 0) {
+            score = 10+healths[GameInfo.player]!!.get()*5
+            fbic.updateScore(score)
         }else {
-            println("You loose")
-            println("5 point get deducted from your score")
-            fbic.updateScore(-5)
+            score = -5
+            fbic.updateScore(score)
         }
+            stage.addActor(PopupComponent(EndGameComponent(score, game, gameController), false, false))
     }
 
     fun updateUi() {
@@ -112,6 +125,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     }
 
     fun drawLayout() {
+
         // Draw topbox
         val tbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("topbox.png")))))
         tbox.setSize(360f, 60f)
@@ -133,6 +147,12 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         tubox.setSize(260f, 70f)
         tubox.setPosition((stage.width/2) - 130f, 50f)
         stage.addActor(tubox)
+
+
+        //Draw lobbyCode label
+        var lobbycode = VisLabel(GameInfo.currentGame)
+        lobbycode.setPosition(stage.width/2-lobbycode.width/2, stage.height-tbox.height-20)
+        stage.addActor(lobbycode)
 
         // Draw menu icon
         val cogIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("cog_icon.png")))))
@@ -202,8 +222,12 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("end turn clicked")
-                game.updatePosition()
-                game.changeState(game.state.signal())
+                if (!clicked) {
+                    clicked = true
+                    game.updatePosition()
+                    game.changeState(game.state.signal())
+                }
+
             }
         })
         btnEndTurn.setSize(110f, 25f)
@@ -271,6 +295,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 stage.addActor(bar)
             }
             stage.addActor(vbox)
+
         }
         updateUi()
         Gdx.app.log("VIEW", "Game loaded")

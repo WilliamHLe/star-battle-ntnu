@@ -31,7 +31,7 @@ interface FirebaseInterface {
     fun reduceHeartsAmount()
     fun resetReady()
 
-
+    fun deleteLobby()
 
 
     //TODO: more functions should be added based on what we need for our project.
