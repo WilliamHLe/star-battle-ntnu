@@ -8,12 +8,14 @@ import group16.project.game.ecs.notNull
 import com.badlogic.gdx.graphics.g2d.Batch
 import group16.project.game.Configuration
 import group16.project.game.ecs.utils.ComponentMapper
+import javax.xml.crypto.dsig.Transform
 
 class ShieldSystem: IteratingSystem(
     Family.all(
         PositionComponent::class.java,
             BodyComponent::class.java,
-        ShieldComponent::class.java
+        ShieldComponent::class.java,
+        TransformComponent::class.java,
     ).get()) {
 
 
@@ -22,11 +24,12 @@ class ShieldSystem: IteratingSystem(
                 ComponentMapper.position[entity],
                 ComponentMapper.shield[entity],
                 ComponentMapper.body[entity],
+                ComponentMapper.transform[entity],
                 ::render
         )
     }
 
-    private fun render(positionComponent: PositionComponent, shieldComponent: ShieldComponent, bodyComponent: BodyComponent) {
+    private fun render(positionComponent: PositionComponent, shieldComponent: ShieldComponent, bodyComponent: BodyComponent, transformComponent: TransformComponent) {
 
 
         //println("yeah "+positionComponent.x)
@@ -34,10 +37,10 @@ class ShieldSystem: IteratingSystem(
         val buttonHeight = 100
 
         //println(positionComponent.y)
-        if (shieldComponent.destroyed) {
-            bodyComponent.rectangle.y = -10000f
+        if (shieldComponent.destroyed || shieldComponent.position < 0) {
+            transformComponent.opacity = 0f
         } else {
-            bodyComponent.rectangle.y = shieldComponent.position*buttonHeight + padding
+            transformComponent.opacity = 1f
         }
 
         //println(positionComponent.y.toString() + " "+shieldComponent.position)

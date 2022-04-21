@@ -254,7 +254,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-    override fun shieldListener(player: String, screen: GameScreen) {
+    /*override fun shieldListener(player: String, screen: GameScreen) {
         val shieldPos = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("shield_position")
         val shieldDestroyed = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("shield_destroyed")
 
@@ -284,7 +284,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
 
-    }
+    }*/
     override fun reduceHeartsAmount() {
         val updates: MutableMap<String, Any> = HashMap()
         updates["${GameInfo.currentGame}/${GameInfo.player}/lives"] = ServerValue.increment(-1)
@@ -353,21 +353,29 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 if(hostReady and player2Ready) {
                     val player1MovingTo = host.child("position").value.toString().toInt()
                     val player1Shooting = host.child("target_position").value.toString().toInt()
+                    var player1Shields = host.child("shield_position").value
+                    if (player1Shields !=  null) player1Shields = player1Shields.toString().toInt()
+                    else player1Shields = -1
 
                     val player2MovingTo = player2.child("position").value.toString().toInt()
                     val player2Shooting = player2.child("target_position").value.toString().toInt()
+                    var player2Shields = player2.child("shield_position").value
+                    if (player2Shields !=  null) player2Shields = player2Shields.toString().toInt()
+                    else player2Shields = -1
 
                     if (player1MovingTo == player2Shooting && player2MovingTo == player1Shooting) bothHit = true
 
                     if (GameInfo.player == "host") screen.bothReady(
                         player2MovingTo,
                         player2Shooting,
-                        bothHit
+                        bothHit,
+                        player2Shields
                     )
                     else screen.bothReady(
                         player1MovingTo,
                         player1Shooting,
-                        bothHit
+                        bothHit,
+                        player1Shields
                     )
                 }
             }

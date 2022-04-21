@@ -15,7 +15,7 @@ interface FirebaseInterface {
     fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen)
 
     fun heartListener(player: String, screen: GameScreen)
-    fun shieldListener(player: String, screen: GameScreen)
+    //fun shieldListener(player: String, screen: GameScreen)
 
     fun getHighScoreListener(screen: HighScoreScreen)
 

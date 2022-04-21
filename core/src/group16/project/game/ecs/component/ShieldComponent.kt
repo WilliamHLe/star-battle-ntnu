@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Component
 class ShieldComponent: Component  {
 
     var shield = 0
+    var player = false
     var position = -1
     var destroyed = false
 

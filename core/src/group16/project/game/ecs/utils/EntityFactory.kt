@@ -111,7 +111,9 @@ class EntityFactory {
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
                     texture = Texture("Shield.png")
                 })
-                entity.add(engine.createComponent(ShieldComponent::class.java))
+                entity.add(engine.createComponent(ShieldComponent::class.java).apply {
+                    player = isPlayer
+                })
                 entity.add(engine.createComponent(TransformComponent::class.java).apply {
                     rotation = 0f
                     flipped = !isPlayer

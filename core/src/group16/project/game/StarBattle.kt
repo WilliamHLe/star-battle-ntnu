@@ -65,6 +65,7 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
 
     fun loadScreens() {
         screens.put(MainMenuScreen::class.java, MainMenuScreen(this, fbic))
+        println("before ga")
         screens.put(GameScreen::class.java, GameScreen(this, fbic))
         screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this, fbic))
         screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this, fbic))

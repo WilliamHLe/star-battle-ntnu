@@ -41,6 +41,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         // Shields
         shield1 = EntityFactory.createShield(engine, 190f, 0f, true)
         shield2 = EntityFactory.createShield(engine, Configuration.gameWidth - 370f, 0f, false)
+
         engine.addEntity(shield1)
         engine.addEntity(shield2)
         // Target
@@ -59,7 +60,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
             gameScreen.fbic.setPlayersChoice(
                 InputHandler.playerPosition,
                 InputHandler.playerTrajectoryPosition,
-                    InputHandler.playerShieldPosition,
+                InputHandler.playerShieldPosition,
                 gameScreen
             )
         }
@@ -68,6 +69,9 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     fun deleteLobby() {
         gameScreen.fbic.updateCurrentGameState(GameState.LOBBY_DELETED)
         gameScreen.fbic.deleteLobby()
+        gameScreen.usedShield = false
+        InputHandler.playerShieldPosition = -1
+        InputHandler.enemyShieldPosition = -1
         gameScreen.gameController.updateCurrentGame("null", "null", "null")
     }
 
