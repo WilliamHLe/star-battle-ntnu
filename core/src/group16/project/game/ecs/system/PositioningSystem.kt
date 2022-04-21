@@ -13,7 +13,7 @@ class PositioningSystem () : IteratingSystem(
         Family.all(
                 BodyComponent::class.java,
                 PositionComponent::class.java
-        ).one(UfoComponent::class.java, TargetComponent::class.java).get()
+        ).one(UfoComponent::class.java, TargetComponent::class.java, ShieldComponent::class.java).get()
 ) {
 
 
@@ -23,6 +23,10 @@ class PositioningSystem () : IteratingSystem(
             this.position(ComponentMapper.position[entity],
                     ComponentMapper.body[entity],
                     ComponentMapper.ufo[entity])
+        }else if (ComponentMapper.shield[entity] != null) {
+            this.position(ComponentMapper.position[entity],
+                ComponentMapper.body[entity],
+                ComponentMapper.shield[entity])
         } else { // Target
             this.position(ComponentMapper.position[entity],
                     ComponentMapper.body[entity],
@@ -44,6 +48,23 @@ class PositioningSystem () : IteratingSystem(
 
         bodyComponent.rectangle.y = lerp(positionComponent.y, target, 0.1f)
         positionComponent.y = lerp(positionComponent.y, target, 0.1f)
+    }
+    private fun position(
+        positionComponent: PositionComponent,
+        bodyComponent: BodyComponent,
+        shieldComponent: ShieldComponent
+    ) {
+        val padding = (Configuration.gameHeight - 4*100) / 2
+        val buttonHeight = 100
+
+        var shield = InputHandler.enemyShieldPosition
+        if (shieldComponent.player)
+            shield = InputHandler.playerShieldPosition
+        val shieldPosition = shield * buttonHeight + padding
+
+        shieldComponent.position = shield
+        bodyComponent.rectangle.y = lerp(positionComponent.y, shieldPosition, 0.1f)
+        positionComponent.y = lerp(positionComponent.y, shieldPosition, 0.1f)
     }
     private fun position(
             positionComponent: PositionComponent,

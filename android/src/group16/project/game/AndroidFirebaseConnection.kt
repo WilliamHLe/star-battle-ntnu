@@ -207,13 +207,14 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         println("UPDATE GAME STATE: $state")
     }
 
-    override fun setPlayersChoice(position: Int, targetPostion: Int, gameScreen: GameScreen) {
+    override fun setPlayersChoice(position: Int, targetPostion: Int, shieldPosition: Int, gameScreen: GameScreen) {
         var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
 
         myRef.get().addOnSuccessListener {
             if(it.value != null) {
                 myRef.child(GameInfo.player).child("position").setValue(position)
                 myRef.child(GameInfo.player).child("target_position").setValue(targetPostion)
+                myRef.child(GameInfo.player).child("shield_position").setValue(shieldPosition)
                 myRef.child(GameInfo.player).child("ready_to_fire").setValue(true)
                 println("YOU FIRE")
                 fire(gameScreen)
@@ -260,17 +261,35 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         database.getReference("lobbies").updateChildren(updates)
     }
 
+    override fun removeShield() {
+        val updates: MutableMap<String, Any> = HashMap()
+        updates["${GameInfo.currentGame}/${GameInfo.player}/shield_position"] = -2
+        updates["${GameInfo.currentGame}/${GameInfo.player}/shield_destroyed"] = true
+        database.getReference("lobbies").updateChildren(updates)
+
+    }
+
     override fun updatePlayerHealth(){
         var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
         myRef.get().addOnSuccessListener {
             val opponentTargetPosition = (it.child(GameInfo.opponent).child("target_position").value as Long).toInt()
+            val shieldPosition = (it.child(GameInfo.player).child("shield_position").value as Long).toInt()
+            var shieldDestroyed = it.child(GameInfo.player).child("shield_destroyed").value
+            if (shieldDestroyed != null) shieldDestroyed = shieldDestroyed as Boolean
+            else shieldDestroyed = false
             val yourPosition = (it.child(GameInfo.player).child("position").value as Long).toInt()
-            if (opponentTargetPosition == yourPosition) {
-                println("UPDATE PLAYER HEALTH")
-                println(opponentTargetPosition)
-                println(yourPosition)
-                reduceHeartsAmount()
+            if (!shieldDestroyed && opponentTargetPosition == shieldPosition) {
+                println("REMOVE SHIELD")
+                removeShield()
+            } else {
+                if (opponentTargetPosition == yourPosition) {
+                    println("UPDATE PLAYER HEALTH")
+                    println(opponentTargetPosition)
+                    println(yourPosition)
+                    reduceHeartsAmount()
+                }
             }
+
         }
     }
 
@@ -304,21 +323,29 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 if(hostReady and player2Ready) {
                     val player1MovingTo = host.child("position").value.toString().toInt()
                     val player1Shooting = host.child("target_position").value.toString().toInt()
+                    var player1Shields = host.child("shield_position").value
+                    if (player1Shields !=  null) player1Shields = player1Shields.toString().toInt()
+                    else player1Shields = -1
 
                     val player2MovingTo = player2.child("position").value.toString().toInt()
                     val player2Shooting = player2.child("target_position").value.toString().toInt()
+                    var player2Shields = player2.child("shield_position").value
+                    if (player2Shields !=  null) player2Shields = player2Shields.toString().toInt()
+                    else player2Shields = -1
 
                     if (player1MovingTo == player2Shooting && player2MovingTo == player1Shooting) bothHit = true
 
                     if (GameInfo.player == "host") screen.bothReady(
                         player2MovingTo,
                         player2Shooting,
-                        bothHit
+                        bothHit,
+                        player2Shields
                     )
                     else screen.bothReady(
                         player1MovingTo,
                         player1Shooting,
-                        bothHit
+                        bothHit,
+                        player1Shields
                     )
                 }
             }

@@ -4,11 +4,7 @@ import com.badlogic.ashley.core.PooledEngine
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.math.Rectangle
-import group16.project.game.ecs.system.HeartSystem
-import group16.project.game.ecs.system.MovementSystem
-import group16.project.game.ecs.system.PositioningSystem
-import group16.project.game.ecs.system.RenderingSystem
-import group16.project.game.ecs.system.ShootingSystem
+import group16.project.game.ecs.system.*
 
 class Engine(
         batch: Batch,
@@ -25,6 +21,7 @@ class Engine(
         addSystem(ShootingSystem())
         addSystem(renderingSystem)
         addSystem(heartSystem)
+        addSystem(ShieldSystem())
     }
 
     fun dispose() {

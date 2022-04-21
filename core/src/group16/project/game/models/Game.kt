@@ -28,6 +28,9 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     lateinit var ship1: Entity
     lateinit var ship2: Entity
 
+    lateinit var shield1: Entity
+    lateinit var shield2: Entity
+
     fun init() {
         state = GameState.START
         // Ship
@@ -35,6 +38,12 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         ship2 = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, false)
         engine.addEntity(ship1)
         engine.addEntity(ship2)
+        // Shields
+        shield1 = EntityFactory.createShield(engine, 190f, 0f, true)
+        shield2 = EntityFactory.createShield(engine, Configuration.gameWidth - 370f, 0f, false)
+
+        engine.addEntity(shield1)
+        engine.addEntity(shield2)
         // Target
         engine.addEntity(EntityFactory.createTarget(engine, Configuration.gameWidth - 160f, 0f, true))
         engine.addEntity(EntityFactory.createTarget(engine, 10f, 0f, false))
@@ -51,6 +60,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
             gameScreen.fbic.setPlayersChoice(
                 InputHandler.playerPosition,
                 InputHandler.playerTrajectoryPosition,
+                InputHandler.playerShieldPosition,
                 gameScreen
             )
         }
@@ -59,6 +69,9 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     fun deleteLobby() {
         gameScreen.fbic.updateCurrentGameState(GameState.LOBBY_DELETED)
         gameScreen.fbic.deleteLobby()
+        gameScreen.usedShield = false
+        InputHandler.playerShieldPosition = -1
+        InputHandler.enemyShieldPosition = -1
         gameScreen.gameController.updateCurrentGame("null", "null", "null")
     }
 
@@ -88,19 +101,20 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.SETUP)
         }
-        gameScreen.clicked = false
-        println(gameScreen.clicked)
     }
 
     fun changeState(state: GameState) {
+        println(state.toString() + this.state.toString())
         //state = state.signal()
-        if (!(this.state == GameState.SETUP && state == GameState.ANIMATION)) {
+        if (!(this.state == GameState.SETUP && state == GameState.ANIMATION || this.state == GameState.WAITING && state == GameState.SETUP)) {
             this.state = state
             gameScreen.updateUi()
-            gameScreen.clicked = false
-            println(gameScreen.clicked)
         }
-        else if (this.state == GameState.LOBBY_DELETED) gameScreen.updateLayout()
+        if (this.state == GameState.SETUP){
+            InputHandler.playerShieldPosition = -1
+            InputHandler.enemyShieldPosition = -1
+            gameScreen.clicked = false
+        }
     }
 
     fun render(delta: Float) {

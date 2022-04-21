@@ -1,6 +1,7 @@
 package group16.project.game.views
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.widget.VisTable
@@ -23,6 +24,7 @@ import group16.project.game.views.components.SlideshowComponent
 import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.ComponentMapper
 import group16.project.game.models.GameState
+import group16.project.game.ecs.component.ShieldComponent
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameInfo
 import group16.project.game.views.components.EndGameComponent
@@ -34,9 +36,12 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     private val statusText = VisLabel("")
     private val btnEndTurn = VisTextButton("End Turn")
+    private val btnPlaceShield = VisImageButton(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("Shieldbtn.png")))))
     private lateinit var healths: HashMap<String, HealthComponent>
     var bothHit = false
     var clicked = false
+    private lateinit var shields: HashMap<String, ShieldComponent>
+    var usedShield = false
 
     override fun draw(delta: Float) {
         game.render(delta)
@@ -84,19 +89,28 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         healths.set(GameInfo.player, ComponentMapper.health.get(game.ship1))
         healths.set(GameInfo.opponent, ComponentMapper.health.get(game.ship2))
 
+        shields = HashMap<String, ShieldComponent>()
+        shields.set(GameInfo.player, ComponentMapper.shield.get(game.shield1))
+        shields.set(GameInfo.opponent, ComponentMapper.shield.get(game.shield2))
+
         //Hearth listeners
         fbic.heartListener("host", this)
         fbic.heartListener("player_2", this)
+        //Shield listeners
+        //fbic.shieldListener("host", this)
+        //fbic.shieldListener("player_2", this)
         //gameState listener
         fbic.getCurrentState(game)
         //Opponent ready listener
         fbic.checkIfOpponentReady(this)
+        btnPlaceShield.isDisabled = false
     }
-    fun bothReady(opponentMovingTo : Int, opponentShooting : Int, bothHit: Boolean) {
+    fun bothReady(opponentMovingTo : Int, opponentShooting : Int, bothHit: Boolean, shieldPosition: Int) {
         println("BOTH READY, SCREEN")
         this.bothHit = bothHit
         InputHandler.enemyPosition = opponentMovingTo
         InputHandler.enemyTrajectoryPosition = opponentShooting
+        InputHandler.enemyShieldPosition = shieldPosition
         game.fireShots()
     }
 
@@ -122,9 +136,12 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         statusText.setText(game.state.text)
         // Update end turn
         btnEndTurn.isDisabled = game.state != GameState.SETUP
+        btnPlaceShield.isDisabled = game.state == GameState.START || usedShield
+
     }
 
     fun drawLayout() {
+        var table = VisTable()
 
         // Draw topbox
         val tbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("topbox.png")))))
@@ -154,6 +171,18 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         lobbycode.setPosition(stage.width/2-lobbycode.width/2, stage.height-tbox.height-20)
         stage.addActor(lobbycode)
 
+        // Draw place shield button
+        btnPlaceShield.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                println("Placed a shield")
+                InputHandler.playerShieldPosition = InputHandler.playerPosition
+                btnPlaceShield.setPosition(-10000f, -1000f)
+            }
+        })
+        btnPlaceShield.setSize(50f, 50f)
+        btnPlaceShield.setPosition((stage.width-bbox.width)/2+50, 6f)
+        stage.addActor(btnPlaceShield)
+
         // Draw menu icon
         val cogIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("cog_icon.png")))))
         cogIcon.setSize(50f, 58f)
@@ -175,6 +204,9 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 btnBack.addListener(object : ChangeListener() {
                     override fun changed(event: ChangeEvent, actor: Actor) {
                         gameController.updateCurrentGame("null", "null", "null")
+                        usedShield = false
+                        InputHandler.playerShieldPosition = -1
+                        InputHandler.enemyShieldPosition = -1
                         gameController.changeScreen(MainMenuScreen::class.java)
                     }
                 })
@@ -221,18 +253,27 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         // Draw end turn button
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                println("end turn clicked")
                 if (!clicked) {
+                    println("end turn clicked")
                     clicked = true
+                    if (InputHandler.playerShieldPosition >= 0) usedShield = true
                     game.updatePosition()
                     game.changeState(game.state.signal())
                 }
-
             }
         })
-        btnEndTurn.setSize(110f, 25f)
+        btnEndTurn.setSize(110f, 30f)
         btnEndTurn.setPosition((stage.width/2) - 55f, 70f)
         stage.addActor(btnEndTurn)
+
+
+        val btnChangeState = VisTextButton("Change state")
+        btnChangeState.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                game.changeState(game.state.signal())
+            }
+        })
+
 
         // Draw spots
         for (i in 0..1) {
@@ -270,6 +311,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                         override fun changed(event: ChangeEvent, actor: Actor) {
                             if (game.state == GameState.SETUP) { // Let player move position only if state is on SETUP
                                 InputHandler.playerPosition = Integer.parseInt(btn.text.toString())
+                                if (!usedShield && InputHandler.playerShieldPosition >= 0) InputHandler.playerShieldPosition = InputHandler.playerPosition
                                 print("PS ")
                                 println(InputHandler.playerPosition)
                             }
@@ -295,7 +337,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 stage.addActor(bar)
             }
             stage.addActor(vbox)
-
         }
         updateUi()
         Gdx.app.log("VIEW", "Game loaded")
