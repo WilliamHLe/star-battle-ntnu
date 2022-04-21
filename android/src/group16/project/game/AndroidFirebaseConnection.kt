@@ -254,37 +254,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
-    /*override fun shieldListener(player: String, screen: GameScreen) {
-        val shieldPos = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("shield_position")
-        val shieldDestroyed = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("shield_destroyed")
 
-        val posListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    println("SHIELD LISTENER")
-                    println(Integer.parseInt(dataSnapshot.getValue().toString()))
-                    screen.updateShield(player, Integer.parseInt(dataSnapshot.getValue().toString()))
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        }
-        shieldPos.addValueEventListener(posListener)
-
-        shieldDestroyed.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (dataSnapshot.getValue() != null) {
-                    if (dataSnapshot.getValue().toString().toBoolean()) {
-                        screen.destroyShield(player, dataSnapshot.getValue().toString().toBoolean())
-                    }
-
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-
-    }*/
     override fun reduceHeartsAmount() {
         val updates: MutableMap<String, Any> = HashMap()
         updates["${GameInfo.currentGame}/${GameInfo.player}/lives"] = ServerValue.increment(-1)
