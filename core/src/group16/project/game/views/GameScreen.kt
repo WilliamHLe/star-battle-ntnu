@@ -253,8 +253,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         // Draw end turn button
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                println("end turn clicked")
                 if (!clicked) {
+                    println("end turn clicked")
                     clicked = true
                     if (InputHandler.playerShieldPosition >= 0) usedShield = true
                     game.updatePosition()

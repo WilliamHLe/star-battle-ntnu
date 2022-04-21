@@ -106,7 +106,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     fun changeState(state: GameState) {
         println(state.toString() + this.state.toString())
         //state = state.signal()
-        if (!(this.state == GameState.SETUP && state == GameState.ANIMATION)) {
+        if (!(this.state == GameState.SETUP && state == GameState.ANIMATION || this.state == GameState.WAITING && state == GameState.SETUP)) {
             this.state = state
             gameScreen.updateUi()
         }
