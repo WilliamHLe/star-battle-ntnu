@@ -23,7 +23,6 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
     override fun init() {
         var table = VisTable()
 
-
         // Create title
         val txtTitle = VisLabel("Join game lobby")
         txtTitle.setAlignment(1)
