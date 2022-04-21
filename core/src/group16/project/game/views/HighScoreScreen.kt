@@ -43,6 +43,11 @@ class HighScoreScreen(val gameController: StarBattle): View(){
         updateTable()
     }
 
+    fun deletePlayerFromHighScore(userName: String){
+        players.remove(userName)
+        updateTable()
+    }
+
 
     /**
      * Update table vith new highscore list
@@ -64,7 +69,7 @@ class HighScoreScreen(val gameController: StarBattle): View(){
         for (player in result) {
             val playerLabel = VisLabel(player.key)
             playerLabel.setAlignment(1)
-            val scoreLabel = VisLabel((-player.value).toString())
+            val scoreLabel = VisLabel((player.value).toString())
             scoreLabel.setAlignment(0)
             table.add(VisLabel(i.toString())).size(stage.width / 14, 10.0f)
                 .padRight(0.0f)

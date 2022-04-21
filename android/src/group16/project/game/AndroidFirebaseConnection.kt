@@ -151,7 +151,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
      */
     override fun getHighScoreListener(screen: HighScoreScreen) {
         val myTopScore = database.getReference("score")
-            .orderByValue().limitToFirst(10)
+            .orderByValue().limitToLast(10)
         Gdx.app.log("Firebase", "On child change ${myTopScore}")
 
         myTopScore.addChildEventListener(object : ChildEventListener {
@@ -174,6 +174,13 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 }
             }
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                Gdx.app.log("Firebase", "on child remove ${dataSnapshot}")
+                val userName = dataSnapshot.getKey().toString()
+                val score = Integer.parseInt(dataSnapshot.getValue().toString())
+
+                if (userName != null && userName is String && score != null && score is Int) {
+                    screen.deletePlayerFromHighScore(userName)
+                }
             }
             override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
             }
@@ -190,9 +197,13 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             myRef.child(userName).get().addOnSuccessListener {
                 var score = it.value
                 if (score != null) {
-                    updates[userName] = ServerValue.increment(points * 1.0)
-                    myRef.updateChildren(updates)
-                } else if (points < 0) {
+                    if ((score as Long).toInt()+points >= 0) {
+                        updates[userName] = ServerValue.increment(points * 1.0)
+                        myRef.updateChildren(updates)
+                    }else {
+                        myRef.child(userName).setValue(0)
+                    }
+                } else if (points > 0) {
                     myRef.child(userName).setValue(points)
                 }
             }
