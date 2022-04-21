@@ -101,19 +101,20 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.SETUP)
         }
-        gameScreen.clicked = false
-        println(gameScreen.clicked)
     }
 
     fun changeState(state: GameState) {
+        println(state.toString() + this.state.toString())
         //state = state.signal()
         if (!(this.state == GameState.SETUP && state == GameState.ANIMATION)) {
             this.state = state
             gameScreen.updateUi()
-            gameScreen.clicked = false
-            println(gameScreen.clicked)
         }
-        else if (this.state == GameState.LOBBY_DELETED) gameScreen.updateLayout()
+        if (this.state == GameState.SETUP){
+            InputHandler.playerShieldPosition = -1
+            InputHandler.enemyShieldPosition = -1
+            gameScreen.clicked = false
+        }
     }
 
     fun render(delta: Float) {

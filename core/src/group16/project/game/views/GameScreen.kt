@@ -50,17 +50,9 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     fun updateHealth(player: String, health: Int){
         healths[player]!!.set(health)
         println(!bothHit && (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0))
-        InputHandler.playerShieldPosition = -1
-        InputHandler.enemyShieldPosition = -1
         if (!bothHit && (healths[GameInfo.player]!!.get() == 0 || healths[GameInfo.opponent]!!.get() == 0)) endGame()
         else bothHit = false
     }
-    /*fun updateShield(player: String, position: Int) {
-        shields[player]!!.setPos(position)
-    }
-    fun destroyShield(player: String, destroyed: Boolean) {
-        shields[player]!!.destroyed = destroyed
-    }*/
 
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
@@ -179,14 +171,11 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         lobbycode.setPosition(stage.width/2-lobbycode.width/2, stage.height-tbox.height-20)
         stage.addActor(lobbycode)
 
-        //Draw Shield bnt
-
         // Draw place shield button
         btnPlaceShield.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("Placed a shield")
                 InputHandler.playerShieldPosition = InputHandler.playerPosition
-                usedShield = true
                 btnPlaceShield.setPosition(-10000f, -1000f)
             }
         })
@@ -267,10 +256,10 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 println("end turn clicked")
                 if (!clicked) {
                     clicked = true
+                    if (InputHandler.playerShieldPosition >= 0) usedShield = true
                     game.updatePosition()
                     game.changeState(game.state.signal())
                 }
-
             }
         })
         btnEndTurn.setSize(110f, 30f)
@@ -322,7 +311,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                         override fun changed(event: ChangeEvent, actor: Actor) {
                             if (game.state == GameState.SETUP) { // Let player move position only if state is on SETUP
                                 InputHandler.playerPosition = Integer.parseInt(btn.text.toString())
-                                InputHandler.playerShieldPosition = InputHandler.playerPosition
+                                if (!usedShield && InputHandler.playerShieldPosition >= 0) InputHandler.playerShieldPosition = InputHandler.playerPosition
                                 print("PS ")
                                 println(InputHandler.playerPosition)
                             }
