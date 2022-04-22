@@ -13,7 +13,7 @@ class HighScoreScreen(val gameController: StarBattle): View(){
 
     //Players username and score of top 10
     var players = hashMapOf<String, Int>()
-    val txtTitle = VisLabel("High score List")
+    val txtTitle = VisLabel("Leaderboard")
     val btnReturn = VisTextButton("Return to main menu")
 
     override fun init() {
