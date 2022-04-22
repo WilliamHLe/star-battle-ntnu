@@ -37,8 +37,8 @@ class DesktopFirebaseConnection : FirebaseInterface {
         //TODO("Not yet implemented")
     }
 
-    override fun setPlayersChoice(position: Int, targetPostion: Int, gameScreen: GameScreen) {
-        //TODO("Not yet implemented")
+    override fun setPlayersChoice(position: Int, targetPostion: Int, shieldPosition: Int, gameScreen: GameScreen) {
+        // TODO("Not yet implemented")
     }
 
     override fun checkIfOpponentReady(screen: GameScreen) {
@@ -67,6 +67,14 @@ class DesktopFirebaseConnection : FirebaseInterface {
 
     override fun resetReady() {
         //TODO("Not yet implemented")
+    }
+
+    override fun deleteLobby() {
+        // TODO("Not yet implemented")
+    }
+
+    override fun removeShield() {
+        // TODO("Not yet implemented")
     }
 
 

@@ -12,10 +12,11 @@ import com.kotcrab.vis.ui.layout.GridGroup
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
+import group16.project.game.Configuration
 
 class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>): FloatingGroup() {
-    private val WIDTH = Gdx.graphics.width.toFloat()
-    private val HEIGHT = Gdx.graphics.height.toFloat()
+    private val WIDTH = Configuration.gameWidth
+    private val HEIGHT = Configuration.gameHeight
 
     private val text = VisLabel("")
     private val display = VisTable()
@@ -92,7 +93,7 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
         text.setText(imgSlideshow.text)
     }
 
-    fun updateDots() {
+    private fun updateDots() {
         dots.clear()
         for (i in 0 until slides.size) {
             if (i == currentSlide) {

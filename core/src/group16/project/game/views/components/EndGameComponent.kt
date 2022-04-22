@@ -8,13 +8,14 @@ import com.kotcrab.vis.ui.layout.FloatingGroup
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
+import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import group16.project.game.models.Game
 import group16.project.game.views.MainMenuScreen
 
 class EndGameComponent(score: Int, game: Game, gameController: StarBattle): FloatingGroup() {
-    private val WIDTH = Gdx.graphics.width.toFloat()
-    private val HEIGHT = Gdx.graphics.height.toFloat()
+    private val WIDTH = Configuration.gameWidth
+    private val HEIGHT = Configuration.gameHeight
 
     private val header = VisLabel("Game Ended!")
     private var winOrLooseText = VisLabel("")

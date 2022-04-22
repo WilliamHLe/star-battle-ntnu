@@ -75,7 +75,7 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         })
 
         // add a "HighScore" button
-        val btnHighScore = VisTextButton("High score")
+        val btnHighScore = VisTextButton("Leaderboard")
         btnHighScore.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 gameController.changeScreen(HighScoreScreen::class.java)
