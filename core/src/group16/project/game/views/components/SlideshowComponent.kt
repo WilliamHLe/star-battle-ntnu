@@ -29,8 +29,8 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
 
         // Navigation buttons
         val btnLeft = VisTextButton("<")
-        btnLeft.setSize(100f, 200f)
-        btnLeft.setPosition(0f ,HEIGHT/2 - 100f)
+        btnLeft.setSize(50f, 70f)
+        btnLeft.setPosition(0f ,HEIGHT/2 - 35f)
         btnLeft.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 currentSlide -= 1
@@ -42,8 +42,8 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
         this.addActor(btnLeft)
 
         val btnRight = VisTextButton(">")
-        btnRight.setSize(100f, 200f)
-        btnRight.setPosition(WIDTH - 100f ,HEIGHT/2 - 100f)
+        btnRight.setSize(50f, 70f)
+        btnRight.setPosition(WIDTH - 50f ,HEIGHT/2 - 35f)
         btnRight.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 currentSlide = (currentSlide+1)%slides.size
@@ -55,21 +55,25 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
 
         // Dots
         updateDots()
-        dots.setSize((dots.itemWidth + dots.spacing) * slides.size + dots.spacing, 40f)
+        dots.setSize((dots.itemWidth + dots.spacing) * slides.size + dots.spacing, 20f)
 
         // Text
         text.setAlignment(1)
+        text.wrap = true;
+        text.width = WIDTH*0.8f;
 
         // Root table
         var table = VisTable()
-        table.columnDefaults(0).pad(10f)
-        table.columnDefaults(1).pad(10f)
+        table.columnDefaults(0)
+        table.columnDefaults(1)
         table.setFillParent(true)
-        table.add(display).size(WIDTH*0.7f, HEIGHT*0.6f)
+        table.add(display).size(WIDTH*0.85f, HEIGHT*0.7f)
         table.row()
         table.add(dots)
         table.row()
-        table.add(text).size(WIDTH*0.7f, HEIGHT*0.1f)
+        table.add(text).size(WIDTH*0.8f, HEIGHT*0.15f)
+        table.row()
+        //table.add("heifpewijDFJEWINFIPEW FIWEJG IJF  JEIP GJEWOFI EWO JPIWEJGPIWEJhiposerghjip hgio ehroøgh iueghr eighr ueghuerh guhreousgh reughohr eugh ohg hgaeo øghreoøsgl.ndlrhieg g roehgo hh eohgaw-lgø sozgeug  vihpevn  nljdjgd iejg p  jpfwejg pe jg i gg eoaa æoigg  æogi")
 
         this.addActor(table)
         updateSlide()
@@ -80,7 +84,7 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
         // Update display
         display.clear()
         val img = imgSlideshow.image
-        img.setSize(WIDTH*0.7f, HEIGHT*0.6f)
+        img.setSize(WIDTH*0.85f, HEIGHT*0.7f)
         display.addActor(img)
         // Update dots
         updateDots()
