@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.layout.FloatingGroup
 import com.kotcrab.vis.ui.widget.VisTextButton
+import group16.project.game.Configuration
 
 
 class PopupComponent(child: Actor?, isFullscreen: Boolean = false, hasCloseButton: Boolean = true): FloatingGroup() {
@@ -16,7 +17,7 @@ class PopupComponent(child: Actor?, isFullscreen: Boolean = false, hasCloseButto
     init {
         // Root widget
         this.setPosition(0f, 0f)
-        this.setSize(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        this.setSize(Configuration.gameWidth, Configuration.gameHeight)
         // Semi-transparent fullscreen
         if (isFullscreen) drawSemiTransparentBackground()
 
@@ -30,7 +31,7 @@ class PopupComponent(child: Actor?, isFullscreen: Boolean = false, hasCloseButto
     fun drawCloseButton() {
         val btnClosePopup = VisTextButton("X")
         btnClosePopup.setSize(60f, 60f)
-        btnClosePopup.setPosition(Gdx.graphics.width.toFloat() - 60f ,Gdx.graphics.height.toFloat() - 60f)
+        btnClosePopup.setPosition(Configuration.gameWidth - 60f ,Configuration.gameHeight - 60f)
         btnClosePopup.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 closePopup()
@@ -56,7 +57,7 @@ class PopupComponent(child: Actor?, isFullscreen: Boolean = false, hasCloseButto
 
         val image = Image(texture)
         image.color.a=.7f
-        image.setSize(Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        image.setSize(Configuration.gameWidth, Configuration.gameHeight)
         this.addActor(image)
     }
 }

@@ -31,7 +31,6 @@ import group16.project.game.views.components.EndGameComponent
 
 class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : View() {
     private val screenRect = Rectangle(0f, 0f, Configuration.gameWidth, Configuration.gameHeight)
-    private val camera = OrthographicCamera()
     private val game = Game(screenRect, camera, this)
 
     private val statusText = VisLabel("")
@@ -56,8 +55,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
-        screenRect.width = stage.viewport.worldWidth
-        screenRect.height = stage.viewport.worldHeight
         // Redraw on resize
         stage.clear()
         drawLayout()
@@ -340,5 +337,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         }
         updateUi()
         Gdx.app.log("VIEW", "Game loaded")
+
+        println(stage.viewport.worldWidth)
+        println(Gdx.graphics.width)
     }
 }

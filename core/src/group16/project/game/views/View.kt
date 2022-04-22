@@ -6,9 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import group16.project.game.Configuration
 import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.utils.viewport.ExtendViewport
+import com.badlogic.gdx.utils.viewport.FitViewport
+import com.badlogic.gdx.utils.viewport.StretchViewport
 
 abstract class View : Screen {
-    protected var stage = Stage(ScreenViewport());
+    protected val camera = OrthographicCamera()
+    protected var stage = Stage(FitViewport(Configuration.gameWidth, Configuration.gameHeight, camera));
     override fun show() {
         // Set debug status
         stage.isDebugAll = Configuration.debug
@@ -36,8 +41,8 @@ abstract class View : Screen {
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height, true)
-        Configuration.gameWidth = width.toFloat()
-        Configuration.gameHeight = height.toFloat()
+        // Configuration.gameWidth = width.toFloat()
+        // Configuration.gameHeight = height.toFloat()
     }
 
     abstract fun draw(delta: Float)

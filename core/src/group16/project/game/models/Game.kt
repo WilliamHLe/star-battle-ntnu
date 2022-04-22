@@ -118,7 +118,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     }
 
     fun render(delta: Float) {
-        Gdx.gl.glClearColor(0.5f, 0f, 0.2f, 1f)
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         engine.update(delta)
     }
