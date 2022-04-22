@@ -34,7 +34,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     private val game = Game(screenRect, camera, this)
 
     private val statusText = VisLabel("")
-    private val btnEndTurn = VisTextButton("End Turn")
+    val btnEndTurn = VisTextButton("End Turn")
+    val timer = VisProgressBar(0f, 100f, 0.1f, false)
     private val btnPlaceShield = VisImageButton(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("Shieldbtn.png")))))
     private lateinit var healths: HashMap<String, HealthComponent>
     var bothHit = false
@@ -155,13 +156,17 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         // Draw bottombox
         val bbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bottombox.png")))))
         bbox.setSize(670f, 90f)
-        bbox.setPosition((stage.width/2) - 670/2f, -15f)
+        bbox.setPosition((stage.width/2) - 670/2f, -5f)
         stage.addActor(bbox)
         val tubox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("turnbox.png")))))
         tubox.setSize(260f, 70f)
-        tubox.setPosition((stage.width/2) - 130f, 50f)
+        tubox.setPosition((stage.width/2) - 130f, 60f)
         stage.addActor(tubox)
 
+        // Draw setup timer progress bar
+        timer.setSize(stage.width, 50f)
+        timer.setPosition(0f, -20f)
+        stage.addActor(timer)
 
         //Draw lobbyCode label
         var lobbycode = VisLabel(GameInfo.currentGame)
@@ -177,13 +182,13 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             }
         })
         btnPlaceShield.setSize(50f, 50f)
-        btnPlaceShield.setPosition((stage.width-bbox.width)/2+50, 6f)
+        btnPlaceShield.setPosition((stage.width-bbox.width)/2+50, 16f)
         stage.addActor(btnPlaceShield)
 
         // Draw menu icon
         val cogIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("cog_icon.png")))))
         cogIcon.setSize(50f, 58f)
-        cogIcon.setPosition((stage.width/2) + 670/2f - 100f, 1f)
+        cogIcon.setPosition((stage.width/2) + 670/2f - 100f, 11f)
         val btnMenu = VisTextButton("")
         btnMenu.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
@@ -220,7 +225,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             }
         })
         btnMenu.setSize(50f, 58f)
-        btnMenu.setPosition((stage.width/2) + 670/2f - 100f, 1f)
+        btnMenu.setPosition((stage.width/2) + 670/2f - 100f, 11f)
         btnMenu.setColor(0f,0f,0f,0f)
         stage.addActor(cogIcon)
         stage.addActor(btnMenu)
@@ -228,7 +233,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         // Draw help icon
         val helpIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("help_icon.png")))))
         helpIcon.setSize(50f, 58f)
-        helpIcon.setPosition((stage.width/2) + 670/2f - 155f, 1f)
+        helpIcon.setPosition((stage.width/2) + 670/2f - 155f, 11f)
         val btnHelp = VisTextButton("")
         btnHelp.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
@@ -242,7 +247,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             }
         })
         btnHelp.setSize(50f, 58f)
-        btnHelp.setPosition((stage.width/2) + 670/2f - 155f, 1f)
+        btnHelp.setPosition((stage.width/2) + 670/2f - 155f, 11f)
         btnHelp.setColor(0f,0f,0f,0f)
         stage.addActor(helpIcon)
         stage.addActor(btnHelp)
@@ -260,7 +265,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             }
         })
         btnEndTurn.setSize(110f, 30f)
-        btnEndTurn.setPosition((stage.width/2) - 55f, 70f)
+        btnEndTurn.setPosition((stage.width/2) - 55f, 80f)
         stage.addActor(btnEndTurn)
 
 

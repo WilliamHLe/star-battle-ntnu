@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import group16.project.game.Configuration
 import group16.project.game.controllers.InputHandler
 import group16.project.game.ecs.Engine
 import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.EntityFactory
 import group16.project.game.views.GameScreen
+import java.util.*
 
 class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera, private val gameScreen: GameScreen) {
     private val batch = SpriteBatch()
@@ -30,6 +32,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
 
     lateinit var shield1: Entity
     lateinit var shield2: Entity
+    private var timerValue = 0f
 
     fun init() {
         state = GameState.START
@@ -109,18 +112,38 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         if (!(this.state == GameState.SETUP && state == GameState.ANIMATION || this.state == GameState.WAITING && state == GameState.SETUP)) {
             this.state = state
             gameScreen.updateUi()
+            timerValue = 0f
+            gameScreen.timer.value = 0f
         }
         if (this.state == GameState.SETUP){
             InputHandler.playerShieldPosition = -1
             InputHandler.enemyShieldPosition = -1
             gameScreen.clicked = false
         }
+
     }
 
     fun render(delta: Float) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         engine.update(delta)
+
+        // Setup phase timer
+        if (this.state == GameState.SETUP) {
+            timerValue += Gdx.graphics.deltaTime
+            gameScreen.timer.value = timerValue
+            if (timerValue >= 100f) {
+                // Programmatically click on "End Turn" button
+                val ie = InputEvent()
+                ie.type = InputEvent.Type.touchDown
+                gameScreen.btnEndTurn.fire(ie)
+                ie.type = InputEvent.Type.touchUp
+                gameScreen.btnEndTurn.fire(ie)
+                // Reset timer
+                timerValue = 0f
+                gameScreen.timer.value = 0f
+            }
+        }
     }
 
     fun dispose() {
