@@ -17,7 +17,7 @@ import group16.project.game.models.GameInfo
 class CreateLobbyScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
 
     override fun init() {
-        var table = VisTable()
+        val table = VisTable()
 
         // Create title
         val txtTitle = VisLabel("Create game lobby")
@@ -75,29 +75,10 @@ class CreateLobbyScreen(val gameController: StarBattle, private val fbic: Fireba
         Gdx.app.log("VIEW", "Create lobby loaded")
     }
 
-    override fun resize(width: Int, height: Int) {
-        super.resize(width, height)
-    }
 
     override fun draw(delta: Float) {
         if (GameInfo.currentGame != "null") {
             gameController.changeScreen(GameScreen::class.java)
         }
-    }
-
-    override fun pause() {
-        super.pause()
-    }
-
-    override fun resume() {
-        super.resume()
-    }
-
-    override fun hide() {
-        super.hide()
-    }
-
-    override fun dispose() {
-        super.dispose()
     }
 }

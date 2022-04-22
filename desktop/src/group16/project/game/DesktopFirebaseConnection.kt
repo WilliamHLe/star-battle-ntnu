@@ -6,11 +6,6 @@ import group16.project.game.models.GameState
 import group16.project.game.views.GameScreen
 import group16.project.game.views.HighScoreScreen
 import group16.project.game.views.JoinLobbyScreen
-import pl.mk5.gdx.fireapp.GdxFIRApp
-import pl.mk5.gdx.fireapp.GdxFIRAuth
-import pl.mk5.gdx.fireapp.GdxFIRDatabase
-import pl.mk5.gdx.fireapp.GdxFIRLogger
-import pl.mk5.gdx.fireapp.auth.GdxFirebaseUser
 
 class DesktopFirebaseConnection : FirebaseInterface {
     override fun signInAnonymously() {
@@ -37,7 +32,7 @@ class DesktopFirebaseConnection : FirebaseInterface {
         //TODO("Not yet implemented")
     }
 
-    override fun setPlayersChoice(position: Int, targetPostion: Int, gameScreen: GameScreen) {
+    override fun setPlayersChoice(position: Int, targetPosition: Int, shieldPosition: Int, gameScreen: GameScreen) {
         //TODO("Not yet implemented")
     }
 
@@ -66,6 +61,14 @@ class DesktopFirebaseConnection : FirebaseInterface {
     }
 
     override fun resetReady() {
+        //TODO("Not yet implemented")
+    }
+
+    override fun deleteLobby() {
+        //TODO("Not yet implemented")
+    }
+
+    override fun removeShield() {
         //TODO("Not yet implemented")
     }
 

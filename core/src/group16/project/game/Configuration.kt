@@ -5,6 +5,6 @@ object Configuration {
     val gameIcon = "badlogic.jpg"
     var gameWidth = 1280.0f
     var gameHeight = 720.0f
-    var gameTitle = "Star Battle NTNU"
-    var debug = false
+    val gameTitle = "Star Battle NTNU"
+    val debug = false
 }

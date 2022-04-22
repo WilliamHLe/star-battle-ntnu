@@ -1,12 +1,10 @@
 package group16.project.game.models
 
-import com.badlogic.ashley.core.ComponentMapper
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.math.Rectangle
 import group16.project.game.Configuration
 import group16.project.game.controllers.InputHandler
 import group16.project.game.ecs.Engine
@@ -14,13 +12,12 @@ import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.EntityFactory
 import group16.project.game.views.GameScreen
 
-class Game(private val screenRect: Rectangle, private val camera: OrthographicCamera, private val gameScreen: GameScreen) {
+class Game(private val camera: OrthographicCamera, private val gameScreen: GameScreen) {
     private val batch = SpriteBatch()
     private val engine by lazy {
         Engine(
                 batch = batch,
                 camera = camera,
-                screenRect = screenRect
         )
     }
     lateinit var state: GameState
@@ -40,7 +37,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         engine.addEntity(ship2)
         // Shields
         shield1 = EntityFactory.createShield(engine, 190f, 0f, true)
-        shield2 = EntityFactory.createShield(engine, Configuration.gameWidth - 370f, 0f, false)
+        shield2 = EntityFactory.createShield(engine, Configuration.gameWidth - 190f - 64f, 0f, false)
 
         engine.addEntity(shield1)
         engine.addEntity(shield2)
@@ -87,13 +84,13 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
         val buttonHeight = 100
 
         var startPosY = InputHandler.playerPosition * buttonHeight + padding
-        var shootPosX = Configuration.gameWidth - 10f - 100f;
+        var shootPosX = Configuration.gameWidth - 10f - 100f
         var shootPosY = InputHandler.playerTrajectoryPosition * buttonHeight + padding
         println("Fire shots")
         engine.addEntity(EntityFactory.createTrajectory(engine, 10f, startPosY, true, shootPosX, shootPosY))
 
         startPosY = InputHandler.enemyPosition * buttonHeight + padding
-        shootPosX = 10f;
+        shootPosX = 10f
         shootPosY = InputHandler.enemyTrajectoryPosition * buttonHeight + padding
         println("Enemy fire shots")
         engine.addEntity(EntityFactory.createTrajectory(engine, Configuration.gameWidth - 10f - 100f, startPosY, false, shootPosX, shootPosY))
@@ -104,8 +101,7 @@ class Game(private val screenRect: Rectangle, private val camera: OrthographicCa
     }
 
     fun changeState(state: GameState) {
-        println(state.toString() + this.state.toString())
-        //state = state.signal()
+        println(state.toString() + "-" + this.state.toString())
         if (!(this.state == GameState.SETUP && state == GameState.ANIMATION || this.state == GameState.WAITING && state == GameState.SETUP)) {
             this.state = state
             gameScreen.updateUi()

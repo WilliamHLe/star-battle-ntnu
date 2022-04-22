@@ -42,13 +42,9 @@ abstract class View : Screen {
 
     abstract fun draw(delta: Float)
 
-    override fun pause() {
-        TODO("Invoked when your application is paused.")
-    }
+    override fun pause() {}
 
-    override fun resume() {
-        TODO("Invoked when your application is resumed after pause.")
-    }
+    override fun resume() {}
 
     override fun hide() {
         stage.clear()

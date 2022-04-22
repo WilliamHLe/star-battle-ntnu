@@ -21,7 +21,7 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
 
 
     override fun init() {
-        var table = VisTable()
+        val table = VisTable()
 
         // Create title
         val txtTitle = VisLabel("Join game lobby")
@@ -92,30 +92,10 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
         errorMessageLabel.setText(message)
     }
 
-    override fun resize(width: Int, height: Int) {
-        super.resize(width, height)
-    }
-
     override fun draw(delta: Float) {
         //Only change screen to change screen to game screen if error message is "Success"
         if (errorMessageLabel.textEquals("Success")) {
             gameController.changeScreen(GameScreen::class.java)
         }
-    }
-
-    override fun pause() {
-        super.pause()
-    }
-
-    override fun resume() {
-        super.resume()
-    }
-
-    override fun hide() {
-        super.hide()
-    }
-
-    override fun dispose() {
-        super.dispose()
     }
 }

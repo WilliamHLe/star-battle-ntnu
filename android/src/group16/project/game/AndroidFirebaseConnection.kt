@@ -1,18 +1,14 @@
 package group16.project.game
 
 import android.app.Activity
-import android.content.ContentValues.TAG
-import android.util.Log
 import com.badlogic.gdx.Gdx
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.ValueEventListener
-
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.Game
 import group16.project.game.models.GameInfo
@@ -20,11 +16,9 @@ import group16.project.game.models.GameState
 import group16.project.game.views.GameScreen
 import group16.project.game.views.JoinLobbyScreen
 import group16.project.game.views.HighScoreScreen
-import kotlin.properties.Delegates
-
 
 class AndroidFirebaseConnection : FirebaseInterface, Activity() {
-    //the link should may be stored in a separate file, be put here through a reference.
+    // The link should be stored in a separate file in the future, put here through a reference for now.
     private val database = Firebase.database("https://tdt4240-battlestar-default-rtdb.europe-west1.firebasedatabase.app/")
     private var auth: FirebaseAuth = Firebase.auth
 
@@ -33,7 +27,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
      */
     override fun signInAnonymously() {
         // [START signin_anonymously]
-        var myRef: DatabaseReference = database.getReference("users")
+        val myRef: DatabaseReference = database.getReference("users")
         auth.signInAnonymously()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -62,7 +56,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         // [END signin_anonymously]
     }
 
-    fun generateLobbyCode(): String {
+    private fun generateLobbyCode(): String {
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
         return (1..6)
             .map { allowedChars.random() }
@@ -74,7 +68,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
      */
     override fun createLobby(lobbyName: String, gameController: StarBattle){
         val randomLobbyCode = generateLobbyCode()
-        var myRef: DatabaseReference = database.getReference("lobbies").child(randomLobbyCode)
+        val myRef: DatabaseReference = database.getReference("lobbies").child(randomLobbyCode)
         //Creates a random lobby code with letters and numbers (6 char code)
 
         val user = auth.currentUser
@@ -109,10 +103,10 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
      * Screen is for sending error message to the user
      */
     override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen){
-        var myRef: DatabaseReference = database.getReference("lobbies").child(lobbyCode)
+        val myRef: DatabaseReference = database.getReference("lobbies").child(lobbyCode)
         val user = auth.currentUser
         myRef.get().addOnSuccessListener {
-            var lobby = it.value
+            val lobby = it.value
             //If user no logged in try again
             if (user == null) {
                 joinLobby(lobbyCode, screen)
@@ -152,31 +146,31 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     override fun getHighScoreListener(screen: HighScoreScreen) {
         val myTopScore = database.getReference("score")
             .orderByValue().limitToLast(10)
-        Gdx.app.log("Firebase", "On child change ${myTopScore}")
+        Gdx.app.log("Firebase", "On child change $myTopScore")
 
         myTopScore.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                Gdx.app.log("Firebase", "On child added  ${dataSnapshot} ${s}")
-                val userName = dataSnapshot.getKey().toString()
-                val score = Integer.parseInt(dataSnapshot.getValue().toString())
+                Gdx.app.log("Firebase", "On child added  $dataSnapshot $s")
+                val userName = dataSnapshot.key.toString()
+                val score = Integer.parseInt(dataSnapshot.value.toString())
 
                 if (userName != null && userName is String && score != null && score is Int) {
                     screen.updateHighscore(userName, score)
                 }
             }
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-                Gdx.app.log("Firebase", "on child change ${dataSnapshot} ${s}")
-                val userName = dataSnapshot.getKey().toString()
-                val score = Integer.parseInt(dataSnapshot.getValue().toString())
+                Gdx.app.log("Firebase", "on child change $dataSnapshot $s")
+                val userName = dataSnapshot.key.toString()
+                val score = Integer.parseInt(dataSnapshot.value.toString())
 
                 if (userName != null && userName is String && score != null && score is Int) {
                     screen.updateHighscore(userName, score)
                 }
             }
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                Gdx.app.log("Firebase", "on child remove ${dataSnapshot}")
-                val userName = dataSnapshot.getKey().toString()
-                val score = Integer.parseInt(dataSnapshot.getValue().toString())
+                Gdx.app.log("Firebase", "on child remove $dataSnapshot")
+                val userName = dataSnapshot.key.toString()
+                val score = Integer.parseInt(dataSnapshot.value.toString())
 
                 if (userName != null && userName is String && score != null && score is Int) {
                     screen.deletePlayerFromHighScore(userName)
@@ -190,12 +184,12 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     override fun updateScore(points: Int) {
         val updates: MutableMap<String, Any> = HashMap()
-        var myRef: DatabaseReference = database.getReference("score")
-        var user = auth.currentUser
+        val myRef: DatabaseReference = database.getReference("score")
+        val user = auth.currentUser
         if (user != null) {
-            var userName = "user-" + user.uid
+            val userName = "user-" + user.uid
             myRef.child(userName).get().addOnSuccessListener {
-                var score = it.value
+                val score = it.value
                 if (score != null) {
                     if ((score as Long).toInt()+points >= 0) {
                         updates[userName] = ServerValue.increment(points * 1.0)
@@ -212,19 +206,19 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
 
     override fun updateCurrentGameState(state: GameState) {
-        var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
+        val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
         println("State: ${state.name}")
         myRef.setValue(state.name)
         println("UPDATE GAME STATE: $state")
     }
 
-    override fun setPlayersChoice(position: Int, targetPostion: Int, shieldPosition: Int, gameScreen: GameScreen) {
-        var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
+    override fun setPlayersChoice(position: Int, targetPosition: Int, shieldPosition: Int, gameScreen: GameScreen) {
+        val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
 
         myRef.get().addOnSuccessListener {
             if(it.value != null) {
                 myRef.child(GameInfo.player).child("position").setValue(position)
-                myRef.child(GameInfo.player).child("target_position").setValue(targetPostion)
+                myRef.child(GameInfo.player).child("target_position").setValue(targetPosition)
                 myRef.child(GameInfo.player).child("shield_position").setValue(shieldPosition)
                 myRef.child(GameInfo.player).child("ready_to_fire").setValue(true)
                 println("YOU FIRE")
@@ -237,11 +231,11 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     }
 
     override fun getCurrentState(game: Game){
-        var gameState: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
+        val gameState: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
 
         gameState.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val currentState = dataSnapshot.getValue()
+                val currentState = dataSnapshot.value
                 if (currentState != null) {
                     game.changeState(GameState.valueOf(currentState.toString()))
                     println("GET GAME STATE: ${GameState.valueOf(currentState.toString())}")
@@ -256,9 +250,9 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
         health.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val playerHealth = dataSnapshot.getValue()
+                val playerHealth = dataSnapshot.value
                 if(playerHealth != null) {
-                    println("HEART LISTENER: ${player} ${playerHealth.toString()}")
+                    println("HEART LISTENER: $player $playerHealth")
                     screen.updateHealth(player, Integer.parseInt(playerHealth.toString()))
                 }
             }
@@ -281,7 +275,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     }
 
     override fun updatePlayerHealth(){
-        var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
+        val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
         myRef.get().addOnSuccessListener {
             val opponentTargetPosition = (it.child(GameInfo.opponent).child("target_position").value as Long).toInt()
             val shieldPosition = (it.child(GameInfo.player).child("shield_position").value as Long).toInt()
@@ -305,12 +299,12 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     }
 
     override fun checkIfOpponentReady(screen: GameScreen) {
-        var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child(
+        val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child(
             GameInfo.opponent).child("ready_to_fire")
 
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                val isReady = dataSnapshot.getValue()
+                val isReady = dataSnapshot.value
                 if (isReady == true) {
                     println("ENEMY FIRE")
                     fire(screen)
@@ -321,7 +315,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     }
 
     override fun fire(screen : GameScreen) {
-        var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
+        val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
         var bothHit = false
 
         myRef.get().addOnSuccessListener {
@@ -367,7 +361,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     }
 
     override fun resetReady() {
-        var myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
+        val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
 
         myRef.get().addOnSuccessListener {
             if (it.value != null) {

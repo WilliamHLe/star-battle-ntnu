@@ -1,6 +1,7 @@
 package group16.project.game.ecs.utils
 
 
+import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.graphics.Texture
 import group16.project.game.Configuration
 import group16.project.game.ecs.Engine
@@ -9,7 +10,7 @@ import group16.project.game.ecs.component.*
 class EntityFactory {
 
     companion object {
-        fun createBG(engine: Engine, posx: Float, posy: Float) =
+        fun createBG(engine: Engine, posx: Float, posy: Float): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 0f
@@ -26,7 +27,7 @@ class EntityFactory {
                 })
             }
 
-        fun createHearts(engine: Engine, posx: Float, posy: Float, listensTo: HealthComponent) =
+        fun createHearts(engine: Engine, posx: Float, posy: Float, listensTo: HealthComponent): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
@@ -44,7 +45,7 @@ class EntityFactory {
             }
 
 
-        fun createUfo(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
+        fun createUfo(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
@@ -59,8 +60,11 @@ class EntityFactory {
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
                     texture = Texture("ufo3.png")
                 })
-                entity.add(engine.createComponent(UfoComponent::class.java).apply {
+                entity.add(engine.createComponent(PlayerComponent::class.java).apply {
                     player = isPlayer
+                })
+                entity.add(engine.createComponent(TypeComponent::class.java).apply {
+                    type = "ufo"
                 })
                 entity.add(engine.createComponent(HealthComponent::class.java).apply {
                     hp = 3
@@ -72,7 +76,7 @@ class EntityFactory {
                 })
             }
 
-        fun createTarget(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
+        fun createTarget(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
@@ -87,8 +91,11 @@ class EntityFactory {
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
                     texture = Texture("target.png")
                 })
-                entity.add(engine.createComponent(TargetComponent::class.java).apply {
+                entity.add(engine.createComponent(PlayerComponent::class.java).apply {
                     player = isPlayer
+                })
+                entity.add(engine.createComponent(TypeComponent::class.java).apply {
+                    type = "target"
                 })
                 entity.add(engine.createComponent(TransformComponent::class.java).apply {
                     rotation = 0f
@@ -96,7 +103,7 @@ class EntityFactory {
                     opacity = if (isPlayer) 1f else 0f
                 })
             }
-        fun createShield(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
+        fun createShield(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
@@ -111,9 +118,10 @@ class EntityFactory {
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
                     texture = Texture("Shield.png")
                 })
-                entity.add(engine.createComponent(ShieldComponent::class.java).apply {
+                entity.add(engine.createComponent(PlayerComponent::class.java).apply {
                     player = isPlayer
                 })
+                entity.add(engine.createComponent(ShieldComponent::class.java))
                 entity.add(engine.createComponent(TransformComponent::class.java).apply {
                     rotation = 0f
                     flipped = !isPlayer
@@ -128,7 +136,7 @@ class EntityFactory {
             isPlayer: Boolean,
             shootPosX: Float,
             shootPosY: Float
-        ) = engine.createEntity().also { entity ->
+        ): Entity = engine.createEntity().also { entity ->
             entity.add(engine.createComponent(PositionComponent::class.java).apply {
                 z = 1f
                 x = startPosX
@@ -143,10 +151,10 @@ class EntityFactory {
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
                 texture = Texture("trajectory.png")
             })
-
-
+            entity.add(engine.createComponent(PlayerComponent::class.java).apply {
+                player = isPlayer
+            })
             entity.add(engine.createComponent(TrajectoryComponent::class.java).apply {
-                this.isPlayer = isPlayer
                 this.shootingPosX = shootPosX
                 this.shootingPosY = shootPosY
             })

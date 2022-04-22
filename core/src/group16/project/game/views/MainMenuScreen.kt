@@ -23,7 +23,6 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
     override fun pause() {}
     override fun resume() {}
 
-
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
         // Redraw on resize
@@ -37,8 +36,8 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         // Draw layout
         drawLayout()
     }
-    fun drawLayout() {
-        var table = VisTable()
+    private fun drawLayout() {
+        val table = VisTable()
 
         val bg = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("background.png")))))
         bg.setSize(stage.width, stage.height)

@@ -35,7 +35,6 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
             //Get highscoreList listener
             fbic.getHighScoreListener(highScoreScreen)
         }
-        //changeScreen(PlaceholderTutorialScreen::class.java)
         changeScreen(MainMenuScreen::class.java)
         Gdx.app.log("CONTROLLER", "StarBattleController loaded")
     }
@@ -54,7 +53,7 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         screens.clear()
         if (VisUI.isLoaded()) VisUI.dispose()
     }
-    fun setScreen(screen: View?) {
+    private fun setScreen(screen: View?) {
         super.setScreen(screen)
         view = screen
     }
@@ -63,12 +62,11 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         setScreen(screens[key])
     }
 
-    fun loadScreens() {
+    private fun loadScreens() {
         screens.put(MainMenuScreen::class.java, MainMenuScreen(this, fbic))
         screens.put(GameScreen::class.java, GameScreen(this, fbic))
         screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this, fbic))
         screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this, fbic))
         screens.put(HighScoreScreen::class.java, HighScoreScreen(this))
-        //screens.put(PlaceholderTutorialScreen::class.java, PlaceholderTutorialScreen(this))
     }
 }

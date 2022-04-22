@@ -4,14 +4,13 @@ import com.badlogic.ashley.core.ComponentMapper
 import group16.project.game.ecs.component.*
 
 object ComponentMapper {
-    val body = ComponentMapper.getFor(BodyComponent::class.java)
-    val position = ComponentMapper.getFor(PositionComponent::class.java)
-    val velocity = ComponentMapper.getFor(VelocityComponent::class.java)
-    val ufo = ComponentMapper.getFor(UfoComponent::class.java)
-    val target = ComponentMapper.getFor(TargetComponent::class.java)
-    val texture = ComponentMapper.getFor(TextureComponent::class.java)
-    val trajectory = ComponentMapper.getFor(TrajectoryComponent::class.java)
-    val transform = ComponentMapper.getFor(TransformComponent::class.java)
-    val health = ComponentMapper.getFor((HealthComponent::class.java))
-    val shield = ComponentMapper.getFor((ShieldComponent::class.java))
+    val body: ComponentMapper<BodyComponent> = ComponentMapper.getFor(BodyComponent::class.java)
+    val position: ComponentMapper<PositionComponent> = ComponentMapper.getFor(PositionComponent::class.java)
+    val player: ComponentMapper<PlayerComponent> = ComponentMapper.getFor(PlayerComponent::class.java)
+    val texture: ComponentMapper<TextureComponent> = ComponentMapper.getFor(TextureComponent::class.java)
+    val trajectory: ComponentMapper<TrajectoryComponent> = ComponentMapper.getFor(TrajectoryComponent::class.java)
+    val transform: ComponentMapper<TransformComponent> = ComponentMapper.getFor(TransformComponent::class.java)
+    val type: ComponentMapper<TypeComponent> = ComponentMapper.getFor(TypeComponent::class.java)
+    val health: ComponentMapper<HealthComponent> = ComponentMapper.getFor((HealthComponent::class.java))
+    val shield: ComponentMapper<ShieldComponent> = ComponentMapper.getFor((ShieldComponent::class.java))
 }

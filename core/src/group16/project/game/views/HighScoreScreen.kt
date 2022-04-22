@@ -6,15 +6,14 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.StarBattle
 
 class HighScoreScreen(val gameController: StarBattle): View(){
 
     //Players username and score of top 10
-    var players = hashMapOf<String, Int>()
-    val txtTitle = VisLabel("High score List")
-    val btnReturn = VisTextButton("Return to main menu")
+    private var players = hashMapOf<String, Int>()
+    private val txtTitle = VisLabel("High score List")
+    private val btnReturn = VisTextButton("Return to main menu")
 
     override fun init() {
         // High score title
@@ -52,12 +51,12 @@ class HighScoreScreen(val gameController: StarBattle): View(){
     /**
      * Update table vith new highscore list
      */
-    fun updateTable() {
+    private fun updateTable() {
         val result = players.toList().sortedBy { (_, value) -> value}.reversed().toMap()
         //Clear stage to remove table
         stage.clear()
 
-        var table = VisTable()
+        val table = VisTable()
 
         table.columnDefaults(0).pad(5f)
         table.columnDefaults(1).pad(5f)
@@ -65,7 +64,7 @@ class HighScoreScreen(val gameController: StarBattle): View(){
         table.setFillParent(true)
         table.add(txtTitle).size(table.width, 10f).colspan(3)
         table.row()
-        var i: Int = 1
+        var i = 1
         for (player in result) {
             val playerLabel = VisLabel(player.key)
             playerLabel.setAlignment(1)

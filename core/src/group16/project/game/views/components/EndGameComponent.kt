@@ -1,7 +1,6 @@
 package group16.project.game.views.components
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.kotcrab.vis.ui.layout.FloatingGroup
@@ -13,8 +12,8 @@ import group16.project.game.models.Game
 import group16.project.game.views.MainMenuScreen
 
 class EndGameComponent(score: Int, game: Game, gameController: StarBattle): FloatingGroup() {
-    private val WIDTH = Gdx.graphics.width.toFloat()
-    private val HEIGHT = Gdx.graphics.height.toFloat()
+    private val gWidth = Gdx.graphics.width.toFloat()
+    private val gHeight = Gdx.graphics.height.toFloat()
 
     private val header = VisLabel("Game Ended!")
     private var winOrLooseText = VisLabel("")
@@ -22,7 +21,7 @@ class EndGameComponent(score: Int, game: Game, gameController: StarBattle): Floa
 
     init {
         this.setPosition(0f ,0f)
-        this.setSize(WIDTH, HEIGHT)
+        this.setSize(gWidth, gHeight)
 
         if (score == 0) {
             winOrLooseText.setText("Tie :|")
@@ -58,14 +57,14 @@ class EndGameComponent(score: Int, game: Game, gameController: StarBattle): Floa
         text.setAlignment(1)
 
         // Root table
-        var table = VisTable()
+        val table = VisTable()
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)
-        table.add(header).size(WIDTH*0.8f, HEIGHT*0.05f)
+        table.add(header).size(gWidth*0.8f, gHeight*0.05f)
         table.row()
-        table.add(winOrLooseText).size(WIDTH*0.7f, HEIGHT*0.05f)
+        table.add(winOrLooseText).size(gWidth*0.7f, gHeight*0.05f)
         table.row()
-        table.add(text).size(WIDTH*0.7f, HEIGHT*0.05f)
+        table.add(text).size(gWidth*0.7f, gHeight*0.05f)
         table.row()
         //table.add(btnPlayAgain)
         //table.row()
