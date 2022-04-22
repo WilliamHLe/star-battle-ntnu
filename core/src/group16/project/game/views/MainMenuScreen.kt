@@ -107,10 +107,13 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("HELP")
                 val slides = ArrayList<ImageSlideshowComponent>()
-                slides.add(ImageSlideshowComponent("background.png", "Example text 1: background.png"))
-                slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
-                slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
-                slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
+                slides.add(ImageSlideshowComponent("tutorial1.png", "This is the screen when you create a lobby. oThe game status is at the top with the lobby code under it. This code you give to your friend or someone else for them to join your lobby."))
+                slides.add(ImageSlideshowComponent("tutorial2.png", "When your opponent has joined the game status will update. Now you can move your ufo on the left side and your target on your right side. You move it by clicking on one square in the position or target grid. NB! The opponent might move"))
+                slides.add(ImageSlideshowComponent("tutorial3.png", "When you have positioned your UFO and target at your desired place you click on the 'End Turn' button at the bottom. Now you will see that the status on top will change and you will have to wait for the your opponent to end their turn."))
+                slides.add(ImageSlideshowComponent("tutorial4.png", "When your friend and you have ended your turns the status will be updated and you can se where your opponent moves. If anyone got hit they will loose one heart. After this you can change your UFO and target position again."))
+                slides.add(ImageSlideshowComponent("tutorial5.png", "There is also some power-ups you can use. A power-up can only be used once. You choose it by clicking on the power-up. You can not unclick the power-up. The shield power-up will protect you if hit but you only have it one round"))
+                slides.add(ImageSlideshowComponent("tutorial6.png", "When someone are have 0 hearts the game ends. The winner will get points added to their total score and the looser will be deducted points from theirs. If it a tie no points will be deducted or added. A players total score represent how many games they have won and it is used for the highscore list"))
+                slides.add(ImageSlideshowComponent("tutorial7.png", "Here is a summary of the most important parts of the game. You can access this slideshow in game by clicking on the help screen button. By clicking on the menu screen you can leave the lobby, but you can't return. Have fun!"))
                 stage.addActor(PopupComponent(SlideshowComponent(slides), true))
             }
         })
