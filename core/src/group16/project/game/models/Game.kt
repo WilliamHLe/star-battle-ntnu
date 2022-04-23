@@ -12,6 +12,8 @@ import group16.project.game.ecs.Engine
 import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.EntityFactory
 import group16.project.game.views.GameScreen
+import kotlin.concurrent.schedule
+import java.util.*
 
 class Game(private val camera: OrthographicCamera, private val gameScreen: GameScreen) {
     private val batch = SpriteBatch()
@@ -74,11 +76,7 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
 
     fun fireShots() {
         Gdx.app.debug("GAME", "Firing shots")
-        if (GameInfo.player == "host") {
-            gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
-        }
         gameScreen.fbic.updatePlayerHealth()
-        gameScreen.fbic.resetReady()
 
         val padding = (Configuration.gameHeight - 4*100) / 2
         val buttonHeight = 100
@@ -98,6 +96,9 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.SETUP)
         }
+        Timer("postDelay", false).schedule(1000) {
+            changeState(GameState.SETUP)
+        }
     }
 
     fun changeState(state: GameState) {
@@ -108,12 +109,11 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
             timerValue = 0f
             gameScreen.timer.value = 0f
         }
-        if (this.state == GameState.SETUP){
+        if (state == GameState.SETUP){
             InputHandler.playerShieldPosition = -1
             InputHandler.enemyShieldPosition = -1
             gameScreen.clicked = false
         }
-
     }
 
     fun render(delta: Float) {

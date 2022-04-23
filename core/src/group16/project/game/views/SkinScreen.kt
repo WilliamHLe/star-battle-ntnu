@@ -20,12 +20,15 @@ import group16.project.game.StarBattle
 import group16.project.game.ecs.utils.InputHandler
 import group16.project.game.views.components.SkinComponent
 
-
 class SkinScreen(val gameController: StarBattle): View(){
     private val skinSize = 300f
     private val skinPad = 50f
     private val group = GridGroup(skinSize, skinPad) //item size 64px, spacing 4px
     override fun init() {
+        val bg = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["BACKGROUND"])))
+        bg.setSize(stage.width, stage.height)
+        bg.setPosition(0f, 0f)
+        stage.addActor(bg)
         updateTable()
         Gdx.app.log("VIEW", "Skin loaded")
     }

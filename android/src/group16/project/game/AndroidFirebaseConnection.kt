@@ -205,7 +205,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     override fun updateCurrentGameState(state: GameState) {
         val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
-        Gdx.app.debug("FIREBASE", "updateCurrentGameState: ${state.name} - $state")
+        Gdx.app.debug("FIREBASE", "updateCurrentGameState: ${state.name}")
         myRef.setValue(state.name)
     }
 
@@ -234,8 +234,8 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val currentState = dataSnapshot.value
                 if (currentState != null) {
-                    game.changeState(GameState.valueOf(currentState.toString()))
                     Gdx.app.debug("FIREBASE", "getCurrentState: ${GameState.valueOf(currentState.toString())}")
+                    game.changeState(GameState.valueOf(currentState.toString()))
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}

@@ -18,13 +18,6 @@ import group16.project.game.models.GameState
 class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
     override fun draw(delta: Float) {}
 
-    override fun resize(width: Int, height: Int) {
-        super.resize(width, height)
-        // Redraw on resize
-        stage.clear()
-        drawLayout()
-    }
-
     override fun init() {
         // Log in user
         fbic.signInAnonymously()
@@ -42,8 +35,8 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         // Create the description field
         val logo = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["LOGO"])))
 
-        // Add a "StartGame" button
-        val btnStart = VisTextButton("Start the game")
+        // Add a debug "StartGame" button
+        val btnStart = VisTextButton("Start debug game")
         btnStart.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 gameController.changeScreen(GameScreen::class.java)
@@ -51,7 +44,7 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
             }
         })
         // Add a "JoinLobby" button
-        val btnJoin = VisTextButton("Join lobby game")
+        val btnJoin = VisTextButton("Join game lobby")
         btnJoin.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 gameController.changeScreen(JoinLobbyScreen::class.java)
@@ -59,7 +52,7 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         })
 
         // Add a "Create Lobby" button
-        val btnCreateLobby = VisTextButton("Create lobby")
+        val btnCreateLobby = VisTextButton("Create game lobby")
         btnCreateLobby.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 gameController.changeScreen(CreateLobbyScreen::class.java)
@@ -88,8 +81,10 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         table.setFillParent(true)
         table.add(logo).size(stage.width / 3, stage.width / 6)
         table.row()
-        table.add(btnStart).size(stage.width / 2, 45.0f)
-        table.row()
+        if (Configuration.debug) {
+            table.add(btnStart).size(stage.width / 2, 45.0f)
+            table.row()
+        }
         table.add(btnJoin).size(stage.width/2, 45.0f)
         table.row()
         table.add(btnCreateLobby).size(stage.width / 2, 45.0f)

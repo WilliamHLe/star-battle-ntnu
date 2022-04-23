@@ -23,6 +23,9 @@ import group16.project.game.ecs.component.ShieldComponent
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameInfo
 import group16.project.game.views.components.EndGameComponent
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.concurrent.schedule
 
 class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : View() {
     private val game = Game(camera, this)
@@ -92,24 +95,33 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         InputHandler.enemyPosition = opponentMovingTo
         InputHandler.enemyTrajectoryPosition = opponentShooting
         InputHandler.enemyShieldPosition = shieldPosition
-        game.fireShots()
+
+        if (GameInfo.player == "host") {
+            fbic.updateCurrentGameState(GameState.ANIMATION)
+            fbic.resetReady()
+        }
+        Timer("postDelay", false).schedule(1000) {
+            game.fireShots()
+        }
     }
 
     private fun endGame() {
         // A player has won
         fbic.updateCurrentGameState(GameState.GAME_OVER)
-        val score: Int
-        if (healths[GameInfo.player]!!.hp == 0 && healths[GameInfo.opponent]!!.hp == 0){
-            score = 0
-            fbic.updateScore(score)
-        }else if (healths[GameInfo.player]!!.hp != 0) {
-            score = 10+healths[GameInfo.player]!!.hp*5
-            fbic.updateScore(score)
-        }else {
-            score = -5
-            fbic.updateScore(score)
+        if (game.state == GameState.GAME_OVER) {
+            val score: Int
+            if (healths[GameInfo.player]!!.hp == 0 && healths[GameInfo.opponent]!!.hp == 0){
+                score = 0
+                fbic.updateScore(score)
+            }else if (healths[GameInfo.player]!!.hp != 0) {
+                score = 10+healths[GameInfo.player]!!.hp*5
+                fbic.updateScore(score)
+            }else {
+                score = -5
+                fbic.updateScore(score)
+            }
+            stage.addActor(PopupComponent(EndGameComponent(score, game, gameController), isFullscreen = false, hasCloseButton = false))
         }
-        stage.addActor(PopupComponent(EndGameComponent(score, game, gameController), isFullscreen = false, hasCloseButton = false))
     }
 
     fun updateUi() {
@@ -119,6 +131,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         btnEndTurn.isDisabled = game.state != GameState.SETUP
         btnPlaceShield.isDisabled = game.state == GameState.START || usedShield || clicked
 
+        if (game.state == GameState.GAME_OVER) endGame()
     }
 
     private fun drawLayout() {
@@ -232,12 +245,12 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         // Draw end turn button
         btnEndTurn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                if (!clicked) {
-                    println("end turn clicked")
+                if (!clicked && game.state == GameState.SETUP) {
+                    println("clicked")
                     clicked = true
                     if (InputHandler.playerShieldPosition >= 0) usedShield = true
                     game.updatePosition()
-                    game.changeState(game.state.signal())
+                    game.changeState(GameState.WAITING)
                 }
             }
         })
@@ -274,7 +287,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             for (btnNum in (GameInfo.slots-1) downTo 0) { // Index starting at 0
                 buttons.add(VisTextButton(btnNum.toString()))
             }
-            println(buttons.size)
             for ((j, btn) in buttons.withIndex()) {
                 btn.setColor(0f,0f,0f,0.2f)
                 if (i == 0)
@@ -283,8 +295,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                             if (game.state == GameState.SETUP) { // Let player move position only if state is on SETUP
                                 InputHandler.playerPosition = Integer.parseInt(btn.text.toString())
                                 if (!usedShield && InputHandler.playerShieldPosition >= 0) InputHandler.playerShieldPosition = InputHandler.playerPosition
-                                print("PS ")
-                                println(InputHandler.playerPosition)
                             }
                         }
                     })
@@ -293,8 +303,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                         override fun changed(event: ChangeEvent, actor: Actor) {
                             if (game.state == GameState.SETUP) {
                                 InputHandler.playerTrajectoryPosition = Integer.parseInt(btn.text.toString())
-                                print("PTS ")
-                                println(InputHandler.playerTrajectoryPosition)
                             }
                         }
                     })
