@@ -9,13 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
-import com.kotcrab.vis.ui.widget.VisTextField
 import group16.project.game.Configuration
 import group16.project.game.StarBattle
-import group16.project.game.views.components.ImageSlideshowComponent
 import group16.project.game.views.components.PopupComponent
 import group16.project.game.views.components.SlideshowComponent
-import java.util.ArrayList
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.GameState
 
@@ -46,9 +43,7 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         stage.addActor(bg)
 
         // Create the description field
-        val txtDescription = VisTextField("Star Battle NTNU")
-        txtDescription.isDisabled = true
-        txtDescription.setAlignment(1) // center text
+        val logo = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("logo.png")))))
 
         // Add a "StartGame" button
         val btnStart = VisTextButton("Start the game")
@@ -74,7 +69,15 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
             }
         })
 
-        // add a "HighScore" button
+        // Add a "change skin" button
+        val btnChangeSkin = VisTextButton("Change skin")
+        btnChangeSkin.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeEvent, actor: Actor) {
+                gameController.changeScreen(SkinScreen::class.java)
+            }
+        })
+
+        // Add a "Leaderboard" button
         val btnHighScore = VisTextButton("Leaderboard")
         btnHighScore.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
@@ -86,13 +89,15 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         table.columnDefaults(0).pad(10f)
         table.columnDefaults(1).pad(10f)
         table.setFillParent(true)
-        table.add(txtDescription).size(stage.width / 2, 100.0f)
+        table.add(logo).size(stage.width / 3, stage.width / 6)
         table.row()
         table.add(btnStart).size(stage.width / 2, 45.0f)
         table.row()
         table.add(btnJoin).size(stage.width/2, 45.0f)
         table.row()
         table.add(btnCreateLobby).size(stage.width / 2, 45.0f)
+        table.row()
+        table.add(btnChangeSkin).size(stage.width / 2, 45.0f)
         table.row()
         table.add(btnHighScore).size(stage.width / 8, 45.0f)
 

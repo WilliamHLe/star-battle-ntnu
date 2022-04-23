@@ -3,18 +3,15 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport
+import com.badlogic.gdx.scenes.scene2d.Stage
 import group16.project.game.Configuration
 import com.badlogic.gdx.InputMultiplexer
 import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.utils.viewport.ExtendViewport
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.badlogic.gdx.utils.viewport.StretchViewport
 
 abstract class View : Screen {
     protected val camera = OrthographicCamera()
-    protected var stage = Stage(FitViewport(Configuration.gameWidth, Configuration.gameHeight, camera));
+    protected var stage = Stage(FitViewport(Configuration.gameWidth, Configuration.gameHeight, camera))
     override fun show() {
         // Set debug status
         stage.isDebugAll = Configuration.debug
@@ -27,7 +24,7 @@ abstract class View : Screen {
 
         // Screen-specific initialization
         init()
-        Gdx.app.log("VIEW", "SCREEN loaded")
+        Gdx.app.log("VIEW", "View loaded")
     }
 
     abstract fun init()

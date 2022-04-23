@@ -9,13 +9,11 @@ import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import group16.project.game.models.Game
 import com.badlogic.gdx.graphics.Texture
-import java.util.ArrayList
 import group16.project.game.ecs.utils.InputHandler
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.kotcrab.vis.ui.widget.*
-import group16.project.game.views.components.ImageSlideshowComponent
 import group16.project.game.views.components.PopupComponent
 import group16.project.game.views.components.SlideshowComponent
 import group16.project.game.ecs.component.HealthComponent

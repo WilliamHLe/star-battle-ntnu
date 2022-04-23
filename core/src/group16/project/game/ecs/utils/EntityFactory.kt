@@ -58,7 +58,7 @@ class EntityFactory {
                     rectangle.setPosition(posx, posy)
                 })
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                    texture = Texture("ufo3.png")
+                    texture = Texture(Configuration.skins[InputHandler.playerSkin].imagePath)
                 })
                 entity.add(engine.createComponent(PlayerComponent::class.java).apply {
                     player = isPlayer
