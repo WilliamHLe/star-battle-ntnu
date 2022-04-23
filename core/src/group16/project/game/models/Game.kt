@@ -10,6 +10,7 @@ import group16.project.game.Configuration
 import group16.project.game.ecs.utils.InputHandler
 import group16.project.game.ecs.Engine
 import group16.project.game.ecs.component.HealthComponent
+import group16.project.game.ecs.component.TextureComponent
 import group16.project.game.ecs.utils.EntityFactory
 import group16.project.game.views.GameScreen
 import kotlin.concurrent.schedule
@@ -52,6 +53,16 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
         engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
         engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 70f*GameInfo.health - 10f, Configuration.gameHeight - 60f, ship2.getComponent(HealthComponent::class.java)))
         Gdx.app.log("GAME", "Engine loaded")
+    }
+
+    fun updateSkin(player: String, skinValue: Int) {
+        if (GameInfo.player == player) {
+            InputHandler.playerSkin = skinValue
+            ship1.getComponent(TextureComponent::class.java).texture = Configuration.skins[skinValue].texture
+        } else {
+            InputHandler.enemySkin = skinValue
+            ship2.getComponent(TextureComponent::class.java).texture = Configuration.skins[skinValue].texture
+        }
     }
 
     fun updatePosition() {

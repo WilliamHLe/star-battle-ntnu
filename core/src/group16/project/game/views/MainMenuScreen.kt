@@ -43,6 +43,10 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
                 fbic.updateCurrentGameState(GameState.SETUP)
             }
         })
+        if (!Configuration.debug) {
+            btnStart.color.a = 0f
+            btnStart.isDisabled = true
+        }
         // Add a "JoinLobby" button
         val btnJoin = VisTextButton("Join game lobby")
         btnJoin.addListener(object : ChangeListener() {
@@ -81,10 +85,8 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         table.setFillParent(true)
         table.add(logo).size(stage.width / 3, stage.width / 6)
         table.row()
-        if (Configuration.debug) {
-            table.add(btnStart).size(stage.width / 2, 45.0f)
-            table.row()
-        }
+        table.add(btnStart).size(stage.width / 2, 45.0f)
+        table.row()
         table.add(btnJoin).size(stage.width/2, 45.0f)
         table.row()
         table.add(btnCreateLobby).size(stage.width / 2, 45.0f)

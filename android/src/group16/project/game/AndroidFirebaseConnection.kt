@@ -9,6 +9,7 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import group16.project.game.ecs.utils.InputHandler
 import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.Game
 import group16.project.game.models.GameInfo
@@ -79,6 +80,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 myRef.child("name").setValue(lobbyName)
                 myRef.child("host").child("id").setValue(user.uid)
                 myRef.child("host").child("lives").setValue(GameInfo.health)
+                myRef.child("host").child("skin").setValue(InputHandler.playerSkin)
                 gameController.updateCurrentGame(randomLobbyCode, "host", "player_2")
                 updateCurrentGameState(GameState.START)
                 // Adds newly created lobby to user in db
@@ -115,6 +117,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 if (!lobby.containsKey("player_2")) {
                     myRef.child("player_2").child("id").setValue(user.uid)
                     myRef.child("player_2").child("lives").setValue(GameInfo.health)
+                    myRef.child("player_2").child("skin").setValue(InputHandler.playerSkin)
                     screen.gameController.updateCurrentGame(lobbyCode, "player_2", "host")
                     updateCurrentGameState(GameState.SETUP)
                     //Add lobby to user
@@ -227,7 +230,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         }
     }
 
-    override fun getCurrentState(game: Game){
+    override fun getCurrentState(game: Game) {
         val gameState: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
 
         gameState.addValueEventListener(object : ValueEventListener {
@@ -242,14 +245,32 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         })
     }
 
-    override fun heartListener(player: String, screen: GameScreen){
+
+    override fun skinListener(player: String, screen: GameScreen) {
+        val skin = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("skin")
+        Gdx.app.log("FIREBASE", "skinListener: Set listener change on $skin")
+
+        skin.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val skinValue = dataSnapshot.value
+                if (skinValue != null) {
+                    val skin = (skinValue as Long).toInt()
+                    Gdx.app.debug("FIREBASE", "skinListener: $player - ${Configuration.skins[skin].name}")
+                    screen.updateSkin(player, skin)
+                }
+            }
+            override fun onCancelled(databaseError: DatabaseError) {}
+        })
+    }
+
+    override fun heartListener(player: String, screen: GameScreen) {
         val health = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("lives")
         Gdx.app.log("FIREBASE", "heartListener: Set listener change on $health")
 
         health.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val playerHealth = dataSnapshot.value
-                if(playerHealth != null) {
+                if (playerHealth != null) {
                     Gdx.app.debug("FIREBASE", "heartListener: $player - $playerHealth")
                     screen.updateHealth(player, Integer.parseInt(playerHealth.toString()))
                 }

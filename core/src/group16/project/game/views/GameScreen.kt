@@ -32,8 +32,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     private val statusText = VisLabel("")
     private val btnPlaceShield = VisImageButton(TextureRegionDrawable(TextureRegion(TextureHandler.textures["ICON_SHIELD"])))
     private lateinit var healths: HashMap<String, HealthComponent>
-    private var bothHit = false
     private lateinit var shields: HashMap<String, ShieldComponent>
+    private var bothHit = false
     val btnEndTurn = VisTextButton("End Turn")
     val timer = VisProgressBar(0f, 60f, 0.1f, false)
     var clicked = false
@@ -47,6 +47,10 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         healths[player]!!.set(health)
         if (!bothHit && (healths[GameInfo.player]!!.hp == 0 || healths[GameInfo.opponent]!!.hp == 0)) endGame()
         else bothHit = false
+    }
+
+    fun updateSkin(player: String, skinValue: Int){
+        game.updateSkin(player, skinValue)
     }
 
     override fun resize(width: Int, height: Int) {
@@ -83,7 +87,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         // Heart listeners
         fbic.heartListener("host", this)
         fbic.heartListener("player_2", this)
-
+        // Skin listeners
+        fbic.skinListener(GameInfo.opponent, this)
         // GameState listener
         fbic.getCurrentState(game)
         // Opponent ready listener

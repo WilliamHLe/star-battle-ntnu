@@ -12,4 +12,5 @@ object InputHandler {
     var enemyPosition = MathUtils.random(0, GameInfo.slots-1)
     var enemyTrajectoryPosition = 0
     var enemyShieldPosition = -1
+    var enemySkin = 0
 }

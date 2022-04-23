@@ -59,7 +59,7 @@ class EntityFactory {
                     rectangle.setPosition(x, y)
                 })
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                    texture = Configuration.skins[InputHandler.playerSkin].texture
+                    texture = if (isPlayer) Configuration.skins[InputHandler.playerSkin].texture else Configuration.skins[InputHandler.enemySkin].texture
                 })
                 entity.add(engine.createComponent(PlayerComponent::class.java).apply {
                     player = isPlayer
