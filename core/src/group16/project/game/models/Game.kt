@@ -125,7 +125,7 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
         if (this.state == GameState.SETUP) {
             timerValue += Gdx.graphics.deltaTime
             gameScreen.timer.value = timerValue
-            if (timerValue >= 100f) {
+            if (timerValue >= gameScreen.timer.maxValue) {
                 // Programmatically click on "End Turn" button after timer ends
                 val ie = InputEvent()
                 ie.type = InputEvent.Type.touchDown

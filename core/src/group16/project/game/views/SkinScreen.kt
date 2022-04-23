@@ -50,7 +50,7 @@ class SkinScreen(val gameController: StarBattle): View(){
         pane.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent, x: Float, y: Float) {
                 InputHandler.playerSkin = i
-                println("Clicked $skinText $i")
+                Gdx.app.debug("VIEW","Clicked $skinText ($i)")
                 updateGroup()
             }
         })

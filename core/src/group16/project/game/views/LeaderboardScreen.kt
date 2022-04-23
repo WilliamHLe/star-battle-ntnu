@@ -18,6 +18,7 @@ class LeaderboardScreen(val gameController: StarBattle): View(){
     override fun init() {
         // High score title
         txtTitle.setAlignment(1)
+        txtTitle.setFontScale(1.5f)
 
         // Return to menu button
         btnReturn.addListener(object : ChangeListener() {
@@ -60,7 +61,7 @@ class LeaderboardScreen(val gameController: StarBattle): View(){
         table.columnDefaults(1).pad(5f)
         table.columnDefaults(2).pad(5f)
         table.setFillParent(true)
-        table.add(txtTitle).size(table.width, 10f).colspan(3)
+        table.add(txtTitle).size(table.width, 30f).colspan(3)
         table.row()
         var i = 1
         for (player in result) {

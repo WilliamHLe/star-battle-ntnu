@@ -77,7 +77,7 @@ class SlideshowComponent(private val slides: Array<ImageSlideshowComponent>): Fl
         table.row()
         table.add(dots)
         table.row()
-        table.add(text).size(gWidth*0.8f, gHeight*0.15f)
+        table.add(text).size(gWidth*0.8f, gHeight*0.1f)
 
         this.addActor(table)
         updateSlide()

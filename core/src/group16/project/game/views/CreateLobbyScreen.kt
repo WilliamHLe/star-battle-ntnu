@@ -22,6 +22,7 @@ class CreateLobbyScreen(val gameController: StarBattle, private val fbic: Fireba
         // Create title
         val txtTitle = VisLabel("Create game lobby")
         txtTitle.setAlignment(1)
+        txtTitle.setFontScale(1.5f)
 
         //Error label
         val errorMessageLabel = Label("", Label.LabelStyle(BitmapFont(), Color.RED))

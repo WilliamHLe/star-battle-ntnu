@@ -32,7 +32,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     private var bothHit = false
     private lateinit var shields: HashMap<String, ShieldComponent>
     val btnEndTurn = VisTextButton("End Turn")
-    val timer = VisProgressBar(0f, 100f, 0.1f, false)
+    val timer = VisProgressBar(0f, 60f, 0.1f, false)
     var clicked = false
     var usedShield = false
 
@@ -138,14 +138,14 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         stage.addActor(statusText)
 
         // Draw bottombox
+        val tubox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("turnbox.png")))))
+        tubox.setSize(260f, 70f)
+        tubox.setPosition((stage.width/2) - 130f, 58f)
+        stage.addActor(tubox)
         val bbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bottombox.png")))))
         bbox.setSize(670f, 90f)
         bbox.setPosition((stage.width/2) - 670/2f, -5f)
         stage.addActor(bbox)
-        val tubox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("turnbox.png")))))
-        tubox.setSize(260f, 70f)
-        tubox.setPosition((stage.width/2) - 130f, 60f)
-        stage.addActor(tubox)
 
         // Draw setup timer progress bar
         timer.setSize(stage.width, 50f)
@@ -245,8 +245,8 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 }
             }
         })
-        btnEndTurn.setSize(110f, 30f)
-        btnEndTurn.setPosition((stage.width/2) - 55f, 80f)
+        btnEndTurn.setSize(140f, 30f)
+        btnEndTurn.setPosition((stage.width/2) - 70f, 78f)
         stage.addActor(btnEndTurn)
 
 

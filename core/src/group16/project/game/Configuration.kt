@@ -8,7 +8,7 @@ import group16.project.game.views.components.SkinComponent
 object Configuration {
     const val gameIcon = "badlogic.jpg"
     const val gameTitle = "Star Battle NTNU"
-    const val debug = false
+    const val debug = true
     var gameWidth = 1280.0f
     var gameHeight = 720.0f
     val slides = Array<ImageSlideshowComponent>()

@@ -55,7 +55,7 @@ class PopupComponent(child: Actor?, isFullscreen: Boolean = false, hasCloseButto
         pixmap.dispose()
 
         val image = Image(texture)
-        image.color.a=.7f
+        image.color.a=.8f
         image.setSize(Configuration.gameWidth, Configuration.gameHeight)
         this.addActor(image)
     }

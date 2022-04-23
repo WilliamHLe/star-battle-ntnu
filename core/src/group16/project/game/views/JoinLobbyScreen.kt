@@ -25,6 +25,7 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
         // Create title
         val txtTitle = VisLabel("Join game lobby")
         txtTitle.setAlignment(1)
+        txtTitle.setFontScale(1.5f)
 
         //Set error message to blank
         this.errorMessageLabel.setText("")
