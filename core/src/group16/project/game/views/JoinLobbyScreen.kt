@@ -19,7 +19,6 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
     //Error label
     var errorMessageLabel: Label =Label("", LabelStyle(BitmapFont(), Color.RED))
 
-
     override fun init() {
         val table = VisTable()
 

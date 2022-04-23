@@ -14,7 +14,6 @@ import group16.project.game.views.MainMenuScreen
 class EndGameComponent(score: Int, game: Game, gameController: StarBattle): FloatingGroup() {
     private val gWidth = Gdx.graphics.width.toFloat()
     private val gHeight = Gdx.graphics.height.toFloat()
-
     private val header = VisLabel("Game Ended!")
     private var winOrLooseText = VisLabel("")
     private var text = VisLabel("")
@@ -69,8 +68,6 @@ class EndGameComponent(score: Int, game: Game, gameController: StarBattle): Floa
         //table.add(btnPlayAgain)
         //table.row()
         table.add(btnBack)
-
-
 
         this.addActor(table)
     }

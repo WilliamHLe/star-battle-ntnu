@@ -4,7 +4,7 @@ import group16.project.game.models.FirebaseInterface
 import group16.project.game.models.Game
 import group16.project.game.models.GameState
 import group16.project.game.views.GameScreen
-import group16.project.game.views.HighScoreScreen
+import group16.project.game.views.LeaderboardScreen
 import group16.project.game.views.JoinLobbyScreen
 
 class DesktopFirebaseConnection : FirebaseInterface {
@@ -24,7 +24,7 @@ class DesktopFirebaseConnection : FirebaseInterface {
         //TODO("Not yet implemented")
     }
 
-    override fun getHighScoreListener(screen: HighScoreScreen) {
+    override fun getHighScoreListener(screen: LeaderboardScreen) {
         //TODO("Not yet implemented")
     }
 
@@ -71,6 +71,5 @@ class DesktopFirebaseConnection : FirebaseInterface {
     override fun removeShield() {
         //TODO("Not yet implemented")
     }
-
 
 }

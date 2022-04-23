@@ -3,7 +3,7 @@ package group16.project.game.models
 import group16.project.game.StarBattle
 import group16.project.game.views.GameScreen
 import group16.project.game.views.JoinLobbyScreen
-import group16.project.game.views.HighScoreScreen
+import group16.project.game.views.LeaderboardScreen
 
 /**
  * Interface used for the platform based classes that are used to interact with our firebase project
@@ -13,7 +13,7 @@ interface FirebaseInterface {
     fun createLobby(lobbyName: String, gameController: StarBattle)
     fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen)
     fun heartListener(player: String, screen: GameScreen)
-    fun getHighScoreListener(screen: HighScoreScreen)
+    fun getHighScoreListener(screen: LeaderboardScreen)
     fun updateCurrentGameState(state: GameState)
     fun setPlayersChoice(position: Int, targetPosition: Int, shieldPosition: Int, gameScreen: GameScreen)
     fun checkIfOpponentReady(screen: GameScreen)

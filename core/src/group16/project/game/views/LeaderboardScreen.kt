@@ -8,11 +8,11 @@ import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import group16.project.game.StarBattle
 
-class HighScoreScreen(val gameController: StarBattle): View(){
+class LeaderboardScreen(val gameController: StarBattle): View(){
 
     //Players username and score of top 10
     private var players = hashMapOf<String, Int>()
-    private val txtTitle = VisLabel("High score List")
+    private val txtTitle = VisLabel("Leaderboard")
     private val btnReturn = VisTextButton("Return to main menu")
 
     override fun init() {
@@ -31,13 +31,12 @@ class HighScoreScreen(val gameController: StarBattle): View(){
         Gdx.app.log("VIEW", "Join lobby loaded")
     }
 
-    override fun draw(delta: Float) {
-    }
+    override fun draw(delta: Float) {}
 
     /**
      * Update score for child that moved og changed
      */
-    fun updateHighscore(userName: String, score: Int) {
+    fun updateLeaderboard(userName: String, score: Int) {
         players[userName] = score
         updateTable()
     }
@@ -47,9 +46,8 @@ class HighScoreScreen(val gameController: StarBattle): View(){
         updateTable()
     }
 
-
     /**
-     * Update table vith new highscore list
+     * Update table with new leaderboard list
      */
     private fun updateTable() {
         val result = players.toList().sortedBy { (_, value) -> value}.reversed().toMap()
@@ -84,7 +82,6 @@ class HighScoreScreen(val gameController: StarBattle): View(){
 
 
         stage.addActor(table)
+        Gdx.app.log("VIEW", "Leaderboard loaded")
     }
-
-
 }

@@ -30,8 +30,8 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         fbic.signInAnonymously()
 
         //check if the view in screens are a highScoreScreen
-        val highScoreScreen = screens[HighScoreScreen::class.java]
-        if(highScoreScreen is HighScoreScreen) {
+        val highScoreScreen = screens[LeaderboardScreen::class.java]
+        if(highScoreScreen is LeaderboardScreen) {
             //Get highscoreList listener
             fbic.getHighScoreListener(highScoreScreen)
         }
@@ -67,6 +67,6 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         screens.put(GameScreen::class.java, GameScreen(this, fbic))
         screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this, fbic))
         screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this, fbic))
-        screens.put(HighScoreScreen::class.java, HighScoreScreen(this))
+        screens.put(LeaderboardScreen::class.java, LeaderboardScreen(this))
     }
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.VisTextField
+import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import group16.project.game.views.components.ImageSlideshowComponent
 import group16.project.game.views.components.PopupComponent
@@ -74,10 +75,10 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         })
 
         // add a "HighScore" button
-        val btnHighScore = VisTextButton("High score")
+        val btnHighScore = VisTextButton("Leaderboard")
         btnHighScore.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                gameController.changeScreen(HighScoreScreen::class.java)
+                gameController.changeScreen(LeaderboardScreen::class.java)
             }
         })
 
@@ -105,12 +106,7 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         btnHelp.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 println("HELP")
-                val slides = ArrayList<ImageSlideshowComponent>()
-                slides.add(ImageSlideshowComponent("background.png", "Example text 1: background.png"))
-                slides.add(ImageSlideshowComponent("background2.png", "Example text 2: background2.png"))
-                slides.add(ImageSlideshowComponent("background_dark.png", "Example text 3: background_dark.png"))
-                slides.add(ImageSlideshowComponent("background2.png", "Example text 4: background2.png"))
-                stage.addActor(PopupComponent(SlideshowComponent(slides), true))
+                stage.addActor(PopupComponent(SlideshowComponent(Configuration.slides), true))
             }
         })
         btnHelp.setSize(50f, 58f)

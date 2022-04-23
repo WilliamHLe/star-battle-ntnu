@@ -15,7 +15,7 @@ import group16.project.game.models.GameInfo
 import group16.project.game.models.GameState
 import group16.project.game.views.GameScreen
 import group16.project.game.views.JoinLobbyScreen
-import group16.project.game.views.HighScoreScreen
+import group16.project.game.views.LeaderboardScreen
 
 class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     // The link should be stored in a separate file in the future, put here through a reference for now.
@@ -26,12 +26,12 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
      * Sign in the user anonymously, is it is a new user add user to db
      */
     override fun signInAnonymously() {
-        // [START signin_anonymously]
+        Gdx.app.log("FIREBASE", "signInAnonymously: Signing in anonymously")
         val myRef: DatabaseReference = database.getReference("users")
         auth.signInAnonymously()
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    println("signInAnonymously:success")
+                    Gdx.app.debug("FIREBASE", "signInAnonymously: Signing in anonymously successfully")
                     val currentUser = auth.currentUser
                     // If new user make user in db
                     if (currentUser != null) {
@@ -40,20 +40,18 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                             if (it.value == null) {
                                 val userName = "user-" + currentUser.uid
                                 myRef.child(currentUser.uid).child("userName").setValue(userName)
-                                Gdx.app.log("Firebase", "Success on crating user")
+                                Gdx.app.debug("FIREBASE", "signInAnonymously: Success on creating new user")
                             } else {
-                                Gdx.app.log("Firebase", "Success user already exist")
+                                Gdx.app.debug("FIREBASE", "signInAnonymously: Success user already exist")
                             }
                         }.addOnFailureListener { //Failure, not connected to db
-                            Gdx.app.log("Firebase", "Error getting data", it)
+                            Gdx.app.error("FIREBASE", "signInAnonymously: Error getting data", it)
                         }
                     }
                 } else {
-                    //Failure, could not sign in user
-                    println("signInAnonymously:failure" + task.exception)
+                    Gdx.app.error("FIREBASE", "signInAnonymously: Could not sign in user", task.exception)
                 }
             }
-        // [END signin_anonymously]
     }
 
     private fun generateLobbyCode(): String {
@@ -67,6 +65,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
      * Create new lobby with lobby name.
      */
     override fun createLobby(lobbyName: String, gameController: StarBattle){
+        Gdx.app.debug("FIREBASE", "Creating lobby")
         val randomLobbyCode = generateLobbyCode()
         val myRef: DatabaseReference = database.getReference("lobbies").child(randomLobbyCode)
         //Creates a random lobby code with letters and numbers (6 char code)
@@ -74,8 +73,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         val user = auth.currentUser
 
         myRef.get().addOnSuccessListener {
-            //If lobby with the randomly created lobby code do not exists create lobby
-            //and user logged in
+            //If lobby with the randomly created lobby code do not exists create lobby and user logged in
             if (it.value == null && user != null) {
                 //Set name of lobby and host with the user id
                 myRef.child("name").setValue(lobbyName)
@@ -86,7 +84,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 // Adds newly created lobby to user in db
                 database.getReference("users").child(user.uid).child(randomLobbyCode).setValue(true)
                 println(randomLobbyCode)
-                Gdx.app.log("Firebase", "Success on creating lobby")
+                Gdx.app.debug("FIREBASE", "createLobby: Success on creating lobby")
             }
             //If lobby exists or user not logged in try again
             else {
@@ -94,7 +92,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             }
         }.addOnFailureListener {
             //Failure, could not connect to db
-            Gdx.app.log("Firebase", "Error getting data", it)
+            Gdx.app.error("FIREBASE", "createLobby: Error getting data", it)
         }
     }
 
@@ -103,6 +101,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
      * Screen is for sending error message to the user
      */
     override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen){
+        Gdx.app.log("FIREBASE", "joinLobby: Joining lobby")
         val myRef: DatabaseReference = database.getReference("lobbies").child(lobbyCode)
         val user = auth.currentUser
         myRef.get().addOnSuccessListener {
@@ -121,11 +120,11 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                     //Add lobby to user
                     database.getReference("users")
                             .child(user.uid).child(lobbyCode).setValue(true)
-                    Gdx.app.log("Firebase", "Success joining lobby")
-                    //Sendig success message to user, also enabled to change screen
+                    Gdx.app.debug("FIREBASE", "joinLobby: Success joining lobby")
+                    //Sending success message to user, also enabled to change screen
                     screen.errorMessage("Success")
                 } else {
-                    //Sending error messge to user
+                    //Sending error message to user
                     screen.errorMessage("Lobby is full")
                 }
             } else {
@@ -136,39 +135,39 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             //Not connected to db
             //Sending error message to user
             screen.errorMessage("Something went wrong, not connected to server")
-            Gdx.app.log("Firebase", "Error getting data", it)
+            Gdx.app.error("FIREBASE", "joinLobby: Error getting data", it)
         }
     }
 
     /**
      * Create listener for highScore, update highScoreScreen when top 10 change og score change
      */
-    override fun getHighScoreListener(screen: HighScoreScreen) {
+    override fun getHighScoreListener(screen: LeaderboardScreen) {
         val myTopScore = database.getReference("score")
             .orderByValue().limitToLast(10)
-        Gdx.app.log("Firebase", "On child change $myTopScore")
+        Gdx.app.log("FIREBASE", "getHighScoreListener: Set listener change on $myTopScore")
 
         myTopScore.addChildEventListener(object : ChildEventListener {
             override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                Gdx.app.log("Firebase", "On child added  $dataSnapshot $s")
+                Gdx.app.debug("FIREBASE", "getHighScoreListener: On child added  $dataSnapshot $s")
                 val userName = dataSnapshot.key.toString()
                 val score = Integer.parseInt(dataSnapshot.value.toString())
 
                 if (userName != null && userName is String && score != null && score is Int) {
-                    screen.updateHighscore(userName, score)
+                    screen.updateLeaderboard(userName, score)
                 }
             }
             override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-                Gdx.app.log("Firebase", "on child change $dataSnapshot $s")
+                Gdx.app.debug("FIREBASE", "getHighScoreListener: On child change $dataSnapshot $s")
                 val userName = dataSnapshot.key.toString()
                 val score = Integer.parseInt(dataSnapshot.value.toString())
 
                 if (userName != null && userName is String && score != null && score is Int) {
-                    screen.updateHighscore(userName, score)
+                    screen.updateLeaderboard(userName, score)
                 }
             }
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                Gdx.app.log("Firebase", "on child remove $dataSnapshot")
+                Gdx.app.debug("FIREBASE", "getHighScoreListener: On child remove $dataSnapshot")
                 val userName = dataSnapshot.key.toString()
                 val score = Integer.parseInt(dataSnapshot.value.toString())
 
@@ -176,8 +175,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                     screen.deletePlayerFromHighScore(userName)
                 }
             }
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
-            }
+            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {}
             override fun onCancelled(databaseError: DatabaseError) {}
         })
     }
@@ -207,9 +205,8 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     override fun updateCurrentGameState(state: GameState) {
         val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
-        println("State: ${state.name}")
+        Gdx.app.debug("FIREBASE", "updateCurrentGameState: ${state.name} - $state")
         myRef.setValue(state.name)
-        println("UPDATE GAME STATE: $state")
     }
 
     override fun setPlayersChoice(position: Int, targetPosition: Int, shieldPosition: Int, gameScreen: GameScreen) {
@@ -221,12 +218,12 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 myRef.child(GameInfo.player).child("target_position").setValue(targetPosition)
                 myRef.child(GameInfo.player).child("shield_position").setValue(shieldPosition)
                 myRef.child(GameInfo.player).child("ready_to_fire").setValue(true)
-                println("YOU FIRE")
+                Gdx.app.debug("FIREBASE", "setPlayersChoice: Host triggering fire")
                 fire(gameScreen)
             }
         }.addOnFailureListener {
             //Failure, could not connect to db
-            Gdx.app.log("Firebase", "Error getting data", it)
+            Gdx.app.error("FIREBASE", "setPlayersChoice: Error getting data", it)
         }
     }
 
@@ -238,7 +235,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 val currentState = dataSnapshot.value
                 if (currentState != null) {
                     game.changeState(GameState.valueOf(currentState.toString()))
-                    println("GET GAME STATE: ${GameState.valueOf(currentState.toString())}")
+                    Gdx.app.debug("FIREBASE", "getCurrentState: ${GameState.valueOf(currentState.toString())}")
                 }
             }
             override fun onCancelled(databaseError: DatabaseError) {}
@@ -247,12 +244,13 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
     override fun heartListener(player: String, screen: GameScreen){
         val health = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("lives")
+        Gdx.app.log("FIREBASE", "heartListener: Set listener change on $health")
 
         health.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val playerHealth = dataSnapshot.value
                 if(playerHealth != null) {
-                    println("HEART LISTENER: $player $playerHealth")
+                    Gdx.app.debug("FIREBASE", "heartListener: $player - $playerHealth")
                     screen.updateHealth(player, Integer.parseInt(playerHealth.toString()))
                 }
             }
@@ -284,13 +282,11 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             else shieldDestroyed = false
             val yourPosition = (it.child(GameInfo.player).child("position").value as Long).toInt()
             if (!shieldDestroyed && opponentTargetPosition == shieldPosition) {
-                println("REMOVE SHIELD")
+                Gdx.app.debug("FIREBASE", "updatePlayerHealth: Shield destroyed")
                 removeShield()
             } else {
                 if (opponentTargetPosition == yourPosition) {
-                    println("UPDATE PLAYER HEALTH")
-                    println(opponentTargetPosition)
-                    println(yourPosition)
+                    Gdx.app.debug("FIREBASE", "updatePlayerHealth: trigger reduceHeartsAmount (pos: $yourPosition)")
                     reduceHeartsAmount()
                 }
             }
@@ -306,7 +302,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val isReady = dataSnapshot.value
                 if (isReady == true) {
-                    println("ENEMY FIRE")
+                    Gdx.app.debug("FIREBASE", "checkIfOpponentReady: Player_2 triggering fire")
                     fire(screen)
                 }
             }
@@ -315,6 +311,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     }
 
     override fun fire(screen : GameScreen) {
+        Gdx.app.log("FIREBASE", "fire: Executing move")
         val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame)
         var bothHit = false
 
@@ -356,7 +353,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
             }
         }.addOnFailureListener {
             //Failure, could not connect to db
-            Gdx.app.log("Firebase", "Error getting data", it)
+            Gdx.app.error("FIREBASE", "Error getting data", it)
         }
     }
 

@@ -7,7 +7,8 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration
 class AndroidLauncher : AndroidApplication() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val config = AndroidApplicationConfiguration()
-        initialize(StarBattle(AndroidFirebaseConnection()), config)
+        initialize(StarBattle(AndroidFirebaseConnection()), AndroidApplicationConfiguration().apply {
+            useWakelock = true
+        })
     }
 }

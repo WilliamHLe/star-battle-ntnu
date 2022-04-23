@@ -5,8 +5,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.scenes.scene2d.InputEvent
 import group16.project.game.Configuration
-import group16.project.game.controllers.InputHandler
+import group16.project.game.ecs.utils.InputHandler
 import group16.project.game.ecs.Engine
 import group16.project.game.ecs.component.HealthComponent
 import group16.project.game.ecs.utils.EntityFactory
@@ -27,6 +28,7 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
 
     lateinit var shield1: Entity
     lateinit var shield2: Entity
+    private var timerValue = 0f
 
     fun init() {
         state = GameState.START
@@ -49,7 +51,7 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
         //Hearts
         engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
         engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 60f - 160f, Configuration.gameHeight - 60f, ship2.getComponent(HealthComponent::class.java)))
-        Gdx.app.log("MODEL", "Engine loaded")
+        Gdx.app.log("GAME", "Engine loaded")
     }
 
     fun updatePosition() {
@@ -73,7 +75,7 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
     }
 
     fun fireShots() {
-        println("FIRE SHOT, SCREEN")
+        Gdx.app.debug("GAME", "Firing shots")
         if (GameInfo.player == "host") {
             gameScreen.fbic.updateCurrentGameState(GameState.ANIMATION)
         }
@@ -86,13 +88,13 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
         var startPosY = InputHandler.playerPosition * buttonHeight + padding
         var shootPosX = Configuration.gameWidth - 10f - 100f
         var shootPosY = InputHandler.playerTrajectoryPosition * buttonHeight + padding
-        println("Fire shots")
+        Gdx.app.debug("GAME", "Creating host trajectory")
         engine.addEntity(EntityFactory.createTrajectory(engine, 10f, startPosY, true, shootPosX, shootPosY))
 
         startPosY = InputHandler.enemyPosition * buttonHeight + padding
         shootPosX = 10f
         shootPosY = InputHandler.enemyTrajectoryPosition * buttonHeight + padding
-        println("Enemy fire shots")
+        Gdx.app.debug("GAME", "Creating player_2 trajectory")
         engine.addEntity(EntityFactory.createTrajectory(engine, Configuration.gameWidth - 10f - 100f, startPosY, false, shootPosX, shootPosY))
 
         if (GameInfo.player == "host") {
@@ -101,22 +103,42 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
     }
 
     fun changeState(state: GameState) {
-        println(state.toString() + "-" + this.state.toString())
+        Gdx.app.debug("GAME", "changeState called ${this.state} -> $state")
         if (!(this.state == GameState.SETUP && state == GameState.ANIMATION || this.state == GameState.WAITING && state == GameState.SETUP)) {
             this.state = state
             gameScreen.updateUi()
+            timerValue = 0f
+            gameScreen.timer.value = 0f
         }
         if (this.state == GameState.SETUP){
             InputHandler.playerShieldPosition = -1
             InputHandler.enemyShieldPosition = -1
             gameScreen.clicked = false
         }
+
     }
 
     fun render(delta: Float) {
-        Gdx.gl.glClearColor(0.5f, 0f, 0.2f, 1f)
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         engine.update(delta)
+
+        // Setup phase timer
+        if (this.state == GameState.SETUP) {
+            timerValue += Gdx.graphics.deltaTime
+            gameScreen.timer.value = timerValue
+            if (timerValue >= 100f) {
+                // Programmatically click on "End Turn" button after timer ends
+                val ie = InputEvent()
+                ie.type = InputEvent.Type.touchDown
+                gameScreen.btnEndTurn.fire(ie)
+                ie.type = InputEvent.Type.touchUp
+                gameScreen.btnEndTurn.fire(ie)
+                // Reset timer
+                timerValue = 0f
+                gameScreen.timer.value = 0f
+            }
+        }
     }
 
     fun dispose() {
