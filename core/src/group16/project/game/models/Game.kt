@@ -22,10 +22,8 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
         )
     }
     lateinit var state: GameState
-
     lateinit var ship1: Entity
     lateinit var ship2: Entity
-
     lateinit var shield1: Entity
     lateinit var shield2: Entity
     private var timerValue = 0f

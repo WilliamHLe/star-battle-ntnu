@@ -68,5 +68,6 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this, fbic))
         screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this, fbic))
         screens.put(LeaderboardScreen::class.java, LeaderboardScreen(this))
+        screens.put(SkinScreen::class.java, SkinScreen(this))
     }
 }
