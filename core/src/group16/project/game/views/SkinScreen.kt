@@ -23,12 +23,9 @@ import group16.project.game.views.components.SkinComponent
 class SkinScreen(val gameController: StarBattle): View(){
     private val skinSize = 300f
     private val skinPad = 50f
-    private val group = GridGroup(skinSize, skinPad) //item size 64px, spacing 4px
+    private val group = GridGroup(skinSize, skinPad)
+
     override fun init() {
-        val bg = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["BACKGROUND"])))
-        bg.setSize(stage.width, stage.height)
-        bg.setPosition(0f, 0f)
-        stage.addActor(bg)
         updateTable()
         Gdx.app.log("VIEW", "Skin loaded")
     }
@@ -38,7 +35,7 @@ class SkinScreen(val gameController: StarBattle): View(){
     private fun skinActor(skin: SkinComponent, i: Int): FloatingGroup {
         val skinImage = skin.image
         val skinText = VisLabel(skin.name)
-        skinText.setAlignment(1) // center text
+        skinText.setAlignment(1) // Center text
 
         val table = VisTable()
         table.setSize(skinSize, skinSize)
@@ -75,6 +72,11 @@ class SkinScreen(val gameController: StarBattle): View(){
 
     private fun updateTable() {
         stage.clear()
+
+        val bg = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["BACKGROUND"])))
+        bg.setSize(stage.width, stage.height)
+        bg.setPosition(0f, 0f)
+        stage.addActor(bg)
         updateGroup()
 
         // Return to menu button
@@ -86,7 +88,7 @@ class SkinScreen(val gameController: StarBattle): View(){
         })
 
         val scrollPane = VisScrollPane(group)
-        scrollPane.setScrollingDisabled(true, false) //disable X scrolling
+        scrollPane.setScrollingDisabled(true, false) // Disable X scrolling
         val table = VisTable()
         table.columnDefaults(0).pad(10f)
         table.setFillParent(true)

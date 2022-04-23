@@ -23,6 +23,11 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         // Load the UI first
         VisUI.load()
 
+        // Init textures
+        TextureHandler.initTextures()
+        Configuration.initSlides()
+        Configuration.initSkins()
+
         // Load screens and change screen to start screen
         loadScreens()
 
@@ -58,6 +63,7 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
             component.dispose()
         for (component in Configuration.skins)
             component.dispose()
+        Gdx.app.log("CONTROLLER", "StarBattleController disposed")
 
     }
     private fun setScreen(screen: View?) {
