@@ -1,8 +1,11 @@
 package group16.project.game.views
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
@@ -54,6 +57,10 @@ class LeaderboardScreen(val gameController: StarBattle): View(){
         val result = players.toList().sortedBy { (_, value) -> value}.reversed().toMap()
         //Clear stage to remove table
         stage.clear()
+        val bg = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["BACKGROUND"])))
+        bg.setSize(stage.width, stage.height)
+        bg.setPosition(0f, 0f)
+        stage.addActor(bg)
 
         val table = VisTable()
 

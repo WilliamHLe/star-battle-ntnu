@@ -6,6 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 
-class SkinComponent(val imagePath: String, val name: String) {
-    val image = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal(imagePath)))))
+class SkinComponent(imagePath: String, val name: String) {
+    val texture = Texture(Gdx.files.internal(imagePath))
+    val image = Image(TextureRegionDrawable(TextureRegion(texture)))
+
+    fun dispose() {
+        texture.dispose()
+    }
 }

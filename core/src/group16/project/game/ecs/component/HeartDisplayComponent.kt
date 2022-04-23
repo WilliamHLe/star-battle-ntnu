@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Texture
 
 class HeartDisplayComponent : Component, HealthListener {
     private lateinit var health: HealthComponent
-    val texture: Texture = Texture("heart_full.png")
-    val textureEmpty: Texture = Texture("heart.png")
+    lateinit var texture: Texture
+    lateinit var textureEmpty: Texture
     var hearts = -1
 
     private fun updateHearts(){

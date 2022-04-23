@@ -7,6 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem
 import group16.project.game.ecs.component.*
 import group16.project.game.ecs.notNull
 import com.badlogic.gdx.graphics.g2d.Batch
+import group16.project.game.models.GameInfo
 
 class HeartSystem (
         private val batch: Batch
@@ -43,8 +44,8 @@ class HeartSystem (
         if (positionComponent.x < 100)
             isPlayer = true
 
-        for (i in 0..2) {
-            if(heartDisplayComponent.hearts < i+1 && isPlayer || heartDisplayComponent.hearts < 3-i && !isPlayer)
+        for (i in 0 until GameInfo.health) {
+            if(heartDisplayComponent.hearts < i+1 && isPlayer || heartDisplayComponent.hearts < GameInfo.health-i && !isPlayer)
                 batch.draw(heartDisplayComponent.textureEmpty, positionComponent.x + i*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)
             else
                 batch.draw(heartDisplayComponent.texture, positionComponent.x + i*rectShape.width, positionComponent.y, rectShape.width, rectShape.height)

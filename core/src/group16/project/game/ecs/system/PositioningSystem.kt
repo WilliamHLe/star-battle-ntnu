@@ -8,6 +8,7 @@ import group16.project.game.ecs.utils.InputHandler
 import group16.project.game.ecs.component.*
 import group16.project.game.ecs.lerp
 import group16.project.game.ecs.utils.ComponentMapper
+import group16.project.game.models.GameInfo
 
 class PositioningSystem : IteratingSystem(
         Family.all(
@@ -16,7 +17,7 @@ class PositioningSystem : IteratingSystem(
                 PlayerComponent::class.java
         ).one(TypeComponent::class.java, ShieldComponent::class.java).get()
 ) {
-    private val padding = (Configuration.gameHeight - 4*100) / 2
+    private val padding = (Configuration.gameHeight - GameInfo.slots*100) / 2
     private val buttonHeight = 100
 
     override fun processEntity(entity: Entity?, deltaTime: Float) {
@@ -47,7 +48,7 @@ class PositioningSystem : IteratingSystem(
             bodyComponent.rectangle.y = lerp(positionComponent.y, target, 0.1f)
             positionComponent.y = lerp(positionComponent.y, target, 0.1f)
         } else if (typeComponent.type == "target") {
-            val padding = (Configuration.gameHeight - 4*115) / 2
+            val padding = (Configuration.gameHeight - GameInfo.slots*115) / 2
             var target = InputHandler.enemyTrajectoryPosition * buttonHeight + padding
             if (playerComponent.player)
                 target = InputHandler.playerTrajectoryPosition * buttonHeight + padding

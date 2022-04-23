@@ -1,7 +1,6 @@
 package group16.project.game.views
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.InputEvent
@@ -55,7 +54,7 @@ class SkinScreen(val gameController: StarBattle): View(){
             }
         })
         if (InputHandler.playerSkin == i) {
-            val selected = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("selection.png")))))
+            val selected = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["UI_SELECTION"])))
             selected.setSize(skinSize, skinSize)
             selected.setPosition(0f, 0f)
             pane.addActor(selected)

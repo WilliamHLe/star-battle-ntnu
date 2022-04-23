@@ -8,7 +8,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import group16.project.game.models.Game
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.utils.Array
 import group16.project.game.ecs.utils.InputHandler
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -27,7 +27,7 @@ import group16.project.game.views.components.EndGameComponent
 class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : View() {
     private val game = Game(camera, this)
     private val statusText = VisLabel("")
-    private val btnPlaceShield = VisImageButton(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("Shieldbtn.png")))))
+    private val btnPlaceShield = VisImageButton(TextureRegionDrawable(TextureRegion(TextureHandler.textures["ICON_SHIELD"])))
     private lateinit var healths: HashMap<String, HealthComponent>
     private var bothHit = false
     private lateinit var shields: HashMap<String, ShieldComponent>
@@ -42,7 +42,6 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     fun updateHealth(player: String, health: Int){
         healths[player]!!.set(health)
-        println(!bothHit && (healths[GameInfo.player]!!.hp == 0 || healths[GameInfo.opponent]!!.hp == 0))
         if (!bothHit && (healths[GameInfo.player]!!.hp == 0 || healths[GameInfo.opponent]!!.hp == 0)) endGame()
         else bothHit = false
     }
@@ -59,12 +58,11 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         game.dispose()
     }
 
-    override fun pause() {}
-    override fun resume() {}
     override fun hide() {
         game.hide()
         stage.clear()
     }
+
     override fun init() {
         // Init game model and camera
         game.init()
@@ -79,18 +77,17 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         shields[GameInfo.player] = ComponentMapper.shield.get(game.shield1)
         shields[GameInfo.opponent] = ComponentMapper.shield.get(game.shield2)
 
-        //Heart listeners
+        // Heart listeners
         fbic.heartListener("host", this)
         fbic.heartListener("player_2", this)
 
-        //gameState listener
+        // GameState listener
         fbic.getCurrentState(game)
-        //Opponent ready listener
+        // Opponent ready listener
         fbic.checkIfOpponentReady(this)
         btnPlaceShield.isDisabled = false
     }
     fun bothReady(opponentMovingTo : Int, opponentShooting : Int, bothHit: Boolean, shieldPosition: Int) {
-        println("BOTH READY, SCREEN")
         this.bothHit = bothHit
         InputHandler.enemyPosition = opponentMovingTo
         InputHandler.enemyTrajectoryPosition = opponentShooting
@@ -99,7 +96,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
     }
 
     private fun endGame() {
-        //This player won
+        // A player has won
         fbic.updateCurrentGameState(GameState.GAME_OVER)
         val score: Int
         if (healths[GameInfo.player]!!.hp == 0 && healths[GameInfo.opponent]!!.hp == 0){
@@ -112,7 +109,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             score = -5
             fbic.updateScore(score)
         }
-            stage.addActor(PopupComponent(EndGameComponent(score, game, gameController), isFullscreen = false, hasCloseButton = false))
+        stage.addActor(PopupComponent(EndGameComponent(score, game, gameController), isFullscreen = false, hasCloseButton = false))
     }
 
     fun updateUi() {
@@ -126,7 +123,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
 
     private fun drawLayout() {
         // Draw topbox
-        val tbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("topbox.png")))))
+        val tbox = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["UI_TOPBOX"])))
         tbox.setSize(360f, 60f)
         tbox.setPosition((stage.width/2) - 180f, stage.height - 60f)
         stage.addActor(tbox)
@@ -138,11 +135,11 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         stage.addActor(statusText)
 
         // Draw bottombox
-        val tubox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("turnbox.png")))))
+        val tubox = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["UI_TURNBOX"])))
         tubox.setSize(260f, 70f)
         tubox.setPosition((stage.width/2) - 130f, 58f)
         stage.addActor(tubox)
-        val bbox = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bottombox.png")))))
+        val bbox = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["UI_BOTTOMBOX"])))
         bbox.setSize(670f, 90f)
         bbox.setPosition((stage.width/2) - 670/2f, -5f)
         stage.addActor(bbox)
@@ -160,8 +157,9 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         // Draw place shield button
         btnPlaceShield.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                Gdx.app.debug("GAME","Shield power-up clicked")
                 if (!clicked) {
-                    println("Placed a shield")
+                    Gdx.app.debug("GAME","Placed a shield")
                     InputHandler.playerShieldPosition = InputHandler.playerPosition
                     btnPlaceShield.setPosition(-10000f, -1000f)
                 }
@@ -172,13 +170,12 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         stage.addActor(btnPlaceShield)
 
         // Draw menu icon
-        val cogIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("cog_icon.png")))))
+        val cogIcon = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["ICON_MENU"])))
         cogIcon.setSize(50f, 58f)
         cogIcon.setPosition((stage.width/2) + 670/2f - 100f, 11f)
         val btnMenu = VisTextButton("")
         btnMenu.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                println("PAUSE")
                 // Continue button
                 val popup = PopupComponent(null, isFullscreen = true, hasCloseButton = false)
                 val btnContinue = VisTextButton("Continue game")
@@ -217,13 +214,12 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         stage.addActor(btnMenu)
 
         // Draw help icon
-        val helpIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("help_icon.png")))))
+        val helpIcon = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["ICON_HELP"])))
         helpIcon.setSize(50f, 58f)
         helpIcon.setPosition((stage.width/2) + 670/2f - 155f, 11f)
         val btnHelp = VisTextButton("")
         btnHelp.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                println("HELP")
                 stage.addActor(PopupComponent(SlideshowComponent(Configuration.slides), true))
             }
         })
@@ -259,27 +255,27 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
             vbox.setPosition(i * (stage.width - 150f), 0f)
 
             // Draw selection markers
-            val padding = (Configuration.gameHeight - 4*100) / 2
-            val longbar1 = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("longbar.png")))))
-            longbar1.setSize(40f, 100f*4 + 40f + 20f)
+            val padding = (Configuration.gameHeight - GameInfo.slots*100) / 2
+            val longbar1 = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["LONGBAR"])))
+            longbar1.setSize(40f, 100f*GameInfo.slots + 40f + 20f)
             longbar1.setPosition((stage.width - 150f)*i - 10f, padding - 20f - 10f)
             stage.addActor(longbar1)
-            val longbar2 = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("longbar.png")))))
-            longbar2.setSize(40f, 100f*4 + 40f + 20f)
+            val longbar2 = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["LONGBAR"])))
+            longbar2.setSize(40f, 100f*GameInfo.slots + 40f + 20f)
             longbar2.setPosition((stage.width - 155f)*i + 125f, padding - 20f - 10f)
             stage.addActor(longbar2)
-            val bbar = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bar.png")))))
+            val bbar = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["BAR"])))
             bbar.setSize(200f, 40f)
             bbar.setPosition((stage.width - 150f)*i - 20f, padding - 20f)
             stage.addActor(bbar)
 
             // Draw buttons
-            val btn1 = VisTextButton("3")
-            val btn2 = VisTextButton("2")
-            val btn3 = VisTextButton("1")
-            val btn4 = VisTextButton("0")
-            val btns = arrayOf(btn1, btn2, btn3, btn4)
-            for ((j, btn) in btns.withIndex()) {
+            val buttons: Array<VisTextButton> = Array()
+            for (btnNum in (GameInfo.slots-1) downTo 0) { // Index starting at 0
+                buttons.add(VisTextButton(btnNum.toString()))
+            }
+            println(buttons.size)
+            for ((j, btn) in buttons.withIndex()) {
                 btn.setColor(0f,0f,0f,0.2f)
                 if (i == 0)
                     btn.addListener(object : ChangeListener() {
@@ -306,7 +302,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
                 vbox.row()
 
                 // BAR
-                val bar = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("bar.png")))))
+                val bar = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["BAR"])))
                 bar.setSize(200f, 40f)
                 bar.setPosition((stage.width - 160f)*i - 20f, padding - 20f + 100f*(j+1))
                 stage.addActor(bar)

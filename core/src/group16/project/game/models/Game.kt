@@ -31,8 +31,8 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
     fun init() {
         state = GameState.START
         // Ship
-        ship1 = EntityFactory.createUfo(engine, -10f, 0f, true)
-        ship2 = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, false)
+        ship1 = EntityFactory.createUfo(engine, -10f, 0f, GameInfo.health, true)
+        ship2 = EntityFactory.createUfo(engine, Configuration.gameWidth - 170f, 0f, GameInfo.health, false)
         engine.addEntity(ship1)
         engine.addEntity(ship2)
         // Shields
@@ -48,7 +48,7 @@ class Game(private val camera: OrthographicCamera, private val gameScreen: GameS
         engine.addEntity(EntityFactory.createBG(engine, 0f, 0f))
         //Hearts
         engine.addEntity(EntityFactory.createHearts(engine, 10f, Configuration.gameHeight - 60f, ship1.getComponent(HealthComponent::class.java)))
-        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 60f - 160f, Configuration.gameHeight - 60f, ship2.getComponent(HealthComponent::class.java)))
+        engine.addEntity(EntityFactory.createHearts(engine, Configuration.gameWidth - 70f*GameInfo.health - 10f, Configuration.gameHeight - 60f, ship2.getComponent(HealthComponent::class.java)))
         Gdx.app.log("GAME", "Engine loaded")
     }
 

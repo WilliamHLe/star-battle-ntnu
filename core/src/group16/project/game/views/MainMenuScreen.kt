@@ -1,7 +1,6 @@
 package group16.project.game.views
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Image
@@ -18,8 +17,6 @@ import group16.project.game.models.GameState
 
 class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseInterface) : View() {
     override fun draw(delta: Float) {}
-    override fun pause() {}
-    override fun resume() {}
 
     override fun resize(width: Int, height: Int) {
         super.resize(width, height)
@@ -37,13 +34,13 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
     private fun drawLayout() {
         val table = VisTable()
 
-        val bg = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("background.png")))))
+        val bg = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["BACKGROUND"])))
         bg.setSize(stage.width, stage.height)
         bg.setPosition(0f, 0f)
         stage.addActor(bg)
 
         // Create the description field
-        val logo = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("logo.png")))))
+        val logo = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["LOGO"])))
 
         // Add a "StartGame" button
         val btnStart = VisTextButton("Start the game")
@@ -104,7 +101,7 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
         stage.addActor(table)
 
         // Draw help icon on top right corner
-        val helpIcon = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("help_icon.png")))))
+        val helpIcon = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["ICON_HELP"])))
         helpIcon.setSize(50f, 58f)
         helpIcon.setPosition(stage.width - 60f, stage.height - 66f)
         val btnHelp = VisTextButton("")

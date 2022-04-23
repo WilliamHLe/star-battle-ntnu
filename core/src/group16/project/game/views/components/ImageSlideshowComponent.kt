@@ -7,8 +7,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 
 class ImageSlideshowComponent(imagePath: String, val text: String) {
-    val image = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal(imagePath)))))
+    val texture = Texture(Gdx.files.internal(imagePath))
+    val image = Image(TextureRegionDrawable(TextureRegion(texture)))
     init {
         image.setPosition(0f, 0f)
+    }
+    fun dispose() {
+        texture.dispose()
     }
 }

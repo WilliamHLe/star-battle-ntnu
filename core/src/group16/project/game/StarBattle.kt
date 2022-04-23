@@ -52,6 +52,13 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         screens.forEach { e -> e.value.dispose() }
         screens.clear()
         if (VisUI.isLoaded()) VisUI.dispose()
+        for (texture in TextureHandler.textures.values())
+            texture.dispose()
+        for (component in Configuration.slides)
+            component.dispose()
+        for (component in Configuration.skins)
+            component.dispose()
+
     }
     private fun setScreen(screen: View?) {
         super.setScreen(screen)

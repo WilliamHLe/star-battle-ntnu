@@ -14,6 +14,7 @@ import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import group16.project.game.Configuration
+import group16.project.game.views.TextureHandler
 
 class SlideshowComponent(private val slides: Array<ImageSlideshowComponent>): FloatingGroup() {
     private val gWidth = Configuration.gameWidth
@@ -100,12 +101,12 @@ class SlideshowComponent(private val slides: Array<ImageSlideshowComponent>): Fl
         dots.clear()
         for (i in 0 until slides.size) {
             if (i == currentSlide) {
-                val markedDot = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("heart_full.png")))))
+                val markedDot = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["DOT_MARKED"])))
                 markedDot.name = "marked"
                 markedDot.setSize(dots.itemWidth, dots.itemHeight)
                 dots.addActor(markedDot)
             } else {
-                val dot = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("heart.png")))))
+                val dot = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["DOT"])))
                 dot.setSize(dots.itemWidth, dots.itemHeight)
                 dots.addActor(dot)
             }

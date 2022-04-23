@@ -78,7 +78,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 //Set name of lobby and host with the user id
                 myRef.child("name").setValue(lobbyName)
                 myRef.child("host").child("id").setValue(user.uid)
-                myRef.child("host").child("lives").setValue(3)
+                myRef.child("host").child("lives").setValue(GameInfo.health)
                 gameController.updateCurrentGame(randomLobbyCode, "host", "player_2")
                 updateCurrentGameState(GameState.START)
                 // Adds newly created lobby to user in db
@@ -114,7 +114,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 //If lobby exist and do not contain already a user add user to lobby
                 if (!lobby.containsKey("player_2")) {
                     myRef.child("player_2").child("id").setValue(user.uid)
-                    myRef.child("player_2").child("lives").setValue(3)
+                    myRef.child("player_2").child("lives").setValue(GameInfo.health)
                     screen.gameController.updateCurrentGame(lobbyCode, "player_2", "host")
                     updateCurrentGameState(GameState.SETUP)
                     //Add lobby to user
