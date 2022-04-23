@@ -13,7 +13,7 @@ import group16.project.game.StarBattle
 
 class LeaderboardScreen(val gameController: StarBattle): View(){
 
-    //Players username and score of top 10
+    // Players username and score of top 10
     private var players = hashMapOf<String, Int>()
     private val txtTitle = VisLabel("Leaderboard")
     private val btnReturn = VisTextButton("Return to main menu")
@@ -38,7 +38,7 @@ class LeaderboardScreen(val gameController: StarBattle): View(){
     override fun draw(delta: Float) {}
 
     /**
-     * Update score for child that moved og changed
+     * Update score for child that moved and changed
      */
     fun updateLeaderboard(userName: String, score: Int) {
         players[userName] = score

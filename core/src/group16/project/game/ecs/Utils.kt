@@ -3,7 +3,6 @@ package group16.project.game.ecs
 import com.badlogic.ashley.core.Entity
 import group16.project.game.ecs.utils.ComponentMapper
 
-
 fun lerp(start: Float, end: Float, n: Float): Float {
     return (1 - n) * start + n * end
 }

@@ -34,7 +34,7 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         // Log in here.
         fbic.signInAnonymously()
 
-        //check if the view in screens are a highScoreScreen
+        // Check if the view in screens are a highScoreScreen
         val highScoreScreen = screens[LeaderboardScreen::class.java]
         if(highScoreScreen is LeaderboardScreen) {
             //Get highscoreList listener

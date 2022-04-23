@@ -101,6 +101,7 @@ class GameScreen(val gameController: StarBattle, val fbic: FirebaseInterface) : 
         InputHandler.enemyTrajectoryPosition = opponentShooting
         InputHandler.enemyShieldPosition = shieldPosition
 
+        // Executing move
         if (GameInfo.player == "host") {
             fbic.updateCurrentGameState(GameState.ANIMATION)
             fbic.resetReady()

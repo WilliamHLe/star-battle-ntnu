@@ -47,6 +47,7 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
             btnStart.color.a = 0f
             btnStart.isDisabled = true
         }
+
         // Add a "JoinLobby" button
         val btnJoin = VisTextButton("Join game lobby")
         btnJoin.addListener(object : ChangeListener() {

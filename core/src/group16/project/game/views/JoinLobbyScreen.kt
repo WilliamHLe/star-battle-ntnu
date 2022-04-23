@@ -47,17 +47,17 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
         val btnJoin = VisTextButton("Join")
         btnJoin.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                //Remove keyboard
+                // Remove keyboard
                 nameField.onscreenKeyboard.show(false)
-                //set error message to blank
+                // Set error message to blank
                 errorMessageLabel.setText("")
-                //If lobby code is blank display error message
+                // If lobby code is blank display error message
                 if (nameField.toString() == "") {
                     errorMessageLabel.setText("Need a lobby name")
-                //If lobby code is not 6 character
+                // If lobby code is not 6 character
                 }else if(nameField.toString().length != 6) {
                     errorMessageLabel.setText("Lobby name is 6 character and/or numbers long")
-                //Else join lobby and display waiting
+                // Else join lobby and display waiting
                 }else {
                     //If could not join lobby error message will be updated in errorMessage function
                     fbic.joinLobby(nameField.toString(), this@JoinLobbyScreen)
@@ -74,7 +74,6 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
         })
-
 
         table.columnDefaults(0).pad(10f)
         table.columnDefaults(1).pad(10f)
@@ -101,7 +100,7 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
     }
 
     override fun draw(delta: Float) {
-        //Only change screen to change screen to game screen if error message is "Success"
+        // Only change screen to change screen to game screen if error message is "Success"
         if (errorMessageLabel.textEquals("Success")) {
             gameController.changeScreen(GameScreen::class.java)
         }
