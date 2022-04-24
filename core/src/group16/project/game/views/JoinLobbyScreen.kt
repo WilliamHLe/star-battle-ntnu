@@ -3,10 +3,13 @@ package group16.project.game.views
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
+import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
@@ -19,13 +22,18 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
     //Error label
     var errorMessageLabel: Label =Label("", LabelStyle(BitmapFont(), Color.RED))
 
-
     override fun init() {
-        var table = VisTable()
+        val table = VisTable()
+
+        val bg = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["BACKGROUND"])))
+        bg.setSize(stage.width, stage.height)
+        bg.setPosition(0f, 0f)
+        stage.addActor(bg)
 
         // Create title
         val txtTitle = VisLabel("Join game lobby")
         txtTitle.setAlignment(1)
+        txtTitle.setFontScale(1.5f)
 
         //Set error message to blank
         this.errorMessageLabel.setText("")
@@ -39,17 +47,17 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
         val btnJoin = VisTextButton("Join")
         btnJoin.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
-                //Remove keyboard
+                // Remove keyboard
                 nameField.onscreenKeyboard.show(false)
-                //set error message to blank
+                // Set error message to blank
                 errorMessageLabel.setText("")
-                //If lobby code is blank display error message
+                // If lobby code is blank display error message
                 if (nameField.toString() == "") {
                     errorMessageLabel.setText("Need a lobby name")
-                //If lobby code is not 6 character
+                // If lobby code is not 6 character
                 }else if(nameField.toString().length != 6) {
                     errorMessageLabel.setText("Lobby name is 6 character and/or numbers long")
-                //Else join lobby and display waiting
+                // Else join lobby and display waiting
                 }else {
                     //If could not join lobby error message will be updated in errorMessage function
                     fbic.joinLobby(nameField.toString(), this@JoinLobbyScreen)
@@ -66,7 +74,6 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
         })
-
 
         table.columnDefaults(0).pad(10f)
         table.columnDefaults(1).pad(10f)
@@ -92,30 +99,10 @@ class JoinLobbyScreen(val gameController: StarBattle, private val fbic: Firebase
         errorMessageLabel.setText(message)
     }
 
-    override fun resize(width: Int, height: Int) {
-        super.resize(width, height)
-    }
-
     override fun draw(delta: Float) {
-        //Only change screen to change screen to game screen if error message is "Success"
+        // Only change screen to change screen to game screen if error message is "Success"
         if (errorMessageLabel.textEquals("Success")) {
             gameController.changeScreen(GameScreen::class.java)
         }
-    }
-
-    override fun pause() {
-        super.pause()
-    }
-
-    override fun resume() {
-        super.resume()
-    }
-
-    override fun hide() {
-        super.hide()
-    }
-
-    override fun dispose() {
-        super.dispose()
     }
 }

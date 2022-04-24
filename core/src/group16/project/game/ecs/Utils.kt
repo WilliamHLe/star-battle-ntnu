@@ -1,9 +1,7 @@
 package group16.project.game.ecs
 
 import com.badlogic.ashley.core.Entity
-import group16.project.game.ecs.component.PositionComponent
 import group16.project.game.ecs.utils.ComponentMapper
-
 
 fun lerp(start: Float, end: Float, n: Float): Float {
     return (1 - n) * start + n * end
@@ -24,15 +22,4 @@ fun <T1, T2, T3> notNull(t1: T1?, t2: T2?, body: (T1, T2) -> T3): T3? =
 fun <T1, T2, T3, T4> notNull(t1: T1?, t2: T2?, t3: T3?, body: (T1, T2, T3) -> T4): T4? =
         if (t1 != null && t2 != null && t3 != null)
             body(t1, t2, t3)
-        else null
-
-fun <T1, T2, T3, T4, T5> notNull(
-        t1: T1?,
-        t2: T2?,
-        t3: T3?,
-        t4: T4?,
-        body: (T1, T2, T3, T4) -> T5
-): T5? =
-        if (t1 != null && t2 != null && t3 != null && t4 != null)
-            body(t1, t2, t3, t4)
         else null

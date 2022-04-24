@@ -1,69 +1,74 @@
 package group16.project.game.ecs.utils
 
-
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.ashley.core.Entity
 import group16.project.game.Configuration
 import group16.project.game.ecs.Engine
 import group16.project.game.ecs.component.*
+import group16.project.game.views.TextureHandler
 
 class EntityFactory {
 
     companion object {
-        fun createBG(engine: Engine, posx: Float, posy: Float) =
+        fun createBG(engine: Engine, x: Float, y: Float): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 0f
-                    x = posx
-                    y = posy
+                    this.x = x
+                    this.y = y
                 })
                 entity.add(engine.createComponent(BodyComponent::class.java).apply {
                     rectangle.setWidth(Configuration.gameWidth)
                     rectangle.setHeight(Configuration.gameHeight)
-                    rectangle.setPosition(posx, posy)
+                    rectangle.setPosition(x, y)
                 })
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                    texture = Texture("background_dark.png")
+                    texture = TextureHandler.textures["GAME_BACKGROUND"]
                 })
             }
 
-        fun createHearts(engine: Engine, posx: Float, posy: Float, listensTo: HealthComponent) =
+        fun createHearts(engine: Engine, x: Float, y: Float, listensTo: HealthComponent): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
-                    x = posx
-                    y = posy
+                    this.x = x
+                    this.y = y
                 })
                 entity.add(engine.createComponent(BodyComponent::class.java).apply {
                     rectangle.setWidth(70f)
                     rectangle.setHeight(60f)
-                    rectangle.setPosition(posx, posy)
+                    rectangle.setPosition(x, y)
                 })
                 entity.add(engine.createComponent(HeartDisplayComponent::class.java).apply {
                     listenTo(listensTo)
+                    texture = TextureHandler.textures["HEART_FULL"]
+                    textureEmpty = TextureHandler.textures["HEART_EMPTY"]
                 })
             }
 
 
-        fun createUfo(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
+        fun createUfo(engine: Engine, x: Float, y: Float, hp: Int, isPlayer: Boolean): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
-                    x = posx
-                    y = posy
+                    this.x = x
+                    this.y = y
                 })
                 entity.add(engine.createComponent(BodyComponent::class.java).apply {
                     rectangle.setWidth(190f)
                     rectangle.setHeight(110f)
-                    rectangle.setPosition(posx, posy)
+                    rectangle.setPosition(x, y)
                 })
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                    texture = Texture("ufo3.png")
+                    texture = if (isPlayer) Configuration.skins[InputHandler.playerSkin].texture else Configuration.skins[InputHandler.enemySkin].texture
                 })
-                entity.add(engine.createComponent(UfoComponent::class.java).apply {
+                entity.add(engine.createComponent(PlayerComponent::class.java).apply {
                     player = isPlayer
                 })
+                entity.add(engine.createComponent(TypeComponent::class.java).apply {
+                    type = "ufo"
+                })
                 entity.add(engine.createComponent(HealthComponent::class.java).apply {
-                    hp = 3
+                    this.hp = hp
                 })
                 entity.add(engine.createComponent(TransformComponent::class.java).apply {
                     rotation = 0f
@@ -72,23 +77,26 @@ class EntityFactory {
                 })
             }
 
-        fun createTarget(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
+        fun createTarget(engine: Engine, x: Float, y: Float, isPlayer: Boolean): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
-                    x = posx
-                    y = posy
+                    this.x = x
+                    this.y = y
                 })
                 entity.add(engine.createComponent(BodyComponent::class.java).apply {
                     rectangle.setWidth(160f)
                     rectangle.setHeight(160f)
-                    rectangle.setPosition(posx, posy)
+                    rectangle.setPosition(x, y)
                 })
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                    texture = Texture("target.png")
+                    texture = TextureHandler.textures["TARGET"]
                 })
-                entity.add(engine.createComponent(TargetComponent::class.java).apply {
+                entity.add(engine.createComponent(PlayerComponent::class.java).apply {
                     player = isPlayer
+                })
+                entity.add(engine.createComponent(TypeComponent::class.java).apply {
+                    type = "target"
                 })
                 entity.add(engine.createComponent(TransformComponent::class.java).apply {
                     rotation = 0f
@@ -96,24 +104,25 @@ class EntityFactory {
                     opacity = if (isPlayer) 1f else 0f
                 })
             }
-        fun createShield(engine: Engine, posx: Float, posy: Float, isPlayer: Boolean) =
+        fun createShield(engine: Engine, x: Float, y: Float, isPlayer: Boolean): Entity =
             engine.createEntity().also { entity ->
                 entity.add(engine.createComponent(PositionComponent::class.java).apply {
                     z = 1f
-                    x = posx
-                    y = posy
+                    this.x = x
+                    this.y = y
                 })
                 entity.add(engine.createComponent(BodyComponent::class.java).apply {
                     rectangle.setWidth(64f)
                     rectangle.setHeight(120f)
-                    rectangle.setPosition(posx, posy)
+                    rectangle.setPosition(x, y)
                 })
                 entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                    texture = Texture("Shield.png")
+                    texture = TextureHandler.textures["SHIELD"]
                 })
-                entity.add(engine.createComponent(ShieldComponent::class.java).apply {
+                entity.add(engine.createComponent(PlayerComponent::class.java).apply {
                     player = isPlayer
                 })
+                entity.add(engine.createComponent(ShieldComponent::class.java))
                 entity.add(engine.createComponent(TransformComponent::class.java).apply {
                     rotation = 0f
                     flipped = !isPlayer
@@ -128,7 +137,7 @@ class EntityFactory {
             isPlayer: Boolean,
             shootPosX: Float,
             shootPosY: Float
-        ) = engine.createEntity().also { entity ->
+        ): Entity = engine.createEntity().also { entity ->
             entity.add(engine.createComponent(PositionComponent::class.java).apply {
                 z = 1f
                 x = startPosX
@@ -141,12 +150,12 @@ class EntityFactory {
             })
 
             entity.add(engine.createComponent(TextureComponent::class.java).apply {
-                texture = Texture("trajectory.png")
+                texture = TextureHandler.textures["TRAJECTORY"]
             })
-
-
+            entity.add(engine.createComponent(PlayerComponent::class.java).apply {
+                player = isPlayer
+            })
             entity.add(engine.createComponent(TrajectoryComponent::class.java).apply {
-                this.isPlayer = isPlayer
                 this.shootingPosX = shootPosX
                 this.shootingPosY = shootPosY
             })

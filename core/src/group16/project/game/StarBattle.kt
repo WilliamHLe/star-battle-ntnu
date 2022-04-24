@@ -23,19 +23,23 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         // Load the UI first
         VisUI.load()
 
+        // Init textures
+        TextureHandler.initTextures()
+        Configuration.initSlides()
+        Configuration.initSkins()
+
         // Load screens and change screen to start screen
         loadScreens()
 
         // Log in here.
         fbic.signInAnonymously()
 
-        //check if the view in screens are a highScoreScreen
-        val highScoreScreen = screens[HighScoreScreen::class.java]
-        if(highScoreScreen is HighScoreScreen) {
+        // Check if the view in screens are a highScoreScreen
+        val highScoreScreen = screens[LeaderboardScreen::class.java]
+        if(highScoreScreen is LeaderboardScreen) {
             //Get highscoreList listener
             fbic.getHighScoreListener(highScoreScreen)
         }
-        //changeScreen(PlaceholderTutorialScreen::class.java)
         changeScreen(MainMenuScreen::class.java)
         Gdx.app.log("CONTROLLER", "StarBattleController loaded")
     }
@@ -53,8 +57,16 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         screens.forEach { e -> e.value.dispose() }
         screens.clear()
         if (VisUI.isLoaded()) VisUI.dispose()
+        for (texture in TextureHandler.textures.values())
+            texture.dispose()
+        for (component in Configuration.slides)
+            component.dispose()
+        for (component in Configuration.skins)
+            component.dispose()
+        Gdx.app.log("CONTROLLER", "StarBattleController disposed")
+
     }
-    fun setScreen(screen: View?) {
+    private fun setScreen(screen: View?) {
         super.setScreen(screen)
         view = screen
     }
@@ -63,12 +75,12 @@ class StarBattle(private val fbic: FirebaseInterface) : Game() {
         setScreen(screens[key])
     }
 
-    fun loadScreens() {
+    private fun loadScreens() {
         screens.put(MainMenuScreen::class.java, MainMenuScreen(this, fbic))
         screens.put(GameScreen::class.java, GameScreen(this, fbic))
         screens.put(CreateLobbyScreen::class.java, CreateLobbyScreen(this, fbic))
         screens.put(JoinLobbyScreen::class.java, JoinLobbyScreen(this, fbic))
-        screens.put(HighScoreScreen::class.java, HighScoreScreen(this))
-        //screens.put(PlaceholderTutorialScreen::class.java, PlaceholderTutorialScreen(this))
+        screens.put(LeaderboardScreen::class.java, LeaderboardScreen(this))
+        screens.put(SkinScreen::class.java, SkinScreen(this))
     }
 }

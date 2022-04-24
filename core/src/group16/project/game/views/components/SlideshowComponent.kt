@@ -1,22 +1,22 @@
 package group16.project.game.views.components
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.scenes.scene2d.Actor
 import com.badlogic.gdx.scenes.scene2d.ui.Image
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
+import com.badlogic.gdx.utils.Array
 import com.kotcrab.vis.ui.layout.FloatingGroup
 import com.kotcrab.vis.ui.layout.GridGroup
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisTable
 import com.kotcrab.vis.ui.widget.VisTextButton
 import group16.project.game.Configuration
+import group16.project.game.views.TextureHandler
 
-class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>): FloatingGroup() {
-    private val WIDTH = Configuration.gameWidth
-    private val HEIGHT = Configuration.gameHeight
+class SlideshowComponent(private val slides: Array<ImageSlideshowComponent>): FloatingGroup() {
+    private val gWidth = Configuration.gameWidth
+    private val gHeight = Configuration.gameHeight
 
     private val text = VisLabel("")
     private val display = VisTable()
@@ -26,12 +26,12 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
 
     init {
         this.setPosition(0f ,0f)
-        this.setSize(WIDTH, HEIGHT)
+        this.setSize(gWidth, gHeight)
 
         // Navigation buttons
         val btnLeft = VisTextButton("<")
         btnLeft.setSize(50f, 70f)
-        btnLeft.setPosition(0f ,HEIGHT/2 - 35f)
+        btnLeft.setPosition(0f ,gHeight/2 - 35f)
         btnLeft.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 currentSlide -= 1
@@ -44,7 +44,7 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
 
         val btnRight = VisTextButton(">")
         btnRight.setSize(50f, 70f)
-        btnRight.setPosition(WIDTH - 50f ,HEIGHT/2 - 35f)
+        btnRight.setPosition(gWidth- 50f ,gHeight/2 - 35f)
         btnRight.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
                 currentSlide = (currentSlide+1)%slides.size
@@ -54,27 +54,29 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
         })
         this.addActor(btnRight)
 
+        // Display
+        display.columnDefaults(0).pad(5f)
+        display.setFillParent(true)
+
         // Dots
         updateDots()
         dots.setSize((dots.itemWidth + dots.spacing) * slides.size + dots.spacing, 20f)
 
         // Text
         text.setAlignment(1)
-        text.wrap = true;
-        text.width = WIDTH*0.8f;
+        text.wrap = true
+        text.width = gWidth*0.8f
 
         // Root table
-        var table = VisTable()
-        table.columnDefaults(0)
-        table.columnDefaults(1)
+        val table = VisTable()
+        table.columnDefaults(0).pad(10f)
+        table.columnDefaults(1).pad(10f)
         table.setFillParent(true)
-        table.add(display).size(WIDTH*0.85f, HEIGHT*0.7f)
+        table.add(display).size(gWidth*0.7f, gHeight*0.7f)
         table.row()
         table.add(dots)
         table.row()
-        table.add(text).size(WIDTH*0.8f, HEIGHT*0.15f)
-        table.row()
-        //table.add("heifpewijDFJEWINFIPEW FIWEJG IJF  JEIP GJEWOFI EWO JPIWEJGPIWEJhiposerghjip hgio ehroøgh iueghr eighr ueghuerh guhreousgh reughohr eugh ohg hgaeo øghreoøsgl.ndlrhieg g roehgo hh eohgaw-lgø sozgeug  vihpevn  nljdjgd iejg p  jpfwejg pe jg i gg eoaa æoigg  æogi")
+        table.add(text).size(gWidth*0.8f, gHeight*0.1f)
 
         this.addActor(table)
         updateSlide()
@@ -85,7 +87,7 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
         // Update display
         display.clear()
         val img = imgSlideshow.image
-        img.setSize(WIDTH*0.85f, HEIGHT*0.7f)
+        img.setSize(gWidth*0.7f, gHeight*0.7f)
         display.addActor(img)
         // Update dots
         updateDots()
@@ -97,12 +99,12 @@ class SlideshowComponent(private val slides: ArrayList<ImageSlideshowComponent>)
         dots.clear()
         for (i in 0 until slides.size) {
             if (i == currentSlide) {
-                var markedDot = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("heart_full.png")))))
+                val markedDot = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["DOT_MARKED"])))
                 markedDot.name = "marked"
                 markedDot.setSize(dots.itemWidth, dots.itemHeight)
                 dots.addActor(markedDot)
             } else {
-                val dot = Image(TextureRegionDrawable(TextureRegion(Texture(Gdx.files.internal("heart.png")))))
+                val dot = Image(TextureRegionDrawable(TextureRegion(TextureHandler.textures["DOT"])))
                 dot.setSize(dots.itemWidth, dots.itemHeight)
                 dots.addActor(dot)
             }

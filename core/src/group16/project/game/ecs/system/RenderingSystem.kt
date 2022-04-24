@@ -48,20 +48,23 @@ class RenderingSystem(
         }
     }
 
+    // Simple render
     private fun render(bodyComponent: BodyComponent, textureComponent: TextureComponent) {
         val rectShape = bodyComponent.rectangle
         batch.draw(textureComponent.texture, rectShape.x, rectShape.y, rectShape.width, rectShape.height)
     }
+
+    // Advanced render
     private fun render(bodyComponent: BodyComponent, textureComponent: TextureComponent, transformComponent: TransformComponent) {
         val rectShape = bodyComponent.rectangle
-        val sprite = Sprite(textureComponent.texture);
+        val sprite = Sprite(textureComponent.texture)
 
         sprite.setPosition(rectShape.x, rectShape.y)
         sprite.setOrigin(rectShape.width/2, rectShape.height/2)
         sprite.setSize(rectShape.width, rectShape.height)
         sprite.rotation = transformComponent.rotation
         sprite.setAlpha(transformComponent.opacity)
-        sprite.flip(transformComponent.flipped, false);
+        sprite.flip(transformComponent.flipped, false)
         sprite.draw(batch)
     }
 }

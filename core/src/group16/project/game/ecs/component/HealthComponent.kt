@@ -10,6 +10,7 @@ class HealthComponent : Component {
     fun addListener(listener : HealthListener) {
         listeners.add(listener)
     }
+
     fun set(hp: Int) {
         this.hp = hp
         fireHealthChanged()
@@ -19,8 +20,5 @@ class HealthComponent : Component {
         for (listener : HealthListener in listeners) {
             listener.healthChanged()
         }
-    }
-    fun get(): Int {
-        return hp
     }
 }
