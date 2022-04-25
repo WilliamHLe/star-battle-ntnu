@@ -20,6 +20,7 @@ interface FirebaseInterface {
     fun checkIfOpponentReady(screen: GameScreen)
     fun fire(gameScreen: GameScreen)
     fun getCurrentState(game: Game)
+    fun updateUserSkin(skinValue: Int)
     fun updateScore(points: Int)
     fun updatePlayerHealth()
     fun reduceHeartsAmount()
