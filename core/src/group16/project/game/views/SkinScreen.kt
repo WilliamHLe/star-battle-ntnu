@@ -18,9 +18,10 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 import group16.project.game.Configuration
 import group16.project.game.StarBattle
 import group16.project.game.ecs.utils.InputHandler
+import group16.project.game.models.FirebaseInterface
 import group16.project.game.views.components.SkinComponent
 
-class SkinScreen(val gameController: StarBattle): View(){
+class SkinScreen(val gameController: StarBattle, private val fbic: FirebaseInterface): View(){
     private val skinSize = 300f
     private val skinPad = 50f
     private val group = GridGroup(skinSize, skinPad)
@@ -83,6 +84,7 @@ class SkinScreen(val gameController: StarBattle): View(){
         val btnReturn = VisTextButton("Return to main menu")
         btnReturn.addListener(object : ChangeListener() {
             override fun changed(event: ChangeEvent, actor: Actor) {
+                fbic.updateUserSkin(InputHandler.playerSkin)
                 gameController.changeScreen(MainMenuScreen::class.java)
             }
         })
