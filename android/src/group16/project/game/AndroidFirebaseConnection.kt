@@ -2,6 +2,7 @@ package group16.project.game
 
 import android.app.Activity
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -41,8 +42,12 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                             if (it.value == null) {
                                 val userName = "user-" + currentUser.uid
                                 myRef.child(currentUser.uid).child("userName").setValue(userName)
+                                myRef.child(currentUser.uid).child("skin").setValue(InputHandler.playerSkin)
                                 Gdx.app.debug("FIREBASE", "signInAnonymously: Success on creating new user")
                             } else {
+                                val skinValue = it.child("skin").value
+                                println(skinValue)
+                                InputHandler.playerSkin = if (skinValue != null) (skinValue as Long).toInt() else InputHandler.playerSkin
                                 Gdx.app.debug("FIREBASE", "signInAnonymously: Success user already exist")
                             }
                         }.addOnFailureListener { //Failure, not connected to db
@@ -69,9 +74,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         Gdx.app.debug("FIREBASE", "Creating lobby")
         val randomLobbyCode = generateLobbyCode()
         val myRef: DatabaseReference = database.getReference("lobbies").child(randomLobbyCode)
-        val userRef: DatabaseReference = database.getReference("users")
         //Creates a random lobby code with letters and numbers (6 char code)
-
         val user = auth.currentUser
 
         myRef.get().addOnSuccessListener {
@@ -82,8 +85,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                 myRef.child("host").child("id").setValue(user.uid)
                 myRef.child("host").child("lives").setValue(GameInfo.health)
                 myRef.child("host").child("skin").setValue(InputHandler.playerSkin)
-                //TODO
-                userRef.child(user.uid).child("skin").setValue(InputHandler.playerSkin)
+                updateUserSkin(InputHandler.playerSkin)
                 gameController.updateCurrentGame(randomLobbyCode, "host", "player_2")
                 updateCurrentGameState(GameState.START)
                 // Adds newly created lobby to user in db
@@ -108,7 +110,6 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
     override fun joinLobby(lobbyCode: String, screen: JoinLobbyScreen){
         Gdx.app.log("FIREBASE", "joinLobby: Joining lobby")
         val myRef: DatabaseReference = database.getReference("lobbies").child(lobbyCode)
-        val userRef: DatabaseReference = database.getReference("users")
         val user = auth.currentUser
         myRef.get().addOnSuccessListener {
             val lobby = it.value
@@ -122,7 +123,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
                     myRef.child("player_2").child("id").setValue(user.uid)
                     myRef.child("player_2").child("lives").setValue(GameInfo.health)
                     myRef.child("player_2").child("skin").setValue(InputHandler.playerSkin)
-                    userRef.child(user.uid).child("skin").setValue(InputHandler.playerSkin)
+                    updateUserSkin(InputHandler.playerSkin)
                     screen.gameController.updateCurrentGame(lobbyCode, "player_2", "host")
                     updateCurrentGameState(GameState.SETUP)
                     //Add lobby to user
@@ -210,6 +211,19 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
         }
     }
 
+    override fun updateUserSkin(skinValue: Int) {
+        val userRef: DatabaseReference = database.getReference("users")
+        val user = auth.currentUser
+        userRef.get().addOnSuccessListener {
+            if(it.value != null && user != null) {
+                userRef.child(user.uid).child("skin").setValue(skinValue)
+            }
+        }.addOnFailureListener {
+            //Failure, could not connect to db
+            Gdx.app.error("FIREBASE", "updateUserSkin: Error getting data", it)
+        }
+
+    }
 
     override fun updateCurrentGameState(state: GameState) {
         val myRef: DatabaseReference = database.getReference("lobbies").child(GameInfo.currentGame).child("current_gamestate")
@@ -252,9 +266,7 @@ class AndroidFirebaseConnection : FirebaseInterface, Activity() {
 
 
     override fun skinListener(player: String, screen: GameScreen) {
-        val user = auth.currentUser
         val skin = database.getReference("lobbies").child(GameInfo.currentGame).child(player).child("skin")
-        val skin1 = user?.let { database.getReference("users").child(it.uid).child("skin")}
         Gdx.app.log("FIREBASE", "skinListener: Set listener change on $skin")
 
         skin.addValueEventListener(object : ValueEventListener {

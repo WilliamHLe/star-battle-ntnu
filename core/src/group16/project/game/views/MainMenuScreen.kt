@@ -19,8 +19,6 @@ class MainMenuScreen(val gameController: StarBattle, private val fbic: FirebaseI
     override fun draw(delta: Float) {}
 
     override fun init() {
-        // Log in user
-        fbic.signInAnonymously()
         // Draw layout
         drawLayout()
     }
